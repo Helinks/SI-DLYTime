@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/agendarCitas.css">
+    <title>Agendar cita</title>
+</head>
+<body>
+    <nav id="nav1">
+        <button id="menu-toggle" class="btn-nav">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+            </svg>
+        </button>
+        <div class="nav-text">
+            <a href="#">TusLentes Shop</a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-item">
+                <a href="perfil.html"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                  </svg>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                  </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div id="sidebar" class="sidebar">
+        <a href="#" id="close-sidebar">&times;</a>
+        <a href="#">Agendar Citas</a>
+    </div>
+
+    
+
+    <div class="container">
+        <div class="calendario">
+            <div class="header">
+                <div class="mes"></div>
+                <div class="btns">
+                <div class="btn today-btn">
+                    <img src="img/hoy.png" alt="" srcset="">
+                </div>
+                <div class="btn prev-btn">
+                    <img src="img/flecha-der.png" alt="">
+                </div>
+                <div class="btn next-btn">
+                    <img src="img/flecha-izq.png" alt="">
+                </div>
+            </div>
+            </div>
+            <div class="weekdays">
+                <div class="day">Dom</div>
+                <div class="day">Lun</div>
+                <div class="day">Mar</div>
+                <div class="day">Mie</div>
+                <div class="day">Jue</div>
+                <div class="day">Vie</div>
+                <div class="day">Sab</div>
+            </div>
+            <div class="dias">
+                
+            </div>
+        </div>
+    </div>
+    <script src="js/menu.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>
