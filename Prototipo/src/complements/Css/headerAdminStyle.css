@@ -1,0 +1,11 @@
+.navbar{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+  .logout{
+    color: white;
+    margin-right: 40px;
+  }

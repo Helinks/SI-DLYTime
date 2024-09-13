@@ -1,0 +1,15 @@
+.navbarUsers{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+.logoutUsers{
+    color: white;
+    margin-right: 40px;
+  }
+.users{
+    color: white;
+    margin-right: 15px;
+  }

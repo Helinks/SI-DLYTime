@@ -1,0 +1,17 @@
+.welcomeCliente{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .barCliente{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  
+  .optionsCliente{
+    display: flex;
+    justify-content: center;
+    height: 350px;
+  }
