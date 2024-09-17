@@ -21,7 +21,7 @@ function Soporte() {
                             aria-expanded="false"
                             aria-label="Toggle navigation"
                         >
-                            <Link to="/IndexAdmin">
+                            <Link to="/IndexCliente">
                                 <div className="BackButton">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +82,7 @@ function Soporte() {
                                                     class="form-control"
                                                     placeholder="Comentarios"
                                                     id="floatingTextarea2"
-                                                    style={{ height: '150px', resize: 'none' }}
+                                                    style={{ height: '150px', resize: 'none', width: "132%" }}
                                                 ></textarea>
                                                 <label for="floatingTextarea2">Comentarios</label>
                                             </div>

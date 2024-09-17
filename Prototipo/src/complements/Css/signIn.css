@@ -72,18 +72,12 @@
     text-align: center;
   }
 
-  .form-r label input{
-    padding: 10px;
-    background-color: #fff;
-    border: none;
-    border-radius: 8px;
-    color: #333;
-
-  }
+  
 
   .form-r {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .Registrar-r{
@@ -127,4 +121,10 @@ width: 90%;
   display: flex;
   justify-content: center;
   margin-top: 10%;
+}
+
+.texto-error{
+color: white;
+margin-top: 20px;
+position: relative;
 }
