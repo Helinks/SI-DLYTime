@@ -1,67 +1,67 @@
-import React from 'react';
+
 import './Css/loginStyle.css';
-import { Outlet, Link, Route, Routes } from "react-router-dom";
-import { correo, password } from './SignIn';
-import IndexAdmin from './IndexAdmin';
-// import { Route, Routes } from 'react-router-dom';
-// import Home from '';
-// import Registro from '';
-// import IndexEmpleado from '';
-// import IndexCliente from '';
-
-const Validar = () => {
+import { Outlet, Link , useNavigate} from "react-router-dom";
+import {persona} from './SignIn';
 
 
-    let correoU = document.getElementById("correo_i").value;
-    let passwordU = document.getElementById("password_i").value;
-    return (
-      <>
-  
-        {(correoU === correo && password === passwordU) ? <Route path="/IndexAdmin" element={<IndexAdmin/>} />: alert("Los datos no son correctos") }
-      </>
-    )
-  
-  }
-  
+
+
 function Login() {
+  
+  
+const navigate = useNavigate();
+function validar(){
+  (persona[0].correo === (document.getElementById("correo_i").value) &&  persona[0].password ===(document.getElementById("password_i").value) 
+  ? navigate("/IndexCliente"): 
+  ((persona[1].correo === (document.getElementById("correo_i").value) &&  persona[1].password ===(document.getElementById("password_i").value) 
+  ? navigate("/IndexAdmin"):
+  ((persona[2].correo === (document.getElementById("correo_i").value) &&  persona[2].password ===(document.getElementById("password_i").value) 
+  ? navigate("/IndexEmpleado"): navigate("/SignIn")
+  )))));
+  
+}
+  
+  /* alert(persona[0].nombre+persona[0].apellido+persona[0].correo+persona[0].tipodocumento+persona[0].documento+persona[0].password+persona[0].genero) muestra como funciona el JSON exportado */
   return (
     <div>
-    <body background="img/fondo.png" class="body-login">
-      <div class="contenedor-formulario">
-        <div class="information">
-          <div class="izquierda">
-            <h2>¿Ya tienes una cuenta?</h2>
-            <Link to="SignIn">
-              <p><input type="button" value="Registrarme" id="sign-in" /></p>
-            </Link>
-          </div>
-        </div>
-        <div class="derecha">
-          <form class="form" method="POST" novalidate>
-            <h1 id="Titulo"><b>Iniciar Sesión</b></h1>
-            <div class="inputs">
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">@</span>
-                <input type="email" class="form-control" placeholder="Correo" aria-label="Username" aria-describedby="basic-addon1" id='correo_i' />
+        <>
+          <div className="body-login" style={{ backgroundImage: 'url(img/fondo.png)' }}>
+            <div className="contenedor-formulario">
+              <div className="information">
+                <div className="izquierda">
+                  <h2>¿Ya tienes una cuenta?</h2>
+                  <Link to="/SignIn">
+                    <input type="button" value="Registrarme" id="sign-in" />
+                  </Link>
+                </div>
               </div>
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">⌘ </span>
-                <input type="password" class="form-control" placeholder="password" aria-label="Username" aria-describedby="basic-addon1" id="password_i" />
+              <div className="derecha">
+                <form className="form" method="POST" noValidate>
+                  <h1 id="Titulo"><b>Iniciar Sesión</b></h1>
+                  <div className="inputs">
+                    <div className="input-group mb-3">
+                      <span className="input-group-text" id="basic-addon1">@</span>
+                      <input type="email" className="form-control" placeholder="Correo" aria-label="Username" aria-describedby="basic-addon1" id="correo_i" />
+                    </div>
+                    <div className="input-group mb-3">
+                      <span className="input-group-text" id="basic-addon1">⌘</span>
+                      <input type="password" className="form-control" placeholder="Password" aria-label="Username" aria-describedby="basic-addon1" id="password_i" />
+                    </div>
+                  </div>
+                </form>
+                <div className="botones-inicio">
+                  <button type="button" className="iniciar" onClick={validar}>Iniciar sesión</button>
+                  <Link to="/SignIn">
+                    <button type="button" className="olvidar" name="register">Olvidaste tu contraseña </button>
+                  </Link>
+                </div>
               </div>
             </div>
-          </form>
-          <div class="botones-inicio">
-            <button type="button" class="iniciar" onClick={Validar}>Iniciar sesión</button>
-            <Link to="/SignIn">
-              <button type="button" class="olvidar" name="register">Olvidaste tu contraseña</button>
-            </Link>
           </div>
-        </div>
-      </div>
-    </body>
-    <Outlet />
-  </div>  
-  )
+        </>
+      <Outlet />
+    </div>
+  );
 }
 
-export default Login
+export default Login;
