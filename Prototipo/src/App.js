@@ -4,13 +4,13 @@ import IndexAdmin from './complements/IndexAdmin';
 import IndexEmpleado from './complements/IndexEmpleado';
 import IndexCliente from './complements/IndexCliente';
 import SignIn from './complements/SignIn';
-import AgendarCita from './complements/AgendarCita';
-import Perfil from './complements/Perfil';
 import { Route, Routes } from 'react-router-dom';
 import './complements/Css/Index.css';
-
-
-
+import EmpleadoAdClientes from './complements/EmpleadoAdClientes';
+import AdminClientes from './complements/AdminClientes';
+import EmpleadoAdCitas from './complements/EmpleadoAdCitas'
+import ClienteAdCitas from './complements/ClienteAdCitas';
+import Soporte from './complements/Soporte';
 
 
 
@@ -24,8 +24,12 @@ function App() {
         <Route path='/IndexEmpleado' element={<IndexEmpleado/>}></Route>
         <Route path='/IndexCliente' element={<IndexCliente/>}></Route>
         <Route path='/SignIn' element={<SignIn/>}></Route>
-        <Route path='/AgendarCita' element={<AgendarCita/>}></Route>
-        <Route path='/Perfil' element={<Perfil/>}></Route>
+        <Route path='/Login' element={<Login/>}></Route>
+        <Route path='/EmpleadoAdClientes' element={<EmpleadoAdClientes/>}></Route>
+        <Route path='/AdminClientes' element={<AdminClientes/>}></Route>
+        <Route path='/EmpleadoAdCitas' element={<EmpleadoAdCitas/>}></Route>
+        <Route path='/ClienteAdCitas' element={<ClienteAdCitas/>}></Route>
+        <Route path='/Soporte' element={<Soporte/>}></Route>
       </Routes>
     </div>
     
