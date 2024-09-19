@@ -1,0 +1,9 @@
+Usuarios para iniciar la simulación de login:
+
+1. cliente: se tiene que registrar.
+2. Administrador:
+  sebitas@gmail.com
+  password: 12345
+3. Oftalmólogo:
+  empleado@gmail.com
+  password: jose
