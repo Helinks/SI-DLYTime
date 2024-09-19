@@ -2,13 +2,14 @@ import React from 'react';
 import './Css/IndexClStyle.css';
 import { Link } from "react-router-dom";
 import Header from "./HeaderU";
+import { persona } from './SignIn';
 
 function IndexCliente() {
   return (
     <div>
       <Header></Header>
 
-      <div class="welcomeCliente"><h1>Bienvenido <i><b>Jhon Freddy</b></i></h1></div>
+      <div class="welcomeCliente"><h1>Bienvenido <i><b>{persona[0].nombre}</b></i></h1></div>
 
       <div class="barCliente">
         <div class="bg-danger p-4">

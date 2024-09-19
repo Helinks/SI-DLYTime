@@ -1,7 +1,6 @@
 import React from 'react';
 import './Css/agendarCitas.css';
 import { useEffect } from 'react';
-
 import { Link } from "react-router-dom";
 import './img/flecha-der.png';
 
@@ -30,7 +29,6 @@ function AgendarCita() {
             "Diciembre",
         ];
 
-        const days = ["Dom", "Lun", "Mar", "Mie", "Jue", "vie", "Sab"];
         const date = new Date();
 
         let currentMonth = date.getMonth();
@@ -102,7 +100,6 @@ function AgendarCita() {
         todayBtn.addEventListener("click", () => {
             currentMonth = date.getMonth();
             currentYear = date.getFullYear();
-
             renderCalendar();
         });
 
@@ -120,7 +117,6 @@ function AgendarCita() {
 
     }, []);
     return (
-
         <div>
             <div className='navBar'>
                 <nav className="navbar navbar-dark bg-danger">
@@ -146,12 +142,6 @@ function AgendarCita() {
                     </div>
                 </nav>
             </div>
-            <div id="sidebar" class="sidebar">
-                <a href="#" id="close-sidebar">&times;</a>
-                <a href="#">Agendar Citas</a>
-            </div>
-
-
 
             <div class="container">
                 <div class="calendario">
@@ -185,11 +175,9 @@ function AgendarCita() {
                         <div class="day">Sab</div>
                     </div>
                     <div class="dias">
-
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }

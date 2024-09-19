@@ -13,6 +13,7 @@ import './complements/Css/Index.css';
 import AdminClientes from './complements/AdminClientes';
 import Soporte from './complements/Soporte';
 import CambiarPass from "./complements/CambiarPass";
+import EmpleadoAdClientes from "./complements/EmpleadoAdClientes";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path='/Soporte' element={<Soporte />}></Route>
         <Route path='/Login' element={<Login />}></Route>
         <Route path='/CambiarPass' element={<CambiarPass />}></Route>
+        <Route path='/EmpleadoAdClientes' element={<EmpleadoAdClientes />}></Route>
       </Routes>
     </div>
 

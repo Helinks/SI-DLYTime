@@ -1,35 +1,35 @@
 import React, { useState } from 'react';
-import { Link, Outlet, useNavigate} from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './Css/signIn.css';
 
 
 export const persona = [
   {
-  nombre: "",
-  apellido: "",
-  documento: 0,
-  tipodocumento: 0,
-  correo: "",
-  password: "",
-  genero: "",
+    nombre: "",
+    apellido: "",
+    documento: 0,
+    tipodocumento: 0,
+    correo: "",
+    password: "",
+    genero: "",
   },
   {
-  nombre: "Sebas",
-  apellido: "Rodríguez",
-  documento: 1013110701,
-  tipodocumento: 1,
-  correo: "sebitas@gmail.com",
-  password: "12345",
-  genero: "2",
+    nombre: "Sebas",
+    apellido: "Rodríguez",
+    documento: 1013110701,
+    tipodocumento: 1,
+    correo: "sebitas@gmail.com",
+    password: "12345",
+    genero: "2",
   },
   {
-  nombre: "Samuel",
-  apellido: "Fabian",
-  documento: 58668424,
-  tipodocumento: 2,
-  correo: "empleado@gmail.com",
-  password: "jose",
-  genero: "1",
+    nombre: "Samuel",
+    apellido: "Fabian",
+    documento: 58668424,
+    tipodocumento: 2,
+    correo: "empleado@gmail.com",
+    password: "jose",
+    genero: "1",
   }
 ];
 
@@ -41,10 +41,10 @@ export function SignIn() {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [Confirmar_password, setConfirmar_password] = useState("");
-  const [genero, setGenero] = useState(""); 
+  const [genero, setGenero] = useState("");
   const [error, setError] = useState(false);
 
-  
+
   const navigate = useNavigate();
 
   persona[0].nombre = nombre;
@@ -58,7 +58,7 @@ export function SignIn() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (correo === "" || password === "" ) {
+    if (correo === "" || password === "") {
       setError(true);
       return;
     }
@@ -68,8 +68,8 @@ export function SignIn() {
   };
 
   return (
-  
-    
+
+
 
     <div className="body-registro">
       <div className="contenedor-formulario-r">
@@ -77,7 +77,7 @@ export function SignIn() {
           <div className="izquierda-r">
             <h2>¿Ya tienes una cuenta?</h2>
             <p>
-            <Link to="/">
+              <Link to="/">
                 <input type="button" value="Iniciar Sesión" id="sign-in" />
               </Link>
 
@@ -188,7 +188,7 @@ export function SignIn() {
     </div>
   );
 
-  
+
 }
 
 export default SignIn;
