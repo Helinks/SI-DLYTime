@@ -5,17 +5,9 @@ import { Link } from "react-router-dom";
 function ClienteAdCitas() {
   const citas = [
     {
-      fechaHora: '2024-09-15 10:00 AM',
+      fechaHora: '2024-09-30 10:00 AM',
       tipoConsulta: 'Lentes y Monturas',
-    },
-    {
-      fechaHora: '2024-09-15 11:00 AM',
-      tipoConsulta: 'Accesoría Personalizada',
-    },
-    {
-      fechaHora: '2024-09-15 01:00 PM',
-      tipoConsulta: 'Jornada de Salud Visual',
-    },
+    }
   ];
 
   return (

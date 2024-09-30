@@ -3,7 +3,7 @@ import './Css/StyleAdminClientes.css';
 import { persona } from './SignIn';
 import { Link } from "react-router-dom";
 
-function AdminClientes() {
+function AdminEmpleados() {
   return (
     <div className='Body'>
       <div className='navBar'>
@@ -46,15 +46,15 @@ function AdminClientes() {
             </tr>
           </thead>
           <tbody>
-            {persona[0] && (
+            {persona[2] && (
               <tr>
-                <th scope="row">{persona[0].tipodocumento === 1 ? 'CC' : persona[0].tipodocumento === 2 ? 'TI' : 'Otro'}</th>
-                <td>{persona[0].documento}</td>
-                <td>{persona[0].nombre}</td>
-                <td>{persona[0].apellido}</td>
-                <td>{persona[0].correo}</td>
-                <td>{persona[0].genero === "1" ? 'Masculino' : persona[0].genero === "2" ? 'Femenino' : 'Otro'}</td>
-                <td>{persona[0].password}</td>
+                <th scope="row">{persona[2].tipodocumento === 1 ? 'CC' : persona[2].tipodocumento === 2 ? 'TI' : 'Otro'}</th>
+                <td>{persona[2].documento}</td>
+                <td>{persona[2].nombre}</td>
+                <td>{persona[2].apellido}</td>
+                <td>{persona[2].correo}</td>
+                <td>{persona[2].genero === "1" ? 'Masculino' : persona[2].genero === "2" ? 'Femenino' : 'Otro'}</td>
+                <td>{persona[2].password}</td>
                 <td>
                   <button type="button" className="btn1" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Modificar</button>
                   <button type="button" className="btn2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Eliminar</button>
@@ -131,7 +131,7 @@ function AdminClientes() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default AdminClientes;
+export default AdminEmpleados

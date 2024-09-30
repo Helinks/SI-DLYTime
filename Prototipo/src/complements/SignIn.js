@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import './Css/signIn.css';
 
+export let alfabeto = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+export let invertidos = ['9', '8', '7', '6', '5', '4', '3', '2', '1', '0', 'z', 'y', 'x', 'w', 'v', 'u', 't', 's', 'r', 'q', 'p', 'o', 'n', 'm', 'l', 'k', 'j', 'i', 'h', 'g', 'f', 'e', 'd', 'c', 'b', 'a'];
 
 export const persona = [
   {
@@ -52,25 +54,44 @@ export function SignIn() {
   persona[0].correo = correo;
   persona[0].tipodocumento = tipodocumento;
   persona[0].documento = ndocumento;
-  persona[0].password = password;
   persona[0].genero = genero;
 
+
+  /*Encriptar contraseña*/
+  function Encriptar() {
+    let clave = password;
+    let resulta = "";
+    const arreglo = clave.split("")
+
+    /*pasar a traves de un ciclo para incriptar */
+    for (let i = 0; i < invertidos.length; i++) {
+      /*busca un arreglo dentro de otro */
+      const index = invertidos.indexOf(arreglo[i]);
+      if (index === -1) {
+        break;
+      } else {
+        resulta += alfabeto[index]
+      }
+    }
+    persona[0].password = resulta;
+  }
+
+  /*Valida espacios si estan en blanco*/
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    Encriptar();
     if (correo === "" || password === "") {
       setError(true);
       return;
     }
-
     setError(false);
     navigate('/Login'); // Redirige a Login después del registro
   };
 
+
+
   return (
-
-
-
+    /*Formulario*/
     <div className="body-registro">
       <div className="contenedor-formulario-r">
         <div className="information-r">

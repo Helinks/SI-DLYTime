@@ -1,5 +1,6 @@
 import React from 'react'
 import './Css/PerfilStyle.css';
+import { Link } from 'react-router-dom';
 
 function Perfil() {
   return (
@@ -70,7 +71,7 @@ function Perfil() {
           <button>Eliminar cuenta</button>
         </div>
         <div>
-          <button>Cancelar</button>
+        <Link to="/IndexEmpleado"><button>Cancelar</button></Link>
           <button>Actualizar</button>
         </div>  
       </div>

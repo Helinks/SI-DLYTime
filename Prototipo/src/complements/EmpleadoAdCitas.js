@@ -5,19 +5,19 @@ import { Link } from "react-router-dom";
 function EmpleadoAdCitas() {
   const citas = [
     {
-      fechaHora: '2024-09-15 10:00 AM',
+      fechaHora: '2024-09-30 10:00 AM',
       noDocumento: '123456789',
       paciente: 'Juan Pérez',
       tipoConsulta: 'Consulta General',
     },
     {
-      fechaHora: '2024-09-15 11:00 AM',
+      fechaHora: '2024-09-30 11:00 AM',
       noDocumento: '987654321',
       paciente: 'María Gómez',
       tipoConsulta: 'Control Médico',
     },
     {
-      fechaHora: '2024-09-15 01:00 PM',
+      fechaHora: '2024-09-30 01:00 PM',
       noDocumento: '456789123',
       paciente: 'Pedro López',
       tipoConsulta: 'Consulta Especialista',
@@ -95,7 +95,7 @@ function EmpleadoAdCitas() {
                     className="form-control"
                     id="fechaHora"
                     name="fechaHora"
-                    value="2024-09-15T10:00"
+                    value="2024-09-30T10:00"
                   />
                 </div>
                 <div className="mb-3">
