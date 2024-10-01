@@ -40,6 +40,77 @@ WHERE ec.nombre = 'Pendiente'
 GROUP BY o.numeroDocumento
 ORDER BY cantidadPendientes DESC;
 
+/*LEft  */
+
+/* Contar el número de citas por cliente, incluso si algunos clientes no tienen citas asignadas */
+SELECT
+    p.primerNombre AS ClienteNombre,
+    p.primerApellido AS ClienteApellido,
+    COUNT(c.idCita) AS TotalCitas
+FROM
+    cliente cl
+    LEFT JOIN persona p ON cl.numeroDocumento = p.numeroDocumento
+    LEFT JOIN cita c ON cl.numeroDocumento = c.clienteNumeroDocumento
+GROUP BY
+    p.primerNombre,
+    p.primerApellido;
+
+/*Obtener la fecha más reciente de una cita por cada cliente */
+SELECT
+    p.primerNombre AS ClienteNombre,
+    p.primerApellido AS ClienteApellido,
+    MAX(h.fecha) AS UltimaFechaCita
+FROM
+    cliente cl
+    LEFT JOIN persona p ON cl.numeroDocumento = p.numeroDocumento
+    LEFT JOIN cita c ON cl.numeroDocumento = c.clienteNumeroDocumento
+    LEFT JOIN detalleCita dc ON c.idCita = dc.idCita
+    LEFT JOIN Horario h ON dc.idHorarios = h.idHorarios
+GROUP BY
+    p.primerNombre,
+    p.primerApellido;
+
+
+/*RIGHT*/
+
+/*Consultar las citas donde su descripción tengan consulta*/
+SELECT ct.idCita AS 'ID de Cita', pCliente.primerNombre AS 'Nombre Cliente', pOftalmologo.primerNombre AS 'Nombre Oftalmólogo', ct.descripcion AS 'Descripción de la Cita'
+FROM
+    cita ct
+    RIGHT JOIN persona pCliente ON ct.clienteNumeroDocumento = pCliente.numeroDocumento
+    RIGHT JOIN oftalmologo o ON ct.oftalmologoNumeroDocumento = o.numeroDocumento
+    JOIN persona pOftalmologo ON o.numeroDocumento = pOftalmologo.numeroDocumento
+WHERE
+    ct.descripcion LIKE '%consulta%';
+
+/* Se requiere obtener un reporte que incluya todas las citas programadas */
+SELECT
+    c.idCita AS NumeroCita,
+    c.descripcion AS Descripcion,
+    d.descripcion AS Diagnostico,
+    ec.nombre AS Estado
+FROM
+    estadosCita ec
+    RIGHT JOIN detalleCita dc ON ec.idEstadocita = dc.idEstadoCita
+    RIGHT JOIN cita c ON dc.idCita = c.idCita
+    LEFT JOIN diagnostico d ON dc.idDiagnostico = d.idDiagnostico;
+
+/* Se requiere visualisar todas las citas que estan en estado "Pendiente" */
+SELECT
+    c.idCita AS NumeroCita,
+    p.primerNombre AS NombrePaciente,
+    p.primerApellido AS ApellidoPaciente,
+    ec.nombre AS Estado
+FROM
+    estadosCita ec
+    RIGHT JOIN detalleCita dc ON ec.idEstadocita = dc.idEstadoCita
+    RIGHT JOIN cita c ON dc.idCita = c.idCita
+    RIGHT JOIN cliente cl ON c.clienteNumeroDocumento = cl.numeroDocumento
+    RIGHT JOIN persona p ON cl.numeroDocumento = p.numeroDocumento
+WHERE
+    ec.nombre LIKE 'Pendiente'
+    OR ec.nombre IS NULL;
+
 /*Consultas anidadas*/
 
 /*Obtener el oftalmólogo que ha atendido la mayor cantidad de citas*/
@@ -107,3 +178,5 @@ WHERE clienteNumeroDocumento IN (
 GROUP BY clienteNumeroDocumento
 HAVING COUNT(idCita) > 1
 ORDER BY totalCitas DESC;
+
+
