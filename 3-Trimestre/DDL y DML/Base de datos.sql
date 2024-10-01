@@ -322,7 +322,7 @@ FLUSH PRIVILEGES;
 /*Consultas con INNER JOIN*/
 
 /*Buscar el cliente con su primera cita programada pendiente*/
-select p.primerNombre, p.primerApellido, c.idCita, c.idCita, es.nombre AS Estado_Cita
+select p.primerNombre, p.primerApellido, c.clienteNumeroDoc, c.idCita, es.nombre AS Estado_Cita
 FROM persona p
 INNER JOIN cliente ON p.numeroDocumento = cliente.numeroDocumento AND p.idTipoIdentificacion = cliente.idTipoIdentificacion
 INNER JOIN cita c ON c.clienteNumeroDocumento = cliente.numeroDocumento
