@@ -30,9 +30,9 @@ CREATE TABLE persona (
     segundoApellido VARCHAR(15),
     idGenero INT NOT NULL,
     correo VARCHAR(50) NOT NULL,
-    telefono VARCHAR(15) NOT NULL,
-    clave VARBINARY(255) NOT NULL,
-    fechaNacimiento DATE NOT NULL,
+    telefono VARCHAR(15),
+    clave varchar (61) NOT NULL,
+    fechaNacimiento DATE,
     direccion VARCHAR(40),
     PRIMARY KEY (numeroDocumento, idTipoIdentificacion),
     FOREIGN KEY (idTipoIdentificacion) REFERENCES tipoIdentificacion(idTipoIdentificacion),
@@ -174,16 +174,16 @@ INSERT INTO Rol (idRol,nombre) VALUE
 (2,"Empleado");
 
 INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, primerNombre, segundoNombre, primerApellido, segundoApellido, idGenero, correo, telefono, clave, fechaNacimiento, direccion) VALUES
-(12345678, 1, 1, 'Juan', 'Carlos', 'Rodriguez', 'Perez', 1, 'juan.rodriguez@example.com', '3001234567', AES_ENCRYPT('contrasena123', 'MiClaveSecreta'), '1985-06-15', 'Calle 123 #45-67'),
-(61452345, 2, 1, 'Maria', NULL, 'Gomez', 'Lopez', 2, 'maria.gomez@example.com', '3107654321', AES_ENCRYPT('contrasena321', 'MiClaveSecreta'), '1990-11-25', 'Carrera 45 #12-34'),
-(87841125, 1, 2, 'Pedro', 'Antonio', 'Martinez', 'Torres', 1, 'pedro.martinez@example.com', '3008765432', AES_ENCRYPT('contrasena468', 'MiClaveSecreta'), '1978-03-22', 'Avenida 56 #23-89'),
-(98742135, 1, 1, 'Laura', 'Patricia', 'Lopez', 'Gomez', 2, 'laura.lopez@example.com', '3201236789', AES_ENCRYPT('contrasena', 'MiClaveSecreta'), '1992-07-13', 'Calle 87 #32-21'),
-(68742178, 2, 1, 'Carlos', 'Andres', 'Diaz', 'Perez', 1, 'carlos.diaz@example.com', '3009871234', AES_ENCRYPT('contrasena1231', 'MiClaveSecreta'), '1983-11-30', 'Calle 45 #12-67'),
-(98512478, 1, 2, 'Sandra', 'Milena', 'Vargas', 'Lopez', 2, 'sandra.vargas@example.com', '3102348765', AES_ENCRYPT('contrasena1233', 'MiClaveSecreta'), '1995-09-15', 'Carrera 90 #45-32'),
-(79514687, 2, 1, 'Luis', 'Miguel', 'Ramirez', 'Torres', 1, 'luis.ramirez@example.com', '3123450987', AES_ENCRYPT('contrasena1235', 'MiClaveSecreta'), '1988-12-05', 'Avenida 60 #23-65'),
-(12015687, 1, 3, 'Ana', 'Lucia', 'Fernandez', 'Rodriguez', 2, 'ana.fernandez@example.com', '3203456789', AES_ENCRYPT('contrasena1223', 'MiClaveSecreta'), '1991-02-17', 'Calle 77 #43-21'),
-(79214778, 1, 1, 'Diego', 'Armando', 'Gonzalez', 'Martinez', 1, 'diego.gonzalez@example.com', '3124567890', AES_ENCRYPT('contrasena1223', 'MiClaveSecreta'), '1986-10-12', 'Carrera 50 #34-22'),
-(61479875, 2, 1, 'Natalia', 'Andrea', 'Mendoza', 'Gomez', 2, 'natalia.mendoza@example.com', '3152345678', AES_ENCRYPT('contrasena1523', 'MiClaveSecreta'), '1993-04-22', 'Avenida 35 #14-56');
+(12345678, 1, 1, 'Juan', 'Carlos', 'Rodriguez', 'Perez', 1, 'juan.rodriguez@example.com', '3001234567',  'MiClaveSecreta', '1985-06-15', 'Calle 123 #45-67'),
+(61452345, 2, 1, 'Maria', NULL, 'Gomez', 'Lopez', 2, 'maria.gomez@example.com', '3107654321', 'MiClaveSecreta', '1990-11-25', 'Carrera 45 #12-34'),
+(87841125, 1, 2, 'Pedro', 'Antonio', 'Martinez', 'Torres', 1, 'pedro.martinez@example.com', '3008765432','MiClaveSecreta', '1978-03-22', 'Avenida 56 #23-89'),
+(98742135, 1, 1, 'Laura', 'Patricia', 'Lopez', 'Gomez', 2, 'laura.lopez@example.com', '3201236789',  'MiClaveSecreta', '1992-07-13', 'Calle 87 #32-21'),
+(68742178, 2, 1, 'Carlos', 'Andres', 'Diaz', 'Perez', 1, 'carlos.diaz@example.com', '3009871234', 'MiClaveSecreta', '1983-11-30', 'Calle 45 #12-67'),
+(98512478, 1, 2, 'Sandra', 'Milena', 'Vargas', 'Lopez', 2, 'sandra.vargas@example.com', '3102348765',  'MiClaveSecreta', '1995-09-15', 'Carrera 90 #45-32'),
+(79514687, 2, 1, 'Luis', 'Miguel', 'Ramirez', 'Torres', 1, 'luis.ramirez@example.com', '3123450987', 'MiClaveSecreta', '1988-12-05', 'Avenida 60 #23-65'),
+(12015687, 1, 3, 'Ana', 'Lucia', 'Fernandez', 'Rodriguez', 2, 'ana.fernandez@example.com', '3203456789','MiClaveSecreta', '1991-02-17', 'Calle 77 #43-21'),
+(79214778, 1, 1, 'Diego', 'Armando', 'Gonzalez', 'Martinez', 1, 'diego.gonzalez@example.com', '3124567890', 'MiClaveSecreta', '1986-10-12', 'Carrera 50 #34-22'),
+(61479875, 2, 1, 'Natalia', 'Andrea', 'Mendoza', 'Gomez', 2, 'natalia.mendoza@example.com', '3152345678',  'MiClaveSecreta', '1993-04-22', 'Avenida 35 #14-56');
 
 INSERT INTO cliente (numeroDocumento, idTipoIdentificacion) VALUES
 (12345678, 1),
