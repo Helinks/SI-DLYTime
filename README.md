@@ -1,2 +1,0 @@
-# SI-DLYTime
-Proyecto productivo
