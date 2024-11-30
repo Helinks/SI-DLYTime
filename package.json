@@ -1,0 +1,23 @@
+{
+
+  " Comentario para el npm ": " npm install concurrently --save-dev ",
+
+  "name": "eden",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm start",
+    "start": "concurrently \"npm run start-server\" \"npm run start-client\""
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@everapi/emailvalidation-js": "^1.0.6",
+    "nodemailer": "^6.9.16"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

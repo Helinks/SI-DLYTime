@@ -1,0 +1,17 @@
+.welcomeEmpleado{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .barEmpleado{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  
+  .optionsEmpleado{
+    display: flex;
+    justify-content: center;
+    height: 350px;
+  }

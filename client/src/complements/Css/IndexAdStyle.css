@@ -1,0 +1,31 @@
+  .welcomeAdmin{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+  }
+
+
+  .barAdmin{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  
+  .optionsAdmin{
+    display: flex;
+    justify-content: center;
+    height: 350px;
+  }
+
+
+  .navbar{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+  }
+
+  .logout{
+    color: white;
+    margin-right: 40px;
+  }
