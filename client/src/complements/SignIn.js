@@ -46,7 +46,7 @@ export function SignIn() {
         if (response.smtp_check) {
           setValidationMessage("El correo es válido.");
           setError(false);
-          Axios.post("http://localhost:3001/registro", {
+          Axios.post("http://localhost:3001/autenticacion/registro", {
             numeroDocumento: ndocumento,
             idRol: 1,
             idTipoIdentificacion: tipodocumento,

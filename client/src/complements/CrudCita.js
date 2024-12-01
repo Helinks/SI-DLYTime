@@ -47,14 +47,14 @@ function CrudCita() {
 
   const getCita = () => {
 
-    Axios.get("http://localhost:3001/crudCita").then((cita) => {
+    Axios.get("http://localhost:3001/crudCitas/crudCita").then((cita) => {
       setcrudCitas(cita.data);
     })
   }
 
   const addCita = () => {
     const fechaFormateada = formatearFecha(fecha);
-    Axios.post("http://localhost:3001/crudCita", {
+    Axios.post("http://localhost:3001/crudCitas/crudCita", {
       fecha: fechaFormateada,
       hora: hora,
       NumeroDocumentoCliente: NumeroDocumentoCliente,
@@ -69,7 +69,7 @@ function CrudCita() {
 
   const changeEstado = (id) => {
 
-    Axios.patch("http://localhost:3001/updateCita", {
+    Axios.patch("http://localhost:3001/crudCitas/updateCita", {
 
       estadoCita: estadoCita,
       idCita: id

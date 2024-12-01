@@ -45,7 +45,7 @@ function CrudEmpleados() {
 
 
   const getEmpleados = () => {
-    Axios.get("http://localhost:3001/crud_empleados_referencia").then((empleados) => {
+    Axios.get("http://localhost:3001/crudEmpleados/consultaEmpleado").then((empleados) => {
       SetcrudEmple(empleados.data);
     })
   }
@@ -83,7 +83,7 @@ function CrudEmpleados() {
         if (response.smtp_check) {
           setValidationMessage("El correo es válido.");
           setError(false);
-          Axios.post("http://localhost:3001/Crud_empleado_Registrar", {
+          Axios.post("http://localhost:3001/crudEmpleados/agregarEmpleado", {
             numeroDocumento: ndocumento,
             idRol: 2,
             idTipoIdentificacion: tipodocumento,
@@ -113,7 +113,7 @@ function CrudEmpleados() {
 
   /* Modificar Empleados */
   const editarEmpleado = () => {
-    Axios.patch("http://localhost:3001/ActualizarEmpleado", {
+    Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idRol: 2,
       idTipoIdentificacion: tipodocumento,
