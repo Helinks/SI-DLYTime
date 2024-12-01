@@ -42,7 +42,7 @@ function Crud_clientes() {
   }, []);
 
   const getClientes = () => {
-    Axios.get("http://localhost:3001/crud_clientes_referencia")
+    Axios.get("http://localhost:3001/crudClientes/consultaCliente")
       .then((response) => {
         console.log("Datos obtenidos:", response.data);
         SetcrudClient(response.data);
@@ -76,7 +76,7 @@ function Crud_clientes() {
           setValidationMessage("El correo es válido.");
           setError(false);
           
-          Axios.post("http://localhost:3001/agregar_cliente", nuevoCliente)
+          Axios.post("http://localhost:3001/crudClientes/agregarCliente", nuevoCliente)
             .then(() => {
               alert("Cliente añadido con éxito");
               getClientes();
@@ -112,7 +112,7 @@ function Crud_clientes() {
   
 
   const guardarEdicion = () => {
-    Axios.put("http://localhost:3001/editar_cliente", clienteEditado)
+    Axios.put("http://localhost:3001/crudClientes/actualizarCliente", clienteEditado)
       .then(() => {
         alert("Cliente editado con éxito");
         getClientes();

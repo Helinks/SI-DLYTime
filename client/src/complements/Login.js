@@ -31,7 +31,7 @@ function Login() {
     }
 
     setError(false);
-    Axios.post("http://localhost:3001/login", {
+    Axios.post("http://localhost:3001/autenticacion/login", {
       correo_i: correo_i,
       password_i: password_i,
     })
@@ -44,7 +44,7 @@ function Login() {
   };
 
   const obtenerDatos = () => {
-    Axios.get("http://localhost:3001/login/rol").then((respuestass) => {
+    Axios.get("http://localhost:3001/autenticacion/login/rol").then((respuestass) => {
       guardar(respuestass.data);
     });
   };
@@ -61,7 +61,7 @@ function Login() {
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
     try {
-      await Axios.post("http://localhost:3001/Enviar-correo", {
+      await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreo", {
         to: forgotEmail,
         subject: "Restablecimiento de Contraseña",
       });
@@ -79,7 +79,7 @@ function Login() {
   const validarCodigo = async () => {
     try {
       const response = await Axios.post(
-        "http://localhost:3001/validar-codigo",
+        "http://localhost:3001/recuperarPassword/validarCodigo",
         {
           correo: forgotEmail,
           code: codigoV,
@@ -98,7 +98,7 @@ function Login() {
   };
 
   const restablecer = async () => {
-    await Axios.patch("http://localhost:3001/CambiaContrasena", {
+    await Axios.patch("http://localhost:3001/recuperarPassword/cambiarPassword", {
       correo: forgotEmail,
       password: password,
       codigo: codigoV,
