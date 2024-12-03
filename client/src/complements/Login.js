@@ -12,35 +12,33 @@ function Login() {
   const [password_i, setPassword_i] = useState("");
   const [password, setPassword] = useState("");
   const [Confirmar_password, setConfirmar_password] = useState("");
-  const [error, setError] = useState(false);
-  const [errorU, setErrorU] = useState(["", false]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [currentView, setCurrentView] = useState("email");
+
 
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotMessage, setForgotMessage] = useState("");
   const [codigoValidar, setcodigoValidar] = useState(false);
   const [codigoV, setCodigoV] = useState("");
-  const [establecerPass, setEstablecerPass] = useState(false);
+
 
   const consulta = (e) => {
     e.preventDefault();
-
-    if (correo_i === "" || password_i === "") {
-      setError(true);
+    if (correo_i === "" || password_i === "") { //Valida los campos 
+      setErrorMessage("Por favor completar los campos")
       return;
     }
 
-    setError(false);
+    /* Envió de datos para la autenticación */
     Axios.post("http://localhost:3001/autenticacion/login", {
       correo_i: correo_i,
       password_i: password_i,
-    })
-      .then(() => {
-        obtenerDatos();
-      })
-      .catch((error) => {
-        setErrorU([error.response.data.message, true]);
-      });
+    }).then(() => {
+      obtenerDatos();
+    }).catch((error) => {
+      setErrorMessage([error.response.data.message]);
+    });
   };
 
   const obtenerDatos = () => {
@@ -49,26 +47,31 @@ function Login() {
     });
   };
 
-  async function guardar(data) {
+  /* Compara los datos para validar el rol del usuario */
+  function guardar(data) {
     const rol = data[0].idRol;
     rol === 1
       ? navigate("/IndexCliente")
       : rol === 2
-      ? navigate("/IndexAdmin")
-      : navigate("/IndexEmpleado");
+        ? navigate("/IndexAdmin")
+        : navigate("/IndexEmpleado");
   }
+
 
   const handleForgotPasswordSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      /* Envió de correo eléctronico */
       await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreo", {
         to: forgotEmail,
         subject: "Restablecimiento de Contraseña",
       });
-      setForgotMessage(
-        "Por favor, ingresa el código temporal que te hemos enviado."
-      );
+      setCurrentView("codigo");
       setcodigoValidar(true);
+      
+
+
       if (codigoValidar) {
       }
     } catch (error) {
@@ -83,28 +86,44 @@ function Login() {
         {
           correo: forgotEmail,
           code: codigoV,
-        }
-      );
+        });
 
-      // Puedes usar `response.data` si el servidor envía datos adicionales
       if (response.data) {
-        setEstablecerPass(true);
+        setcodigoValidar(false);
       }
 
       alert("Código válido. Ahora puedes cambiar tu contraseña.");
+      setCurrentView("password")
     } catch (error) {
-      alert(error.response?.data || "Error al validar el código.");
+      if (error.response?.status === 400){
+        setForgotMessage("Código inválido");
+      } 
     }
   };
-
+  
   const restablecer = async () => {
+
+    if (password === "" || Confirmar_password === "") {
+      alert("Por favor completar los campos");
+      return;
+    }
+
+    if(password !== Confirmar_password){
+      alert("contraseñas no coincidentes");
+      return;
+    }
+
+    setShowForgotModal(false);
     await Axios.patch("http://localhost:3001/recuperarPassword/cambiarPassword", {
       correo: forgotEmail,
       password: password,
       codigo: codigoV,
     });
+
+    
   };
 
+  
   return (
     <div>
       <div
@@ -152,7 +171,10 @@ function Login() {
                 </div>
               </div>
             </form>
+            {errorMessage && <p className="texto-error">{errorMessage}</p>}
             <div className="botones-inicio">
+
+
               <button
                 type="submit"
                 className="iniciar" // Aplicamos clase de estilo CSS personalizada
@@ -167,107 +189,101 @@ function Login() {
               >
                 Olvidaste tu contraseña
               </button>
-              {error && (
-                <p className="texto-error">
-                  Por favor, complete todos los campos.
-                </p>
-              )}
-              {errorU[1] && <p className="texto-error">{errorU[0]}</p>}
+
+ 
             </div>
           </div>
         </div>
       </div>
 
       {/* Modal para Recuperar Contraseña */}
-      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Recuperar Contraseña</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleForgotPasswordSubmit}>
-            <Form.Group className="mb-3" controlId="formForgotEmail">
-              <Form.Label>Correo electrónico</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Ingresa tu correo"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                required
-              />
-            </Form.Group>
-            <button className="olvidar" type="submit">
-              Enviar
-            </button>
-          </Form>
+      <Modal show={showForgotModal} >
+  <Modal.Header closeButton>
+    <Modal.Title>Recuperar Contraseña</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {currentView === "email" && (
+      <Form onSubmit={handleForgotPasswordSubmit}>
+        <Form.Group className="mb-3" controlId="formForgotEmail">
+          <Form.Label>Correo electrónico</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Ingresa tu correo"
+            value={forgotEmail}
+            onChange={(e) => setForgotEmail(e.target.value)}
+            required
+          />
+        </Form.Group>
+        {forgotMessage}
+        <button className="olvidar" type="submit">
+          Enviar
+        </button>
+      </Form>
+    )}
 
-          {forgotMessage && <p className="mensajeCorreo">{forgotMessage}</p>}
-          {codigoValidar && (
-            <div>
-              <form className="row g-3">
-                <div className="col-auto">
-                  <label for="inputPassword6" className="col-form-label">
-                    Código
-                  </label>
-                </div>
-                <div className="col-auto">
-                  <label for="inputPassword2" className="visually-hidden">
-                    Password
-                  </label>
-                  <input
-                    type="number"
-                    class="form-control"
-                    id="inputPassword2"
-                    placeholder="Código"
-                    value={codigoV}
-                    onChange={(e) => setCodigoV(e.target.value)}
-                  />
-                </div>
-                <div className="col-auto"></div>
-                <button type="button" class="olvidar" onClick={validarCodigo}>
-                  {" "}
-                  Verificar identidad
-                </button>
-              </form>
-            </div>
-          )}
-          {establecerPass && (
-            <div className="mensajeCorreo">
-              <p>Ingresa Nueva Contraseña</p>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-sm">
-                  Contraseña
-                </span>
-                <input
-                  type="password"
-                  class="form-control"
-                  aria-label="Sizing example input"
-                  aria-describedby="inputGroup-sizing-sm"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <div class="input-group input-group-sm mb-3">
-                <span class="input-group-text" id="inputGroup-sizing-sm">
-                  Confirmar Contraseña
-                </span>
-                <input
-                  type="password"
-                  class="form-control"
-                  aria-label="Sizing example input"
-                  aria-describedby="inputGroup-sizing-sm"
-                  value={Confirmar_password}
-                  onChange={(e) => setConfirmar_password(e.target.value)}
-                />
-              </div>
-              <div style={{ textAlign: "right" }}>
-                <button type="button" class="olvidar" onClick={restablecer}>
-                  Aceptar
-                </button>
-              </div>
-            </div>
-          )}
-        </Modal.Body>
-      </Modal>
+    {currentView === "codigo" && (
+      <div>
+        <form className="row g-3">
+          <div className="col-auto">
+            <label htmlFor="inputPassword6" className="col-form-label">
+              Ingresar Código enviado
+            </label>
+          </div>
+          <div className="col-auto">
+            <input
+              type="number"
+              className="form-control"
+              id="inputPassword2"
+              placeholder="Código"
+              value={codigoV}
+              onChange={(e) => setCodigoV(e.target.value)}
+            />
+          </div>  
+          {forgotMessage}
+          <button
+            type="button"
+            className="olvidar"
+            onClick={validarCodigo}>
+            Verificar identidad
+          </button>
+        </form>
+      </div>
+    )}
+
+    {currentView === "password" && (
+      <div className="mensajeCorreo">
+        <p>Ingresa Nueva Contraseña</p>
+        <div className="input-group input-group-sm mb-3">
+          <span className="input-group-text" id="inputGroup-sizing-sm">
+            Contraseña
+          </span>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="input-group input-group-sm mb-3">
+          <span className="input-group-text" id="inputGroup-sizing-sm">
+            Confirmar Contraseña
+          </span>
+          <input
+            type="password"
+            className="form-control"
+            value={Confirmar_password}
+            onChange={(e) => setConfirmar_password(e.target.value)}
+          />
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <button type="button" className="olvidar" onClick={restablecer} >
+            Aceptar
+          </button>
+        </div>
+      </div>
+    )}
+  </Modal.Body>
+</Modal>
 
       <Outlet />
     </div>

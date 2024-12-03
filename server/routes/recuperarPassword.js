@@ -20,9 +20,7 @@ router.post("/validarCodigo", async (req, res) => {
                 }
 
                 if (result.length === 0) {
-                    return res
-                        .status(400)
-                        .send("Código inválido o correo no registrado.");
+                    return res.status(400).send("Código inválido o correo no registrado.");
                 }
 
                 /* Validar si el codigo ha expirado */
@@ -49,7 +47,7 @@ router.patch("/cambiarPassword", async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
     db.query(
         "UPDATE persona SET clave = ?  where correo = ? and reset_code = ?",
-        [hashedPassword, correo, codigo]
+        [hashedPassword, correo, codigo],(err,result) => {}
     );
 });
 
