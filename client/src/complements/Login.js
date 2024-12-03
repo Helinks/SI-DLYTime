@@ -34,28 +34,36 @@ function Login() {
     Axios.post("http://localhost:3001/autenticacion/login", {
       correo_i: correo_i,
       password_i: password_i,
-    }).then(() => {
-      obtenerDatos();
-    }).catch((error) => {
-      setErrorMessage([error.response.data.message]);
-    });
-  };
+    })
+      .then((response) => {
 
-  const obtenerDatos = () => {
-    Axios.get("http://localhost:3001/autenticacion/login/rol").then((respuestass) => {
-      guardar(respuestass.data);
-    });
+        const { token, rol } = response.data;
+
+        // Opcional: Limpiar mensajes de error
+        setErrorMessage("");
+
+        // Opcional: Mostrar mensaje de éxito
+        alert("Inicio de sesión exitoso");
+
+        localStorage.setItem("authToken", token);
+        localStorage.setItem("userRole", rol);
+
+        // Redirigir al usuario según su rol
+        if (rol === 1) {
+          navigate("/IndexCliente");
+        } else if (rol === 2) {
+          navigate("/IndexEmpleado");
+        } else if (rol === 3) {
+          navigate("/IndexAdmin");
+        }
+
+      })
+      .catch((error) => {
+        setErrorMessage(error.response?.data?.message || "Error al iniciar sesión");
+      });
   };
 
   /* Compara los datos para validar el rol del usuario */
-  function guardar(data) {
-    const rol = data[0].idRol;
-    rol === 1
-      ? navigate("/IndexCliente")
-      : rol === 2
-        ? navigate("/IndexAdmin")
-        : navigate("/IndexEmpleado");
-  }
 
 
   const handleForgotPasswordSubmit = async (e) => {
@@ -69,7 +77,7 @@ function Login() {
       });
       setCurrentView("codigo");
       setcodigoValidar(true);
-      
+
 
 
       if (codigoValidar) {
@@ -95,12 +103,12 @@ function Login() {
       alert("Código válido. Ahora puedes cambiar tu contraseña.");
       setCurrentView("password")
     } catch (error) {
-      if (error.response?.status === 400){
+      if (error.response?.status === 400) {
         setForgotMessage("Código inválido");
-      } 
+      }
     }
   };
-  
+
   const restablecer = async () => {
 
     if (password === "" || Confirmar_password === "") {
@@ -108,7 +116,7 @@ function Login() {
       return;
     }
 
-    if(password !== Confirmar_password){
+    if (password !== Confirmar_password) {
       alert("contraseñas no coincidentes");
       return;
     }
@@ -120,10 +128,10 @@ function Login() {
       codigo: codigoV,
     });
 
-    
+
   };
 
-  
+
   return (
     <div>
       <div
@@ -190,7 +198,7 @@ function Login() {
                 Olvidaste tu contraseña
               </button>
 
- 
+
             </div>
           </div>
         </div>
@@ -198,92 +206,92 @@ function Login() {
 
       {/* Modal para Recuperar Contraseña */}
       <Modal show={showForgotModal} >
-  <Modal.Header closeButton>
-    <Modal.Title>Recuperar Contraseña</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    {currentView === "email" && (
-      <Form onSubmit={handleForgotPasswordSubmit}>
-        <Form.Group className="mb-3" controlId="formForgotEmail">
-          <Form.Label>Correo electrónico</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Ingresa tu correo"
-            value={forgotEmail}
-            onChange={(e) => setForgotEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
-        {forgotMessage}
-        <button className="olvidar" type="submit">
-          Enviar
-        </button>
-      </Form>
-    )}
+        <Modal.Header closeButton>
+          <Modal.Title>Recuperar Contraseña</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {currentView === "email" && (
+            <Form onSubmit={handleForgotPasswordSubmit}>
+              <Form.Group className="mb-3" controlId="formForgotEmail">
+                <Form.Label>Correo electrónico</Form.Label>
+                <Form.Control
+                  type="email"
+                  placeholder="Ingresa tu correo"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required
+                />
+              </Form.Group>
+              {forgotMessage}
+              <button className="olvidar" type="submit">
+                Enviar
+              </button>
+            </Form>
+          )}
 
-    {currentView === "codigo" && (
-      <div>
-        <form className="row g-3">
-          <div className="col-auto">
-            <label htmlFor="inputPassword6" className="col-form-label">
-              Ingresar Código enviado
-            </label>
-          </div>
-          <div className="col-auto">
-            <input
-              type="number"
-              className="form-control"
-              id="inputPassword2"
-              placeholder="Código"
-              value={codigoV}
-              onChange={(e) => setCodigoV(e.target.value)}
-            />
-          </div>  
-          {forgotMessage}
-          <button
-            type="button"
-            className="olvidar"
-            onClick={validarCodigo}>
-            Verificar identidad
-          </button>
-        </form>
-      </div>
-    )}
+          {currentView === "codigo" && (
+            <div>
+              <form className="row g-3">
+                <div className="col-auto">
+                  <label htmlFor="inputPassword6" className="col-form-label">
+                    Ingresar Código enviado
+                  </label>
+                </div>
+                <div className="col-auto">
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="inputPassword2"
+                    placeholder="Código"
+                    value={codigoV}
+                    onChange={(e) => setCodigoV(e.target.value)}
+                  />
+                </div>
+                {forgotMessage}
+                <button
+                  type="button"
+                  className="olvidar"
+                  onClick={validarCodigo}>
+                  Verificar identidad
+                </button>
+              </form>
+            </div>
+          )}
 
-    {currentView === "password" && (
-      <div className="mensajeCorreo">
-        <p>Ingresa Nueva Contraseña</p>
-        <div className="input-group input-group-sm mb-3">
-          <span className="input-group-text" id="inputGroup-sizing-sm">
-            Contraseña
-          </span>
-          <input
-            type="password"
-            className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div className="input-group input-group-sm mb-3">
-          <span className="input-group-text" id="inputGroup-sizing-sm">
-            Confirmar Contraseña
-          </span>
-          <input
-            type="password"
-            className="form-control"
-            value={Confirmar_password}
-            onChange={(e) => setConfirmar_password(e.target.value)}
-          />
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <button type="button" className="olvidar" onClick={restablecer} >
-            Aceptar
-          </button>
-        </div>
-      </div>
-    )}
-  </Modal.Body>
-</Modal>
+          {currentView === "password" && (
+            <div className="mensajeCorreo">
+              <p>Ingresa Nueva Contraseña</p>
+              <div className="input-group input-group-sm mb-3">
+                <span className="input-group-text" id="inputGroup-sizing-sm">
+                  Contraseña
+                </span>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="input-group input-group-sm mb-3">
+                <span className="input-group-text" id="inputGroup-sizing-sm">
+                  Confirmar Contraseña
+                </span>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={Confirmar_password}
+                  onChange={(e) => setConfirmar_password(e.target.value)}
+                />
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <button type="button" className="olvidar" onClick={restablecer} >
+                  Aceptar
+                </button>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+      </Modal>
 
       <Outlet />
     </div>

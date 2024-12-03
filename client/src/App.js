@@ -13,32 +13,50 @@ import IndexCliente from './complements/IndexCliente';
 import IndexEmpleado from './complements/IndexEmpleado';
 import Login from './complements/Login';
 import SignIn from './complements/SignIn';
-
-
+import ProtectedRoute from './complements/RutaProtegida';
 
 function App() {
   return (
-
     <div className="App">
       <Routes>
         <Route path="/" element={<Index />} />
-        <Route path='/SignIn' element={<SignIn />}></Route>
-        <Route path='/IndexCliente' element={<IndexCliente />}></Route>
-        <Route path='/IndexEmpleado' element={<IndexEmpleado />}></Route>
-        <Route path='/CrudCita' element={<CrudCita />}></Route>
-        <Route path='/AdministrarHorarios' element={<AdministrarHorarios/>}></Route>
-        <Route path='/EmpleadoAdCitas' element={<EmpleadoAdCitas/>}></Route>
-        <Route path='/ClienteAdCitas' element={<ClienteAdCitas/>}></Route>
-        <Route path='/AgendarCita' element={<AgendarCita/>}></Route>
-        <Route path='/CrudCita' element={<CrudCita/>}></Route>
-        <Route path='/Login' element={<Login />}></Route>
-        <Route path='/CrudEmpleados' element={<CrudEmpleados />}></Route>
-        <Route path='/IndexAdmin' element={<IndexAdmin />}></Route>
-        <Route path='/CrudClientes' element={<CrudClientes />}></Route>
+        <Route path="/SignIn" element={<SignIn />} />
+        <Route 
+          path="/IndexCliente" 
+          element={
+            <ProtectedRoute requiredRole={1}>
+              <IndexCliente />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/IndexEmpleado" 
+          element={
+            <ProtectedRoute requiredRole={2}>
+              <IndexEmpleado />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/IndexAdmin" 
+          element={
+            <ProtectedRoute requiredRole={3}>
+              <IndexAdmin />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/CrudCita" element={<CrudCita />} />
+        <Route path="/AdministrarHorarios" element={<AdministrarHorarios />} />
+        <Route path="/EmpleadoAdCitas" element={<EmpleadoAdCitas />} />
+        <Route path="/ClienteAdCitas" element={<ClienteAdCitas />} />
+        <Route path="/AgendarCita" element={<AgendarCita />} />
+        <Route path="/CrudEmpleados" element={<CrudEmpleados />} />
+        <Route path="/CrudClientes" element={<CrudClientes />} />
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </div>
-
   );
 }
 
 export default App;
+
