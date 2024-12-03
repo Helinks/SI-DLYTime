@@ -25,7 +25,7 @@ function IndexCliente() {
         </Link>
       </nav>
 
-      <div class="welcomeCliente"><h1>Bienvenido <i><b>mario</b></i></h1></div>
+      <div class="welcomeCliente"><h1>Bienvenido <i><b></b></i></h1></div>
 
       <div class="barCliente">
         <div class="bg-danger p-4">
