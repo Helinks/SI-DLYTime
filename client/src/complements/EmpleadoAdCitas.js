@@ -1,28 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './Css/StyleAdminCitas.css'
 import { Link } from "react-router-dom";
+import Axios from 'axios';
 
 function EmpleadoAdCitas() {
-  const citas = [
-    {
-      fechaHora: '2024-09-30 10:00 AM',
-      noDocumento: '123456789',
-      paciente: 'Juan Pérez',
-      tipoConsulta: 'Consulta General',
-    },
-    {
-      fechaHora: '2024-09-30 11:00 AM',
-      noDocumento: '987654321',
-      paciente: 'María Gómez',
-      tipoConsulta: 'Control Médico',
-    },
-    {
-      fechaHora: '2024-09-30 01:00 PM',
-      noDocumento: '456789123',
-      paciente: 'Pedro López',
-      tipoConsulta: 'Consulta Especialista',
-    },
-  ];
+
+  const [citas,setcrudCitas]=useState([]);
+  const [mensaje,setMensaje]=useState([]);
+  const [citaSeleccionada,setCitaSeleccionada]=useState([]);
+  const [fecha,setFecha] = useState();
+  
+  const getCita = () => {
+
+    Axios.get("http://localhost:3001/crudCitas/crudCita").then((cita) => {
+      setcrudCitas(cita.data);
+      
+    })
+  }
+
+  const changeEstado=(id)=>{
+    
+    Axios.patch("http://localhost:3001/crudCitas/updateCita",{
+
+      estadoCita:3,
+      idCita:id
+
+      
+    }).then(() => {
+      setMensaje("Cita cancelada");
+      getCita();
+    });
+
+  }
+
+  useEffect(()=>{
+    getCita();
+  },[])
 
   return (
     <div className='Body'>
@@ -63,18 +76,21 @@ function EmpleadoAdCitas() {
             </tr>
           </thead>
           <tbody>
-            {citas.map((cita, index) => (
-              <tr key={index}>
-                <td>{cita.fechaHora}</td>
-                <td>{cita.noDocumento}</td>
-                <td>{cita.paciente}</td>
+            {citas.map((cita, index) => {
+              return<tr key={index}>
+                <th scope='row'>{cita.fechaHora}</th>
+                <td>{cita.nombreCliente}</td>
+                <td>{cita.nombreEmpleado}</td>
                 <td>{cita.tipoConsulta}</td>
-                <td>
+                <td><div className='actions'>
                   <button type="button" className="btn1" data-bs-toggle="modal" data-bs-target="#exampleModal">Modificar</button>
-                  <button type="button" className="btn2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Eliminar</button>
+                  {cita.estadoCita==="Cancelada" ?
+                (<p className='txt1'><i> Cancelada </i></p>): 
+                (<button type="button" className="btn2" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onClick={() => setCitaSeleccionada(cita)}>Cancelar</button>)}
+                </div>
                 </td>
               </tr>
-            ))}
+            })}
           </tbody>
         </table>
       </div>
@@ -91,11 +107,11 @@ function EmpleadoAdCitas() {
                 <div className="mb-3">
                   <label htmlFor="fechaHora" className="form-label">Fecha/Hora</label>
                   <input
-                    type="datetime-local"
+                    type="date"
                     className="form-control"
-                    id="fechaHora"
-                    name="fechaHora"
-                    value="2024-09-30T10:00"
+                    onChange={(event)=>{
+                      setFecha(event.target.value)
+                    }}
                   />
                 </div>
                 <div className="mb-3">
@@ -127,11 +143,11 @@ function EmpleadoAdCitas() {
               <h5 className="modal-title" id="staticBackdropLabel">Eliminar</h5>
             </div>
             <div className="modal-body">
-              ¿Está seguro de realizar esta Cita?
+              ¿Está seguro que desea cancelar esta cita?
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn2" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" className="btn1">Eliminar</button>
+              <button type="button" className="btn2" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => changeEstado(citaSeleccionada.idCita)}>Cancelar</button>
             </div>
           </div>
         </div>

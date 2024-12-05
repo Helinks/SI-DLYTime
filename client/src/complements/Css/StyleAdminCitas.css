@@ -57,6 +57,19 @@
     color: white;
     transition-duration: 0.1s; 
 }
+.actions{
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.actions button{
+  margin: 5px;
+}
+.actions p{
+  margin: 5px;
+}
+
+
 .BackButton{
     color: #f2f2f2;
 }

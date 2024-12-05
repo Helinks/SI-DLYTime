@@ -235,7 +235,7 @@ function CrudCita  () {
         setDocumentoOftalmologo(event.target.value)
       }
       }
-      type='number'>
+      type='number' className="form-control">
         {empleados.map((empleado, index) => (
           <option value={empleado.numeroDocumento} key={index}>
             {empleado.nombre}
@@ -252,7 +252,7 @@ function CrudCita  () {
         setTipoConsulta(event.target.value)
       }
       }
-      type='number'>
+      type='number' className="form-control">
         {consulta.map((consultas, index) => (
           <option value={consultas.idtipoConsulta} key={index}>
             {consultas.nombre}
@@ -285,11 +285,15 @@ function CrudCita  () {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <label >Fecha: <input type='date'
+        <div>
+      <div className="mb-3">
+        <label htmlFor="fechaHora" className="form-label">Fecha: <input type='date'
+        className="form-control"
         onChange={(event)=>{
           setFecha(event.target.value)
         }
-        } ></input></label><br/>
+        } ></input></label>
+        </div>
         {
           validarFechas(fecha)? (
             listaHorario(horarios)
@@ -297,12 +301,13 @@ function CrudCita  () {
             :
             (<p>No hay citas diponibles</p>)
         }
-        <label>Documento cliente: <input
-    onChange={(event) => setDocumentoCliente(event.target.value)}
-    type="number"
-    value={NumeroDocumentoCliente}
-  />
-</label>
+        <div className="mb-3">
+          <label htmlFor="fechaHora" className="form-label">Documento cliente: <input
+          onChange={(event) => setDocumentoCliente(event.target.value)}
+          type="number" className="form-control"
+           value={NumeroDocumentoCliente}/>
+        </label>
+        </div>
 <button
   className=""
   onClick={() => getCliente(NumeroDocumentoCliente)}
@@ -315,9 +320,9 @@ function CrudCita  () {
   <h6>{val.nombre}</h6>);
 })}</div>
 
-        <label>Documento oftalmologo: {listaEmpleados(empleados)}</label>
-        <label>Tipo de consulta: {listaTipoConsultas(consultas)}
-        </label><br/>
+        <label>Documento oftalmologo: <div className="mb-3">{listaEmpleados(empleados)}</div></label><br/>
+        <label>Tipo de consulta: <div className="mb-3">{listaTipoConsultas(consultas)}</div></label>
+        </div>
       </div>
       <div class="modal-footer">
       <p className="text-danger">{mensaje}</p>
