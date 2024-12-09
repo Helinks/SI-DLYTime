@@ -69,6 +69,32 @@
   margin: 5px;
 }
 
+.seleccionarHorario{
+    
+  background-color: #dc3545;
+  border: 1px solid white;
+  color: white;
+  padding: 6px;
+  border-radius: 5px;
+  margin: 5px;
+}
+
+.seleccionarHorario.activo{
+    
+  background-color: white;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 6px;
+  border-radius: 5px;
+  margin: 5px;
+}
+.seleccionarHorario:hover{
+  background-color: white;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  transition-duration: 0.1s;
+}
+
 
 .BackButton{
     color: #f2f2f2;
