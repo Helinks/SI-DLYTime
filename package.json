@@ -8,7 +8,7 @@
     "start": "concurrently \"npm run start-server\" \"npm run start-client\"",
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install",
-    "install-todo": "concurrently\"npm run install-client\" \"npm run install-server\""
+    "install-todo":  "concurrently \"npm run install-server\" \"npm run install-client\""
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
