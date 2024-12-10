@@ -41,8 +41,6 @@ router.post("/registro", async (req, res) => {
                     return res.json({ exists: true, message: "El número de documento o correo ya existe." });
                 }
 
-                console.log(result.length);
-
                 db.query(
                     "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, clave, estadoPersona) VALUES (?,?,?,?,?,?,?,?,?)",
                     [
