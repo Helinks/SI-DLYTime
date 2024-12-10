@@ -66,7 +66,6 @@ function crudCita() {
       return;
     }
 
-    console.log("lllllll");
 
     Axios.post("http://localhost:3001/crudCitas/addCita", {
       idHorario: idHorario,

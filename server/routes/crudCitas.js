@@ -36,6 +36,40 @@ router.get("/crudCita", (req, res) => {
     )
 });
 
+router.get("/crudCitaCliente", (req, res) => {
+    const id = req.query.id
+
+    const query = `SELECT
+    detalleCita.idCita,
+    horario.fecha,
+    horario.hora,
+    CONCAT(horario.fecha,' ',horario.hora) AS fechaHora,
+    CONCAT(p1.nombres,' ', p1.apellidos) AS nombreCliente,
+    CONCAT(p2.nombres,' ', p2.apellidos) AS nombreEmpleado,
+    tipoconsulta.nombre AS tipoConsulta,
+    detalleCita.direccion,
+    estadosCita.nombre AS estadoCita
+    FROM cita
+    INNER JOIN detallecita ON detallecita.idCita = cita.idCita
+    INNER jOIN horario ON horario.idHorarios = detallecita.idHorarios
+    INNER JOIN persona p1 ON cita.NumeroDocumentoCliente = p1.numeroDocumento
+    INNER JOIN persona p2 ON cita.NumeroDocumentoOftalmologo = p2.numeroDocumento 
+    INNER JOIN tipoconsulta ON tipoconsulta.idtipoConsulta = detallecita.idTipoConsulta
+    INNER JOIN estadosCita ON estadosCita.idEstadocita = detallecita.idEstadoCita
+    WHERE p1.numeroDocumento = ?
+    ORDER BY cita.idCita DESC ;`;
+    db.query(query,[id], (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(result);
+        console.log(result);
+
+    }
+
+    )
+});
+
 router.post("/addCita", async (req, res) => {
     const cliente = req.body.NumeroDocumentoCliente;
     const oftalmologo = req.body.NumeroDocumentoOftalmologo;
