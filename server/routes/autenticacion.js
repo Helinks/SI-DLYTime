@@ -8,45 +8,72 @@ const SECRET_KEY = "joan123";
 
 /*Función para registrar los Usuarios */
 router.post("/registro", async (req, res) => {
-    const numeroDocumento = req.body.numeroDocumento;
-    const idRol = req.body.idRol;
-    const idTipoIdentificacion = req.body.idTipoIdentificacion;
-    const Nombres = req.body.nombre;
-    const Apellidos = req.body.apellido;
-    const idGenero = req.body.idGenero;
-    const correo = req.body.correo;
-    const clave = req.body.clave;
+    const {
+        numeroDocumento,
+        idRol,
+        idTipoIdentificacion,
+        nombre: Nombres,
+        apellido: Apellidos,
+        idGenero,
+        correo,
+        clave
+    } = req.body;
     const estado = false;
 
-    /*Encriptación de contraseña (método bcryptjs)*/
     try {
+        // Encriptar la contraseña
         const hashedPassword = await bcryptjs.hash(clave, 10);
-      /* Guardar el usuario en la base de datos */
+
+        // Verificar si el número de documento o correo ya existen
         db.query(
-            "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, clave, estadoPersona) VALUES (?,?,?,?,?,?,?,?,?)",
-            [
-                numeroDocumento,
-                idRol,
-                idTipoIdentificacion,
-                Nombres,
-                Apellidos,
-                idGenero,
-                correo,
-                hashedPassword,
-                estado,
-            ], 
+            "SELECT numeroDocumento, correo FROM persona WHERE numeroDocumento = ? OR correo = ?",
+            [numeroDocumento, correo],
             (err, result) => {
                 if (err) {
-                    return res.status(500).send("Error al registrar el empleado");
-                } else {
-                    res.send("Empleado Registrado con éxito!!");
+                    console.error("Error en la consulta de verificación:", err);
+                    return res.status(500).json({ message: "Error interno del servidor." });
                 }
+
+                console.log(result.length);
+
+                if (result.length > 0) {
+                    // Verifica si hay registros
+                    return res.json({ exists: true, message: "El número de documento o correo ya existe." });
+                }
+
+                console.log(result.length);
+
+                db.query(
+                    "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, clave, estadoPersona) VALUES (?,?,?,?,?,?,?,?,?)",
+                    [
+                        numeroDocumento,
+                        idRol,
+                        idTipoIdentificacion,
+                        Nombres,
+                        Apellidos,
+                        idGenero,
+                        correo,
+                        hashedPassword,
+                        estado,
+                    ],
+                    (err, result) => {
+                        if (err) {
+                            console.error("Error al registrar el empleado:", err);
+                            return res.status(500).json({ message: "Error al registrar el empleado." });
+                        }
+
+                        // Enviar respuesta de éxito
+                        res.status(201).json({ message: "Empleado registrado con éxito." });
+                    }
+                );
             }
         );
     } catch (error) {
-        res.status(500).send("Error al encriptar la contraseña");
+        console.error("Error al encriptar la contraseña:", error);
+        res.status(500).json({ message: "Error al procesar la solicitud." });
     }
 });
+
 
 /* Validar Ingreso de Iniciar sesión y Crea una Sesión */
 router.post("/login", async (req, res) => {
