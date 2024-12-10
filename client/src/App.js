@@ -14,6 +14,7 @@ import IndexEmpleado from './complements/IndexEmpleado';
 import Login from './complements/Login';
 import ProtectedRoute from './complements/RutaProtegida';
 import SignIn from './complements/SignIn';
+import Perfil from './complements/Perfil'
 
 function App() {
   return (
@@ -88,6 +89,8 @@ function App() {
             </ProtectedRoute>
           }  />
         <Route path="/Login" element={<Login />} />
+
+        <Route path="/Perfil" element={<Perfil />} />
       </Routes>
     </div>
   );
