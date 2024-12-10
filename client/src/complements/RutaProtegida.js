@@ -10,7 +10,7 @@ const RutaProtegida = ({ children, requiredRole }) => {
   }
 
   if (requiredRole && !requiredRole.includes(Number(rol))) {
-    return <Navigate to="/manoo" />;
+    return <Navigate to="/login" />;
   }
 
   return children;
