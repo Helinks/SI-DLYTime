@@ -5,6 +5,9 @@ import Axios from "axios";
 
 function AgendarCita() {
     const today = new Date();
+    const id = localStorage.getItem("userId");
+
+    const [mensaje, setMensaje] = useState("");
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
     const [horarios, setHorarios] = useState([]);
@@ -12,21 +15,83 @@ function AgendarCita() {
     const [hora, setHora] = useState();
     const [idHorario, setIdHorario] = useState();
     const [fecha, setFecha] = useState();
+    const [consultas, setConsultas] = useState([]);
+    const [tipoConsulta, setTipoConsulta] = useState();
+    const [NumeroDocumentoCliente, setDocumentoCliente] = useState(0);
+    const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
 
-    /* SOLICITA LOS HORARIOS DISPONIBLES EN LA BASE DE DATOS */
-  const getHorario = (fecha) => {
-    if (!fecha) return;
+    /* Solicita agregar una nueva cita */
+  const addCita = () => {
+    if (!idHorario) {
+      setMensaje("Por favor seleccione fecha y hora");
+      return;
+    }
 
-    Axios.get("http://localhost:3001/crudCitas/getHorarios", {
-      params: { fecha: fecha },
+    if (!NumeroDocumentoCliente) {
+      setMensaje("Número de documento de cliente inválido");
+      return;
+    }
+
+    if (!NumeroDocumentoOftalmologo) {
+      setMensaje("Debe seleccionar un oftalmólogo");
+      return;
+    }
+    if (!tipoConsulta) {
+      setMensaje("Debe seleccionar un tipo de consulta");
+      return;
+    }
+
+
+
+    Axios.post("http://localhost:3001/crudCitas/addCita", {
+      idHorario: idHorario,
+      fecha: fecha,
+      hora: hora,
+      NumeroDocumentoCliente: NumeroDocumentoCliente,
+      NumeroDocumentoOftalmologo: NumeroDocumentoOftalmologo,
+      idTipoConsulta: tipoConsulta,
     })
-      .then((horario) => {
-        setHorarios(horario.data || []);
+
+      .then((response) => {
+        setFecha("");
+        setHora("");
+        setTipoConsulta("");
+        setSelectHorario(false);
+
+        // Mostrar mensaje de éxito
+        setMensaje("Cita agregada correctamente");
       })
       .catch((error) => {
-        console.error("Error obteniendo horarios:", error);
+        console.error("Error al agregar cita:", error);
       });
   };
+
+  
+
+    /* SOLICITA LOS HORARIOS DISPONIBLES EN LA BASE DE DATOS */
+    const getHorario = (fecha) => {
+        if (!fecha) return;
+
+        Axios.get("http://localhost:3001/crudCitas/getHorarios", {
+            params: { fecha: fecha },
+        })
+            .then((horario) => {
+                setHorarios(horario.data || []);
+            })
+            .catch((error) => {
+                console.error("Error obteniendo horarios:", error);
+            });
+    };
+    const getConsultas = () => {
+        Axios.get("http://localhost:3001/crudCitas/getTipoConsulta", {})
+            .then((response) => {
+                setConsultas(response.data || []);
+            })
+            .catch((error) => {
+                console.error("Error obteniendo tipos de consulta:", error);
+            });
+    };
+
 
     const months = [
         "Enero", "Febrero", "Marzo", "Abril",
@@ -128,47 +193,68 @@ function AgendarCita() {
     };
 
     /* MUESTRA LOS HORARIOS COMO BOTONES */
-  function listaHorario(horarios) {
-    return (
-      <div className="horarios-container">
-        {horarios.map((horario, index) => (
-          <button
-            className={`seleccionarHorario ${selectHorario && horario.hora === hora ? "activo" : ""
-              }`}
-            key={index}
-            onClick={() => {
-              if (!selectHorario) {
-                setHora(horario.hora);
-                setSelectHorario(true);
-                setIdHorario(horario.id);
-              } else {
-                setHora("");
-                setSelectHorario(false);
-                setIdHorario([]);
-              }
-            }}
-          >
-            {horario.hora}
-          </button>
-        ))}
-      </div>
-    );
-  }
+    function listaHorario(horarios) {
+        return (
+            <div className="horariosCalendar-container">
+                <h4>Horarios diponibles</h4>
+                {horarios.map((horario, index) => (
+                    <button
+                        className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
+                            }`}
+                        key={index}
+                        onClick={() => {
+                            if (!selectHorario) {
+                                setHora(horario.hora);
+                                setSelectHorario(true);
+                                setIdHorario(horario.id);
+                            } else {
+                                setHora("");
+                                setSelectHorario(false);
+                                setIdHorario([]);
+                            }
+                        }}
+                    >
+                        {horario.hora}
+                    </button>
+                ))}
+            </div>
+        );
+    }
 
-  function validarFechas(fecha) {
-    if (!fecha) return false;
-    
-    const fechaActual = new Date();
-    const fechaSeleccionada = new Date(fecha);
-    const fechaLimite = new Date();
-    fechaLimite.setDate(fechaActual.getDate() + 21);
+    function validarFechas(fecha) {
+        if (!fecha) return false;
 
-    return fechaSeleccionada > fechaActual && fechaSeleccionada <= fechaLimite;
-  }
+        const fechaActual = new Date();
+        const fechaSeleccionada = new Date(fecha);
+        const fechaLimite = new Date();
+        fechaLimite.setDate(fechaActual.getDate() + 21);
 
-  useEffect(() => {
-    if (fecha) getHorario(fecha);
-  }, [fecha]);
+        return fechaSeleccionada > fechaActual && fechaSeleccionada <= fechaLimite;
+    }
+    function listaTipoConsultas(consulta) {
+        return (
+            <select
+                onChange={(event) => {
+                    setTipoConsulta(event.target.value);
+                }}
+                type="select"
+                className="form-control"
+            >
+                {consulta.map((consultas, index) => (
+                    <option value={consultas.idtipoConsulta} key={index}>
+                        {consultas.nombre}
+                    </option>
+                ))}
+            </select>
+        );
+    }
+
+    useEffect(() => {
+        setDocumentoCliente(id)
+        setDocumentoOftalmologo(1031807020)
+        getConsultas();
+        if (fecha) getHorario(fecha);
+    }, [fecha]);
 
     return (
         <div>
@@ -187,7 +273,7 @@ function AgendarCita() {
                 </nav>
             </div>
 
-            <div className="container">
+            <div className="containerCalendario">
                 <div className="calendario">
                     <div className="header">
                         <div className="mes">
@@ -230,21 +316,42 @@ function AgendarCita() {
                                 className={`dia ${dayObj.type} 
                                     ${dayObj.isSelected ? 'selected' : ''} 
                                     ${dayObj.type === 'today' ? 'today' : ''}`}
-                                onClick={() => {handleDayClick(dayObj.day, dayObj.type);}}
+                                onClick={() => { handleDayClick(dayObj.day, dayObj.type); }}
                             >
                                 {dayObj.day}
                             </div>
                         ))}
                     </div>
-                    
+
                 </div>
 
+
+            </div>
+
+
+            <div className='horariosCalendario'>
                 {validarFechas(fecha) ? (
-                  listaHorario(horarios)
+                    listaHorario(horarios)
                 ) : (
-                  <p>No hay citas diponibles</p>
+                    <p>No hay citas diponibles</p>
                 )}
-            </div> 
+            </div>
+
+            <div className='tipoConsultaCalendario'>
+                <h4>Tipo de consulta</h4>
+                <div>
+                    {listaTipoConsultas(consultas)}
+                </div>
+            </div>
+
+            <button
+                  className=""
+                  onClick={()=> addCita()}
+                  disabled={!idHorario && !tipoConsulta}
+                >
+                  Agendar
+                </button>
+                {mensaje}
         </div>
     );
 }

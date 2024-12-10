@@ -456,8 +456,8 @@ function ClienteAdCitas() {
           <thead>
             <tr className="tr1">
               <th scope="col">Fecha/Hora</th>
-              <th scope="col">NoDocumento</th>
               <th scope="col">Paciente</th>
+              <th scope="col">Oftalmologo</th>
               <th scope="col">TipoConsulta</th>
               <th scope="col">Acciones</th>
             </tr>
