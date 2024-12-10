@@ -196,6 +196,11 @@ justify-content: center;
     background-color: #fff;
 }
 
+.dia.selected {
+    color: #fff;
+    background-color: var(--primary-color);
+}
+
 .dia:not(.prev):not(.sig):hover{
     background-color: var(--primary-color);
     color: #fff;
