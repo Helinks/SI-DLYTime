@@ -13,6 +13,7 @@ import IndexCliente from './complements/IndexCliente';
 import IndexEmpleado from './complements/IndexEmpleado';
 import Login from './complements/Login';
 import SignIn from './complements/SignIn';
+import CrudClientes_Empleado from './complements/CrudClientes_Empleado';
 
 
 
@@ -34,6 +35,7 @@ function App() {
         <Route path='/Login' element={<Login />}></Route>
         <Route path='/CrudEmpleados' element={<CrudEmpleados />}></Route>
         <Route path='/IndexAdmin' element={<IndexAdmin />}></Route>
+        <Route path='/CrudClientes_Empleado' element={<CrudClientes_Empleado />}></Route>
         <Route path='/CrudClientes' element={<CrudClientes />}></Route>
       </Routes>
     </div>

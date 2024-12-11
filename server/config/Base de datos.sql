@@ -42,6 +42,17 @@ CREATE TABLE persona (
     
 );
 
+CREATE TABLE clientes_historial (
+  idHistorial INT AUTO_INCREMENT PRIMARY KEY,
+  numeroDocumento INT,  -- Asegúrate de que sea INT si en persona es INT
+  descripcion TEXT,
+  archivoPDF VARCHAR(255),
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (numeroDocumento) REFERENCES persona(numeroDocumento) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+
+
 CREATE TABLE tipoProblema (
     idTipoProblema INT NOT NULL,
     descripcion VARCHAR(45) NOT NULL,
@@ -64,11 +75,24 @@ CREATE TABLE estadosCita (
     PRIMARY KEY (idEstadocita)
 );
 
+CREATE TABLE estadoHorario(
+idEstadoHorario INT AUTO_INCREMENT NOT  NULL,
+estado VARCHAR(30),
+
+PRIMARY KEY (idEstadoHorario)
+);
+
+INSERT INTO estadoHorario (estado) Values 
+('Disponible'),
+('No disponible');
+
 CREATE TABLE Horario (
-    idHorarios INT NOT NULL,
+    idHorarios INT NOT NULL AUTO_INCREMENT,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    PRIMARY KEY (idHorarios)
+    estadoHorario INT NOT NULL,
+    PRIMARY KEY (idHorarios),
+    FOREIGN KEY (estadoHorario) REFERENCES estadoHorario(idEstadoHorario)
 );
 
 CREATE TABLE tipoConsulta (
@@ -78,8 +102,8 @@ CREATE TABLE tipoConsulta (
 );
 
 CREATE TABLE diagnostico (
-    idDiagnostico INT NOT NULL,
-    descripcion VARCHAR(300) NOT NULL,
+    idDiagnostico INT NOT NULL AUTO_INCREMENT,
+    descripcion VARCHAR(300),
     PRIMARY KEY (idDiagnostico)
 );
 
@@ -157,9 +181,9 @@ INSERT INTO estadosCita (idEstadocita, nombre) VALUES
 (3, 'Cancelada');
 
 -- Insertar datos en Horario
-INSERT INTO Horario (idHorarios, fecha, hora) VALUES
-(1, '2024-10-25', '09:00:00'),
-(2, '2024-10-25', '10:00:00');
+INSERT INTO Horario (idHorarios, fecha, hora,estadoHorario) VALUES
+(1, '2024-10-25', '09:00:00',1),
+(2, '2024-10-25', '10:00:00',1);
 
 -- Insertar datos en tipoConsulta
 INSERT INTO tipoConsulta (idtipoConsulta, nombre) VALUES
@@ -185,3 +209,4 @@ INSERT INTO cita (idCita, NumeroDocumentoCliente,NumeroDocumentoOftalmologo) VAL
 INSERT INTO detalleCita (idCita, idDiagnostico, idTipoConsulta, idHorarios, idEstadoCita, direccion) VALUES
 (1, 1, 1, 1, 1, 'Calle 1'),
 (2, 2, 2, 2, 2, 'Calle 2');
+
