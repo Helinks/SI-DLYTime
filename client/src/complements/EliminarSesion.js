@@ -7,7 +7,7 @@ const LogoutButton = () => {
         // Eliminar token y rol del almacenamiento local
         localStorage.clear();
 
-        navigate("/login");
+        navigate("/");
     };
 
     return (

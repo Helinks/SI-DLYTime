@@ -54,14 +54,6 @@ export function SignIn() {
           setValidationMessage("El correo es válido.");
           setError(false);
 
-          /* Validar datos con la base de datos */
-          /* Axios.get("http://localhost:3001/autenticacion/consulta", {
-            correo: correo,
-            numeroDocumento: ndocumento,
-          }).then((response) => {
-            alert(response);
-          }); */
-
           /* Registro */
           Axios.post("http://localhost:3001/autenticacion/registro", {
             numeroDocumento: ndocumento,
@@ -79,7 +71,7 @@ export function SignIn() {
               alert(response.data.message)
             }
             else {
-              alert("Empleado Registrado");
+              alert("Usuario Registrado");
               navigate("/Login"); // Redirige a Login después del registro
             }
 

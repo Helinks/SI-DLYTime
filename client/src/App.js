@@ -32,7 +32,7 @@ function App() {
         <Route 
           path="/IndexEmpleado" 
           element={
-            <ProtectedRoute requiredRole={[2,3]}>
+            <ProtectedRoute requiredRole={[2]}>
               <IndexEmpleado />
             </ProtectedRoute>
           } 
@@ -47,14 +47,14 @@ function App() {
         />
         <Route path="/CrudCita" 
         element={
-            <ProtectedRoute requiredRole={[2]}>
+            <ProtectedRoute requiredRole={[2,3]}>
               <CrudCita />
             </ProtectedRoute>
           }  />
 
         <Route path="/AdministrarHorarios"   
         element={
-            <ProtectedRoute requiredRole={[2]}>
+            <ProtectedRoute requiredRole={[2,3]}>
               <AdministrarHorarios />
             </ProtectedRoute>
           }  />
@@ -83,7 +83,7 @@ function App() {
             </ProtectedRoute>
           }  />
         <Route path="/CrudClientes"  element={
-            <ProtectedRoute requiredRole={[2]}>
+            <ProtectedRoute requiredRole={[2,3]}>
               <CrudClientes />
             </ProtectedRoute>
           }  />

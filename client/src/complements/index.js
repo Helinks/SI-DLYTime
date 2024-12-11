@@ -1,8 +1,32 @@
-import React from 'react';
 import './Css/indexPagina.css';
 import { Link } from "react-router-dom";
+import Axios from 'axios';
+import React, { useState } from 'react';
 
 function AdminClientes() {
+  const [message, setMessage] = useState('');
+
+  const handleSendEmail = async () => {
+
+    alert(message)
+    try {
+      const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
+        to: 'dlytime987@gmail.com',
+        subject: 'Soporte desde el sistema',
+        message,
+      }
+      );
+      alert(response.data.message); // Notificar al usuario
+      setMessage(''); // Limpiar el mensaje
+
+    } catch (error) {
+      console.error(error);
+      alert('Hubo un error al enviar el mensaje.');
+    }
+  };
+
+
+
   return (
     <div className='pagina'>
       <nav class="navbar navbar-dark bg-danger">
@@ -14,11 +38,39 @@ function AdminClientes() {
             <div className="d-flex">
               <Link to="/Login" className="nav-link" id="links">Iniciar sesión</Link>
               <Link to="/SignIn" className="nav-link" id="links">Registrarse</Link>
-              <Link to="/Soporte" className="nav-link" id="links">Soporte</Link>
+              <p className="nav-link" id="links" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Soporte</p>
             </div>
           </div>
         </div>
       </nav>
+
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Soporte</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Recipiente:</label>
+                  <input type="text" id="disabledTextInput" class="form-control" value='dlytime987@gmail.com' />
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Mensage:</label>
+                  <textarea class="form-control" id="message-text" value={message}
+                  onChange={(e) => setMessage(e.target.value)}></textarea>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar mensaje</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className='body-cuerpo' >
         <div className='horarios'>
