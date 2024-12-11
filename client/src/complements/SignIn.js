@@ -79,7 +79,7 @@ export function SignIn() {
               alert(response.data.message)
             }
             else {
-              alert("Empleado Registrado");
+              alert("Usuario Registrado");
               navigate("/Login"); // Redirige a Login después del registro
             }
 
