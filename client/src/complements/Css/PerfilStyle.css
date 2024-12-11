@@ -9,7 +9,7 @@
     position: absolute;
     width: 47.5%;
     height: 100%;
-    background: #fd5555;
+    background: #dc3545;
     border-radius: 25px;
     color: black;
     display: flex;
@@ -90,7 +90,7 @@
     width: 120px;
     height: 30px;
     color: aliceblue;
-    background-color: #fd5555;
+    background-color: #dc3545;
     border-radius: 25px;
     border: 0;
     font-size: 15px;
@@ -100,7 +100,7 @@
 .botones button:hover{
     width: 120px;
     height: 30px;
-    color: #fd5555;
+    color: #dc3545;
     background-color: #fff;
     border-radius: 25px;
     border: 0;
@@ -108,4 +108,9 @@
     font-size: 15px;
     margin-top: 270px;
     transition: 0.3s;
+}
+
+.editable:hover{
+    color:#dc3545;
+    cursor: pointer;
 }

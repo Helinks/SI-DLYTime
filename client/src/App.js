@@ -41,7 +41,7 @@ function App() {
         <Route 
           path="/IndexAdmin" 
           element={
-            <ProtectedRoute requiredRole={[3]}>
+            <ProtectedRoute requiredRole={[2]}>
               <IndexAdmin />
             </ProtectedRoute>
           } 
@@ -79,7 +79,7 @@ function App() {
             </ProtectedRoute>
           }  />
         <Route path="/CrudEmpleados"  element={
-            <ProtectedRoute requiredRole={[3]}>
+            <ProtectedRoute requiredRole={[2]}>
               <CrudEmpleados />
             </ProtectedRoute>
           }  />
