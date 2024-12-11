@@ -1,9 +1,10 @@
 const express = require("express");
 const bcryptjs = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const db = require("../Config/db");
 
-
+const SECRET_KEY = "joan123";
 
 /*Función para registrar los Usuarios */
 router.post("/registro", async (req, res) => {
@@ -47,11 +48,12 @@ router.post("/registro", async (req, res) => {
     }
 });
 
-/* Validar Ingreso de Iniciar sesión  */
+/* Validar Ingreso de Iniciar sesión y Crea una Sesión */
 router.post("/login", async (req, res) => {
     const correo = req.body.correo_i;
+
     db.query(
-        "SELECT clave FROM persona WHERE correo = ?",
+        "SELECT * FROM persona WHERE correo = ?",
         [correo],
         async (err, result) => {
             if (err) {
@@ -65,21 +67,23 @@ router.post("/login", async (req, res) => {
                     hashedPassword
                 );
                 if (isPasswordValid) {
-                    router.get("/login/rol", (req, res) => {
-                        db.query(
-                            "SELECT idRol FROM persona WHERE correo = ?",
-                            [correo],
-                            (err, result) => {
-                                res.send(result);
-                            }
-                        );
+                    const rol = result[0].idRol;
+                    const id = result[0].numeroDocumento;
+
+                    // Crear el token con rol incluido
+                    const token = jwt.sign({ correo, rol,id }, "joan123", { expiresIn: "1h" });
+
+                    return res.status(200).json({
+                        token,
+                        rol,
+                        id,
+                        message: "Inicio de sesión exitoso",
                     });
-                    res.send(true);
                 } else {
-                    res.status(401).json({ message: "Correo o Contraseña incorrecta" });
+                    return res.status(401).json({ message: "Correo o contraseña incorrecta" });
                 }
             } else {
-                res.status(404).json({ message: "Correo o Contraseña incorrecta" });
+                return res.status(404).json({ message: "Correo o contraseña incorrecta" });
             }
         }
     );

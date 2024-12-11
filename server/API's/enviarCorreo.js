@@ -34,8 +34,8 @@ router.post("/enviarCorreo", async (req, res) => {
 
         const mailOptions = {
             from: "dlytime987@gmail.com",
-            to, /*  Dirección proporcionada por el usuario */
-            subject, /*  Asunto del correo  */
+            to,
+            subject,
             text: `Hola, has solicitado restablecer tu contraseña. Contáctanos si necesitas más ayuda. Este es tu codigo de restablecimiento: ${code}`,
         };
 
@@ -52,6 +52,31 @@ router.post("/enviarCorreo", async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).send("Error al enviar el código.");
+    }
+});
+
+router.post("/enviar-soporte", async (req, res) => {
+    const { to, subject, message } = req.body;
+
+    try {
+        const mailOptions = {
+            from: "dlytime987@gmail.com",
+            to,
+            subject,
+            text: message,
+        };
+
+        // Enviar correo
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Error al enviar el correo:", error);
+                return res.status(500).send("Error enviando el correo");
+            }
+            res.status(200).send({ message: "Correo enviado con éxito." });
+        });
+    } catch (error) {
+        console.error("Error en el servidor:", error);
+        res.status(500).send("Error en el servidor al enviar el correo.");
     }
 });
 

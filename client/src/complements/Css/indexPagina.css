@@ -5,6 +5,11 @@
   color: #ff5757;
 }
 
+#links{
+  margin-left: 20px;
+  margin-right: 100px;
+}
+
 .horarios {
   width: 40%;
   height: 400px;
