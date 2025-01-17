@@ -8,12 +8,14 @@
     "start": "concurrently \"npm run start-server\" \"npm run start-client\"",
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install",
-    "install-todo":  "concurrently \"npm run install-server\" \"npm run install-client\""
+    "install-todo": "concurrently \"npm run install-server\" \"npm run install-client\""
   },
   "devDependencies": {
     "concurrently": "^9.1.0"
   },
   "dependencies": {
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "webpack-dev-server": "^5.2.0"
   }
 }

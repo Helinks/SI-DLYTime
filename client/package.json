@@ -17,7 +17,8 @@
     "react-router-dom": "^6.26.2",
     "react-scripts": "5.0.1",
     "verifier-node": "^1.0.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack-dev-server": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",
