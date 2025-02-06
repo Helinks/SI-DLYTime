@@ -56,14 +56,14 @@ router.post("/enviarCorreo", async (req, res) => {
 });
 
 router.post("/enviar-soporte", async (req, res) => {
-    const { to, subject, message, email } = req.body;
+    const { to, subject, message, email,problem } = req.body;
 
     try {
         const mailOptions = {
             from: "aroca3282@gmail.com",
             to,
             subject,
-            text: `Ha llegado una solicitud de soporte \n\nCorreo de contacto: ${email}\nMensaje: ${message}`,
+            text: `Ha llegado una solicitud de soporte \n\nCorreo de contacto: ${email}\nTipo de problema: ${problem}\nMensaje: ${message}`,
            
         };
 

@@ -32,7 +32,8 @@ function AdminClientes() {
         to: 'aroca3282@gmail.com',
         subject: 'Soporte desde el sistema',
         message,
-        email
+        email,
+        problem
       }
       );
       alert(response.data.message); // Notificar al usuario
