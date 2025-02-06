@@ -3,17 +3,36 @@ import { Link } from "react-router-dom";
 import Axios from 'axios';
 import React, { useState } from 'react';
 
+
+
 function AdminClientes() {
+  const [mNull, setMNull] = useState('');
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [problem, setProblem] = useState('');
+
+  const cleanMessage= async () => {
+    setMNull('');
+  }
 
   const handleSendEmail = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    alert(message)
+    if(!email){
+      setMNull('Por favor ingresa tu correo')
+    }else if(!emailRegex.test(email)){
+      setMNull('Por favor ingresa un correo valido')
+    }else if(!message || !problem){
+      setMNull('Por favor llena todos los campos')
+    }
+    else{
+      setMNull('')
     try {
       const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
-        to: 'dlytime987@gmail.com',
+        to: 'aroca3282@gmail.com',
         subject: 'Soporte desde el sistema',
         message,
+        email
       }
       );
       alert(response.data.message); // Notificar al usuario
@@ -23,7 +42,8 @@ function AdminClientes() {
       console.error(error);
       alert('Hubo un error al enviar el mensaje.');
     }
-  };
+  }}
+  ;
 
 
 
@@ -38,39 +58,54 @@ function AdminClientes() {
             <div className="d-flex">
               <Link to="/Login" className="nav-link" id="links">Iniciar sesión</Link>
               <Link to="/SignIn" className="nav-link" id="links">Registrarse</Link>
-              <p className="nav-link" id="links" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Soporte</p>
+              <p className="nav-link" id="links" data-bs-toggle="modal"  data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">Soporte</p>
             </div>
           </div>
         </div>
       </nav>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Soporte</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form>
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Soporte</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={cleanMessage}></button>
+      </div>
+      <div class="modal-body">
+      <form>
                 <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">Recipiente:</label>
-                  <input type="text" id="disabledTextInput" class="form-control" value='dlytime987@gmail.com' />
+                  <label for="recipient-name" class="col-form-label">Digita un correo al que te podamos contactar:</label>
+                  <input type="email" id="TextInputEmail" class="form-control"
+                  onChange={(e) => setEmail(e.target.value)}/>
                 </div>
                 <div class="mb-3">
-                  <label for="message-text" class="col-form-label">Mensage:</label>
+                  <label for="message-text" class="col-form-label">Tipo de problema:</label>
+                  <select class="form-control" id="message-text" 
+                  onChange={(e) => setProblem(e.target.value)}
+                  >
+                    <option></option>
+                    <option>Problema al iniciar sesión</option>
+                    <option>Problema al agendar una cita</option>
+                    <option>Problema con mis datos</option>
+                    <option>Otro</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Mensaje:</label>
                   <textarea class="form-control" id="message-text" value={message}
                   onChange={(e) => setMessage(e.target.value)}></textarea>
                 </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar mensaje</button>
-            </div>
-          </div>
-        </div>
+                
+                <h5>{mNull}</h5>
+              </form>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={cleanMessage}>Cerrar</button>
+        <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div className='body-cuerpo' >
         <div className='horarios'>

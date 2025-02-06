@@ -12,8 +12,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "dlytime987@gmail.com", /* Correo */
-        pass: "cvqn rxuh gkif quww", /* Contraseña de Aplicacion  */
+        user: "aroca3282@gmail.com", /* Correo */
+        pass: "dzca opsd xrby totn", /* Contraseña de Aplicacion  */
     },
 });
 
@@ -33,7 +33,7 @@ router.post("/enviarCorreo", async (req, res) => {
         );
 
         const mailOptions = {
-            from: "dlytime987@gmail.com",
+            from: "aroca3282@gmail.com",
             to,
             subject,
             text: `Hola, has solicitado restablecer tu contraseña. Contáctanos si necesitas más ayuda. Este es tu codigo de restablecimiento: ${code}`,
@@ -56,14 +56,15 @@ router.post("/enviarCorreo", async (req, res) => {
 });
 
 router.post("/enviar-soporte", async (req, res) => {
-    const { to, subject, message } = req.body;
+    const { to, subject, message, email } = req.body;
 
     try {
         const mailOptions = {
-            from: "dlytime987@gmail.com",
+            from: "aroca3282@gmail.com",
             to,
             subject,
-            text: message,
+            text: `Ha llegado una solicitud de soporte \n\nCorreo de contacto: ${email}\nMensaje: ${message}`,
+           
         };
 
         // Enviar correo
