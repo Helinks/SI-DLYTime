@@ -12,8 +12,8 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: "dlytime987@gmail.com", /* Correo */
-        pass: "cvqn rxuh gkif quww", /* Contraseña de Aplicacion  */
+        user: "aroca3282@gmail.com", /* Correo */
+        pass: "dzca opsd xrby totn", /* Contraseña de Aplicacion  */
     },
 });
 
@@ -33,9 +33,9 @@ router.post("/enviarCorreoPassword", async (req, res) => {
         );
 
         const mailOptions = {
-            from: "dlytime987@gmail.com",
-            to, /*  Dirección proporcionada por el usuario */
-            subject, /*  Asunto del correo  */
+            from: "aroca3282@gmail.com",
+            to,
+            subject,
             text: `Hola, has solicitado restablecer tu contraseña. Contáctanos si necesitas más ayuda. Este es tu codigo de restablecimiento: ${code}`,
         };
 
@@ -55,34 +55,29 @@ router.post("/enviarCorreoPassword", async (req, res) => {
     }
 });
 
-router.post("/enviarCorreoRegistro", (req, res) => {
-    const { to, subject } = req.body;
+router.post("/enviar-soporte", async (req, res) => {
+    const { to, subject, message, email,problem } = req.body;
 
     try {
-        
-        /*  Generar un código de 6 dígitos */
-        const code = Math.floor(100000 + Math.random() * 900000).toString();
-
         const mailOptions = {
-            from: "dlytime987@gmail.com",
-            to, /*  Dirección proporcionada por el usuario */
-            subject, /*  Asunto del correo  */
-            text: `Hola, has solicitado un código de registro de usuario. Contáctanos si necesitas más ayuda. Este es tu codigo de registro: ${code}`,
+            from: "aroca3282@gmail.com",
+            to,
+            subject,
+            text: `Ha llegado una solicitud de soporte \n\nCorreo de contacto: ${email}\nTipo de problema: ${problem}\nMensaje: ${message}`,
+           
         };
 
+        // Enviar correo
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-                console.error(error);
-                console.log(mailOptions);
+                console.error("Error al enviar el correo:", error);
                 return res.status(500).send("Error enviando el correo");
             }
-            res
-                .status(200)
-                .send(code);
+            res.status(200).send({ message: "Correo enviado con éxito." });
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).send("Error al enviar el código.");
+        console.error("Error en el servidor:", error);
+        res.status(500).send("Error en el servidor al enviar el correo.");
     }
 });
 

@@ -19,6 +19,8 @@ const crudClientes = require("./routes/crudClientes"); // Crud CLientes
 app.use("/crudClientes", crudClientes);
 const crudCitas = require("./routes/crudCitas"); // Crud Citas
 app.use("/crudCitas", crudCitas);
+const perfiluser = require("./routes/perfil"); // Perfil usuario
+app.use("/perfil", perfiluser);
 
 
 const PORT = 3001;

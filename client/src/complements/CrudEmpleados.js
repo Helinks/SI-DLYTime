@@ -41,6 +41,7 @@ function CrudEmpleados() {
     setestadoPersona("");
     setPassword("");
     setestadoPersona(true);
+    setError(false)
   }
 
 
@@ -61,6 +62,7 @@ function CrudEmpleados() {
     setcorreo(val.correo);
     settelefono(val.telefono);
     setestadoPersona(val.estadoPersona);
+    setError(false)
   }
 
 
@@ -73,13 +75,15 @@ function CrudEmpleados() {
       return;
     }
     setError(false)
-    // Define el cliente aquí
+    
     const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
 
     client.info(correo, { catch_all: 0 })
       .then(response => {
+
         console.log(response)
         console.log(response.smtp_check)
+
         if (response.smtp_check) {
           setValidationMessage("El correo es válido.");
           setError(false);
@@ -94,9 +98,17 @@ function CrudEmpleados() {
             clave: password,
             telefono: telefono,
             estadoPersona: estadoPersona,
-          }).then(() => {
-            getEmpleados();
-            setValidationMessage("");
+          }).then((response) => {
+            /* Validación de correo y número de documento */
+            if (response.data.exists) {
+              alert(response.data.message)
+            }
+            else {
+              alert("Empleado Registrado");
+              getEmpleados();
+              setValidationMessage("");
+            }
+            
           });
 
         } else {
@@ -113,6 +125,15 @@ function CrudEmpleados() {
 
   /* Modificar Empleados */
   const editarEmpleado = () => {
+
+    if (nombre === "" || apellido === "" || correo === "" || genero === "") {
+      setError(true);
+      return;
+    }
+
+    setError(false)
+
+
     Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idRol: 2,
@@ -151,11 +172,9 @@ function CrudEmpleados() {
 
 
     <div className="botones-acciones">
-    
-     
-   
-        <button type="button" data-bs-toggle="modal" data-bs-target="#F" className="btn btn-outline-success" onClick={datos} >Agregar Usuario</button>
-  
+
+      <button type="button" data-bs-toggle="modal" data-bs-target="#F" className="btn btn-outline-success" onClick={datos} >Agregar Usuario</button>
+
     </div>
 
     <table className="table table-striped" id="TablaEmpleados">
@@ -185,7 +204,7 @@ function CrudEmpleados() {
               <td>{val.telefono}</td>
               <td>{val.estadoPersona}</td>
               <td>
-                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#F"   onClick={() => { MostrarEmpleado(val) }}>
+                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#F" onClick={() => { MostrarEmpleado(val) }}>
                   Modificar
                 </button>
               </td>
@@ -196,7 +215,7 @@ function CrudEmpleados() {
       </tbody>
     </table>
 
-  
+
 
     <div class="modal fade" id="F" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -205,11 +224,19 @@ function CrudEmpleados() {
             <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+
           <div class="modal-body">
-            <div className="input-group input-group-sm mb-3">
+
+            {/* Formulario */}
+            {!Fboton ? <div className="input-group input-group-sm mb-3">
               <span className="input-group-text" id="inputGroup-sizing-sm" >Numero de ID</span>
               <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={ndocumento} onChange={(e) => setnumeroDocumento(e.target.value)} />
-            </div>
+            </div> :
+
+            <div className="input-group input-group-sm mb-3">
+              <span className="input-group-text" id="inputGroup-sizing-sm" >Numero de ID</span>
+              <input type="text" id="disabledTextInput" class="form-control" value={ndocumento} />
+            </div>}
 
             <div className="input-group input-group-sm mb-3">
               <span className="input-group-text" id="inputGroup-sizing-sm" >Tipo de Identificacion</span>
@@ -257,7 +284,7 @@ function CrudEmpleados() {
 
             {!Fboton && <div className="input-group input-group-sm mb-3">
               <span className="input-group-text" id="inputGroup-sizing-sm">Contraseña</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             }
 
@@ -279,18 +306,18 @@ function CrudEmpleados() {
             </div>
 
             {validationMessage && (
-          <p className="texto-errorEmpleado">{validationMessage}</p>
-        )}
-        {error && (
-          <p className="texto-errorEmpleado">
-            Por favor, complete todos los campos.
-          </p>
-        )}
+              <p className="texto-errorEmpleado">{validationMessage}</p>
+            )}
+            {error && (
+              <p className="texto-errorEmpleado">
+                Por favor, complete todos los campos.
+              </p>
+            )}
           </div>
           <div class="modal-footer">
-        
-        <button type="button" className="btn btn-outline-danger" onClick={datos}  data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
-        <button type="button" className="btn btn-outline-success"  data-bs-dismiss={validationMessage === false || error === false ? "" : "modal"}  onClick={Fboton ? editarEmpleado : RegistrarEmpleado}>{Fboton ? "Modificar" : "Registrar"}</button>
+
+            <button type="button" className="btn btn-outline-danger" onClick={datos} data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+            <button type="button" className="btn btn-outline-success" data-bs-dismiss={validationMessage === false || error === false ? "" : "modal"} onClick={Fboton ? editarEmpleado : RegistrarEmpleado}>{Fboton ? "Modificar" : "Registrar"}</button>
           </div>
         </div>
       </div>

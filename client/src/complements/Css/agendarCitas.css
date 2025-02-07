@@ -110,9 +110,11 @@ justify-content: center;
     
 }
 
-.container{
+.containerCalendario{
     width: 100%;
+    padding-bottom: 1px;
     min-height: 100vh;
+    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -196,6 +198,11 @@ justify-content: center;
     background-color: #fff;
 }
 
+.dia.selected {
+    color: #fff;
+    background-color: var(--primary-color);
+}
+
 .dia:not(.prev):not(.sig):hover{
     background-color: var(--primary-color);
     color: #fff;
@@ -210,3 +217,45 @@ justify-content: center;
 .dias .dia.sig{
     color: #ccc;
 } 
+
+.horariosCalendar-container{
+    max-width: 40%;
+    border-top: 1px;
+    border-color: black;
+}
+.seleccionarHorarioCalendario{
+    
+    background-color: #dc3545;
+    border: 1px solid white;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 5px;
+}
+.seleccionarHorarioCalendario.activo{
+    
+    background-color: white;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 6px;
+    border-radius: 5px;
+    margin: 5px;
+}
+.seleccionarHorarioCalendario:hover{
+    background-color: white;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+.horariosCalendario{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.tipoConsultaCalendario div{
+    max-width: 30%;
+    margin-left: 35%;
+    display: flex;
+    justify-content: center;
+}

@@ -146,6 +146,7 @@
     "utils-merge": "^1.0.1",
     "vary": "^1.1.2",
     "webidl-conversions": "^3.0.1",
+    "webpack-dev-server": "^5.2.0",
     "whatwg-url": "^5.0.0",
     "wide-align": "^1.1.5",
     "wrappy": "^1.0.2",

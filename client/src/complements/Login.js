@@ -42,7 +42,7 @@ function Login() {
     })
       .then((response) => {
 
-        const { token, rol } = response.data;
+        const { token, rol, id } = response.data;
 
         // Opcional: Limpiar mensajes de error
         setErrorMessage("");
@@ -52,6 +52,7 @@ function Login() {
 
         localStorage.setItem("authToken", token);
         localStorage.setItem("userRole", rol);
+        localStorage.setItem("userId", id);
 
         // Redirigir al usuario según su rol
         if (rol === 1) {
@@ -158,7 +159,7 @@ function Login() {
         <div className="contenedor-formulario">
           <div className="information">
             <div className="izquierda">
-              <h2>¿Ya tienes una cuenta?</h2>
+              <h2>Registrate hoy mismo!</h2>
               <Link to="/SignIn">
                 <input type="button" value="Registrarme" id="sign-in" />
               </Link>
@@ -225,7 +226,7 @@ function Login() {
       </div>
 
       {/* Modal para Recuperar Contraseña */}
-      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)}>
+      <Modal show={showForgotModal} >
         <Modal.Header closeButton>
           <Modal.Title>Recuperar Contraseña</Modal.Title>
         </Modal.Header>
@@ -302,7 +303,6 @@ function Login() {
                   value={Confirmar_password}
                   onChange={(e) => setConfirmar_password(e.target.value)}
                 />
-                
               </div>
               <div style={{ textAlign: "right" }}>
                 <button type="button" className="olvidar" onClick={restablecer} >

@@ -1,6 +1,7 @@
 const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 const db = require("../Config/db");
 
@@ -75,6 +76,7 @@ router.post("/registro", async (req, res) => {
 /* Validar Ingreso de Iniciar sesión y Crea una Sesión */
 router.post("/login", async (req, res) => {
     const correo = req.body.correo_i;
+
 
     db.query(
         "SELECT clave, idRol, idEstadoPersona, block_account FROM persona WHERE correo = ?",

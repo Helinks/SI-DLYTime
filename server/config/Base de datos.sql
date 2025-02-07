@@ -145,7 +145,8 @@ INSERT INTO estadoPersona (idEstado, nombre) VALUE
 -- Insertar datos en Rol
 INSERT INTO Rol (idRol, nombre) VALUES
 (1, 'Usuario'),
-(2, 'Administrador');
+(2, 'Empleado'),
+(3, 'Administrador');
 
 -- Insertar datos en persona
 INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, clave, fechaNacimiento, direccion,idEstadoPersona) VALUES
