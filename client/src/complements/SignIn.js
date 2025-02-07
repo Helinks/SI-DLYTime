@@ -35,7 +35,7 @@ export function SignIn() {
     }
 
     // Validación de Campos Vacios
-    if (nombre === "" || tipodocumento === "" || apellido === "" || ndocumento === "" || correo === "" || password === "" || Confirmar_password === "" || genero === "") {
+    if (!nombre || !tipodocumento || !apellido || !ndocumento || !correo || !password || !Confirmar_password || !genero) {
       setValidationMessage("Por favor, complete todos los campos.");
       setError(true);
       return;
@@ -47,14 +47,17 @@ export function SignIn() {
       return;
     }
 
-    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-
-    if(!(correo.includes("@") && correo.indexOf("@") > 0 && correo.split("@")[1].includes(".")) && correo.length > 0){
+   const isValidEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    return emailRegex.test(email)
+  }
+    if(!isValidEmail){
       setValidationMessage("Por favor cumplir con los requisitos -@- y -.-");
       setError(true);
       return;
     }
-
+    
+    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (require.test(password) === false) {
       setValidationMessage("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
       setError(true);
@@ -96,7 +99,6 @@ export function SignIn() {
 
   const codeVericar = () => {
     let codeRegistro = localStorage.getItem("codeRegister");
-    alert(codigoRe);
     if (codeRegistro === codigoRe) {
 
       /* Registro */
@@ -208,9 +210,6 @@ export function SignIn() {
                     onChange={(e) => setCorreo(e.target.value)}
                   />
                 </div>
-                {!correo.includes("@") && correo.length > 0 && (
-                  <p style={{ color: "white" }}>Debe incluir "@"</p>
-                )}
                 <div className="col-md">
                   <input
                     type="password"

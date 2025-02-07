@@ -105,7 +105,6 @@ function Login() {
         setcodigoValidar(false);
       }
 
-      alert("Código válido. Ahora puedes cambiar tu contraseña.");
       setCurrentView("password")
     } catch (error) {
       if (error.response?.status === 400) {
@@ -126,11 +125,24 @@ function Login() {
       return;
     }
 
+    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (require.test(password) === false) {
+      alert("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
+      return;
+    }
+
     setShowForgotModal(false);
     await Axios.patch("http://localhost:3001/recuperarPassword/cambiarPassword", {
       correo: forgotEmail,
       password: password,
       codigo: codigoV,
+    }).then((response)=> {
+      alert(response.data)
+      setCurrentView("email")
+      setForgotEmail("")
+      setCodigoV("")
+      setPassword("")
+      setConfirmar_password("")
     });
 
 
@@ -213,8 +225,8 @@ function Login() {
       </div>
 
       {/* Modal para Recuperar Contraseña */}
-      <Modal show={showForgotModal} >
-        <Modal.Header closeButton data-bs-dismiss="modal" aria-label="Close">
+      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)}>
+        <Modal.Header closeButton>
           <Modal.Title>Recuperar Contraseña</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -290,6 +302,7 @@ function Login() {
                   value={Confirmar_password}
                   onChange={(e) => setConfirmar_password(e.target.value)}
                 />
+                
               </div>
               <div style={{ textAlign: "right" }}>
                 <button type="button" className="olvidar" onClick={restablecer} >

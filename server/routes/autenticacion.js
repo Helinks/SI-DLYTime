@@ -91,7 +91,7 @@ router.post("/login", async (req, res) => {
 
                 if (atemps >= 10) {
 
-                    const timeBlock = new Date(Date.now() + 3600 * 1000);
+                    const timeBlock = new Date(Date.now() + 600 * 1000);
 
                     db.query("UPDATE persona SET idEstadoPersona = 3, block_account = ? WHERE correo = ?", [timeBlock,correo],
                         async (err, result) => {
@@ -111,7 +111,7 @@ router.post("/login", async (req, res) => {
                     const rol = result[0].idRol;
 
                     // Crear el token con rol incluido
-                    const token = jwt.sign({ correo, rol }, "joan123", { expiresIn: "1h" });
+                    const token = jwt.sign({ correo, rol }, SECRET_KEY, { expiresIn: "1h" });
 
                     atemps = 0;
 
