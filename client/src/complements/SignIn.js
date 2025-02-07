@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import React, { useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import Axios from "axios";
 import "./Css/signIn.css";
@@ -65,15 +64,6 @@ export function SignIn() {
       return;
     }
 
-
-    if (ndocumento.length > 10) {
-      alert("El número de documento excede el límite permitido")
-      return;
-    }
-
-
-
-    // Define el cliente aquí
     /* metodo get */
     const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
 
@@ -132,45 +122,6 @@ export function SignIn() {
           localStorage.removeItem("codeRegister")
           alert("Usuario Registrado");
           navigate("/Login"); // Redirige a Login después del registro
-        console.log(response)
-        console.log(response.smtp_check)
-        if (response.smtp_check) {
-          setValidationMessage("El correo es válido.");
-          setError(false);
-
-          /* Validar datos con la base de datos */
-          /* Axios.get("http://localhost:3001/autenticacion/consulta", {
-            correo: correo,
-            numeroDocumento: ndocumento,
-          }).then((response) => {
-            alert(response);
-          }); */
-
-          /* Registro */
-          Axios.post("http://localhost:3001/autenticacion/registro", {
-            numeroDocumento: ndocumento,
-            idRol: 1,
-            idTipoIdentificacion: tipodocumento,
-            nombre: nombre,
-            apellido: apellido,
-            idGenero: genero,
-            correo: correo,
-            clave: password,
-          }).then((response) => {
-
-            /* Validación de correo y número de documento */
-            if (response.data.exists) {
-              alert(response.data.message)
-            }
-            else {
-              alert("Usuario Registrado");
-              navigate("/Login"); // Redirige a Login después del registro
-            }
-
-          });
-
-        } else {
-          setValidationMessage("El correo electrónico no es válido.");
         }
       });
 
@@ -248,7 +199,6 @@ export function SignIn() {
                   />
                 </div>
               </div>
-
 
               <div className="row g-2">
                 <div className="col-md">
