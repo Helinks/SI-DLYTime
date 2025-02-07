@@ -30,6 +30,11 @@ function Login() {
       return;
     }
 
+    if(!correo_i.includes("@") && correo_i.length > 0){
+      setErrorMessage("Por favor completar los requisitos")
+      return;
+    }
+
     /* Envió de datos para la autenticación */
     Axios.post("http://localhost:3001/autenticacion/login", {
       correo_i: correo_i,
@@ -71,7 +76,7 @@ function Login() {
     try {
 
       /* Envió de correo eléctronico */
-      await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreo", {
+      await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreoPassword", {
         to: forgotEmail,
         subject: "Restablecimiento de Contraseña",
       });
@@ -154,9 +159,7 @@ function Login() {
               </h1>
               <div className="inputs">
                 <div className="input-group mb-3">
-                  <span className="input-group-text" id="basic-addon1">
-                    @
-                  </span>
+                  <span className="input-group-text" id="basic-addon1">@</span>
                   <input
                     type="email"
                     className="form-control"
@@ -165,6 +168,11 @@ function Login() {
                     onChange={(e) => setCorreo(e.target.value)}
                   />
                 </div>
+
+                {!correo_i.includes("@") && correo_i.length > 0 && (
+                  <p style={{ color: "white" }}>Debe incluir "@"</p>
+                )}
+
                 <div className="input-group mb-3">
                   <span className="input-group-text" id="basic-addon1">
                     ⌘
@@ -179,7 +187,7 @@ function Login() {
                 </div>
               </div>
             </form>
-            {errorMessage && <p className="texto-error">{errorMessage}</p>}
+            {errorMessage && <p className="texto-error1">{errorMessage}</p>}
             <div className="botones-inicio">
 
 
@@ -206,7 +214,7 @@ function Login() {
 
       {/* Modal para Recuperar Contraseña */}
       <Modal show={showForgotModal} >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton data-bs-dismiss="modal" aria-label="Close">
           <Modal.Title>Recuperar Contraseña</Modal.Title>
         </Modal.Header>
         <Modal.Body>

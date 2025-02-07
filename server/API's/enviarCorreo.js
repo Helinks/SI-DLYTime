@@ -6,7 +6,7 @@ const db = require("../Config/db");
 
 /* API INTERNA Enviar correos */
 const nodemailer = require("nodemailer"); 
-/* Hasta aqui */
+
 
 /* Prueba de Api de enviar correos */
 const transporter = nodemailer.createTransport({
@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-router.post("/enviarCorreo", async (req, res) => {
+router.post("/enviarCorreoPassword", async (req, res) => {
     const { to, subject } = req.body;
 
     try {
@@ -48,6 +48,37 @@ router.post("/enviarCorreo", async (req, res) => {
             res
                 .status(200)
                 .send("Correo enviado con éxito, Ingresar código temporal enviado.");
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error al enviar el código.");
+    }
+});
+
+router.post("/enviarCorreoRegistro", (req, res) => {
+    const { to, subject } = req.body;
+
+    try {
+        
+        /*  Generar un código de 6 dígitos */
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+        const mailOptions = {
+            from: "dlytime987@gmail.com",
+            to, /*  Dirección proporcionada por el usuario */
+            subject, /*  Asunto del correo  */
+            text: `Hola, has solicitado un código de registro de usuario. Contáctanos si necesitas más ayuda. Este es tu codigo de registro: ${code}`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error(error);
+                console.log(mailOptions);
+                return res.status(500).send("Error enviando el correo");
+            }
+            res
+                .status(200)
+                .send(code);
         });
     } catch (error) {
         console.error(error);
