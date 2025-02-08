@@ -13,7 +13,6 @@ import IndexCliente from './complements/IndexCliente';
 import IndexEmpleado from './complements/IndexEmpleado';
 import Login from './complements/Login';
 import ProtectedRoute from './complements/RutaProtegida';
-import ProtectedRoute from './complements/RutaProtegida';
 import SignIn from './complements/SignIn';
 import Perfil from './complements/Perfil';
 import CrudClientes_Empleado from './complements/CrudClientes_Empleado';
@@ -35,7 +34,7 @@ function App() {
         <Route 
           path="/IndexEmpleado" 
           element={
-            <ProtectedRoute requiredRole={[2,3]}>
+            <ProtectedRoute requiredRole={[2]}>
               <IndexEmpleado />
             </ProtectedRoute>
           } 

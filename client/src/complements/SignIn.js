@@ -47,11 +47,11 @@ export function SignIn() {
       return;
     }
 
-   const isValidEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    return emailRegex.test(email)
+   const isValidEmail = (correo) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(correo);
   }
-    if(!isValidEmail){
+    if(!isValidEmail(correo)){
       setValidationMessage("Por favor cumplir con los requisitos -@- y -.-");
       setError(true);
       return;

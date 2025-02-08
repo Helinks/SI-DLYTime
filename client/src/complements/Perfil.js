@@ -20,6 +20,7 @@ function Perfil() {
   const id = localStorage.getItem("userId");
   const rol = localStorage.getItem("userRole");
 
+  
   const datos = () => {
     setFboton(false);
     setValidationMessage("")
@@ -134,7 +135,7 @@ function Perfil() {
               </div>
               <p>{mensaje}</p>
               <div>
-                <Link to="/IndexEmpleado"><button>Cancelar</button></Link>
+                <Link to={rol === "2" ? "/IndexEmpleado": "/IndexCliente"}><button>Cancelar</button></Link>
                 <button type="button" data-bs-toggle="modal" data-bs-target={rol == 1 ? "#modalGeneral":"#modalAdmin"} onClick={() => {
                   setNombres(user.Nombres);
                   setApellidos(user.Apellidos);

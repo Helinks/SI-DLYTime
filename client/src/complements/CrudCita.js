@@ -3,7 +3,7 @@ import "./Css/StyleAdminCitas.css";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 
-function crudCita() {
+function CrudCita() {
   const [citas, setcrudCitas] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [idHorario, setIdHorario] = useState();
@@ -688,4 +688,4 @@ function crudCita() {
   );
 }
 
-export default crudCita;
+export default CrudCita;

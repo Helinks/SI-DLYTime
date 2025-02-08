@@ -4,7 +4,6 @@ import './Css/IndexClStyle.css';
 import { Link } from "react-router-dom";
 import './Css/headerUsersStyle.css';
 import CerrarSesion from "./EliminarSesion";
-import CerrarSesion from "./EliminarSesion";
 
 function IndexCliente() {
 
@@ -39,7 +38,6 @@ function IndexCliente() {
             </svg>
           </div>
         </Link>
-        <CerrarSesion />
           <CerrarSesion />
       </nav>
 

@@ -1,7 +1,6 @@
 const express = require("express");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
 const db = require("../Config/db");
 
@@ -79,7 +78,7 @@ router.post("/login", async (req, res) => {
 
 
     db.query(
-        "SELECT clave, idRol, idEstadoPersona, block_account FROM persona WHERE correo = ?",
+        "SELECT clave, idRol, idEstadoPersona, block_account, numeroDocumento FROM persona WHERE correo = ?",
         [correo],
         async (err, result) => {
             if (err) {
@@ -111,9 +110,9 @@ router.post("/login", async (req, res) => {
 
                 if (isPasswordValid) {
                     const rol = result[0].idRol;
-
+                    const id = result[0].numeroDocumento;
                     // Crear el token con rol incluido
-                    const token = jwt.sign({ correo, rol }, SECRET_KEY, { expiresIn: "1h" });
+                    const token = jwt.sign({ correo, rol,id }, SECRET_KEY, { expiresIn: "1h" });
 
                     atemps = 0;
 
@@ -128,6 +127,7 @@ router.post("/login", async (req, res) => {
                     return res.status(200).json({
                         token,
                         rol,
+                        id,
                         message: "Inicio de sesión exitoso",
                     });
                 } else {

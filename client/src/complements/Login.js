@@ -42,7 +42,7 @@ function Login() {
     })
       .then((response) => {
 
-        const { token, rol } = response.data;
+        const { token, rol, id } = response.data;
 
         // Opcional: Limpiar mensajes de error
         setErrorMessage("");
@@ -52,6 +52,7 @@ function Login() {
 
         localStorage.setItem("authToken", token);
         localStorage.setItem("userRole", rol);
+        localStorage.setItem("userId", id);
 
         // Redirigir al usuario según su rol
         if (rol === 1) {
