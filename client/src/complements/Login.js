@@ -30,6 +30,11 @@ function Login() {
       return;
     }
 
+    if(!correo_i.includes("@") && correo_i.length > 0){
+      setErrorMessage("Por favor completar los requisitos")
+      return;
+    }
+
     /* Envió de datos para la autenticación */
     Axios.post("http://localhost:3001/autenticacion/login", {
       correo_i: correo_i,
@@ -72,7 +77,7 @@ function Login() {
     try {
 
       /* Envió de correo eléctronico */
-      await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreo", {
+      await Axios.post("http://localhost:3001/enviarCorreo/enviarCorreoPassword", {
         to: forgotEmail,
         subject: "Restablecimiento de Contraseña",
       });
@@ -101,7 +106,6 @@ function Login() {
         setcodigoValidar(false);
       }
 
-      alert("Código válido. Ahora puedes cambiar tu contraseña.");
       setCurrentView("password")
     } catch (error) {
       if (error.response?.status === 400) {
@@ -122,11 +126,24 @@ function Login() {
       return;
     }
 
+    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (require.test(password) === false) {
+      alert("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
+      return;
+    }
+
     setShowForgotModal(false);
     await Axios.patch("http://localhost:3001/recuperarPassword/cambiarPassword", {
       correo: forgotEmail,
       password: password,
       codigo: codigoV,
+    }).then((response)=> {
+      alert(response.data)
+      setCurrentView("email")
+      setForgotEmail("")
+      setCodigoV("")
+      setPassword("")
+      setConfirmar_password("")
     });
 
 
@@ -142,7 +159,7 @@ function Login() {
         <div className="contenedor-formulario">
           <div className="information">
             <div className="izquierda">
-              <h2>Registrate hoy mismo!</h2>
+              <h2>¿Ya tienes una cuenta?</h2>
               <Link to="/SignIn">
                 <input type="button" value="Registrarme" id="sign-in" />
               </Link>
@@ -155,9 +172,7 @@ function Login() {
               </h1>
               <div className="inputs">
                 <div className="input-group mb-3">
-                  <span className="input-group-text" id="basic-addon1">
-                    @
-                  </span>
+                  <span className="input-group-text" id="basic-addon1">@</span>
                   <input
                     type="email"
                     className="form-control"
@@ -166,6 +181,11 @@ function Login() {
                     onChange={(e) => setCorreo(e.target.value)}
                   />
                 </div>
+
+                {!correo_i.includes("@") && correo_i.length > 0 && (
+                  <p style={{ color: "white" }}>Debe incluir "@"</p>
+                )}
+
                 <div className="input-group mb-3">
                   <span className="input-group-text" id="basic-addon1">
                     ⌘
@@ -180,7 +200,7 @@ function Login() {
                 </div>
               </div>
             </form>
-            {errorMessage && <p className="texto-error">{errorMessage}</p>}
+            {errorMessage && <p className="texto-error1">{errorMessage}</p>}
             <div className="botones-inicio">
 
 
@@ -206,7 +226,7 @@ function Login() {
       </div>
 
       {/* Modal para Recuperar Contraseña */}
-      <Modal show={showForgotModal} >
+      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Recuperar Contraseña</Modal.Title>
         </Modal.Header>
@@ -283,6 +303,7 @@ function Login() {
                   value={Confirmar_password}
                   onChange={(e) => setConfirmar_password(e.target.value)}
                 />
+                
               </div>
               <div style={{ textAlign: "right" }}>
                 <button type="button" className="olvidar" onClick={restablecer} >

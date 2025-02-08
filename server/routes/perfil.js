@@ -17,15 +17,13 @@ router.get('/datosUsuario',(req,res)=>{
     FROM persona 
     INNER JOIN genero ON genero.idGenero = persona.idGenero WHERE numeroDocumento = ?;`;
 
-    const id =req.query.id 
-    console.log(id);
+    const id =req.query.id
 
     db.query(query,[id],(err,result)=>{
         if (err) {
             console.error(err);
             return ;
         }
-        console.log(result);
         return res.json(result[0]);
     })
 })

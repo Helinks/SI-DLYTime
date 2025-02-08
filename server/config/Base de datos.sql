@@ -14,6 +14,12 @@ CREATE TABLE genero (
     PRIMARY KEY (idGenero)
 );
 
+CREATE TABLE estadoPersona(
+    idEstado INT NOT NULL,
+    nombre VARCHAR(10) NOT NULL,
+    PRIMARY KEY (idEstado)
+);
+
 CREATE TABLE Rol (
     idRol INT NOT NULL,
     nombre VARCHAR(20) NOT NULL,
@@ -32,13 +38,15 @@ CREATE TABLE persona (
     clave varchar (61) NOT NULL,
     fechaNacimiento DATE,
     direccion VARCHAR(40),
-    estadoPersona boolean not null,
+    idEstadoPersona INT not null,
     reset_code VARCHAR(6),
     reset_expires DATETIME,
+    block_account DATETIME,
     PRIMARY KEY (numeroDocumento),
     FOREIGN KEY (idTipoIdentificacion) REFERENCES tipoIdentificacion(idTipoIdentificacion),
     FOREIGN KEY (idGenero) REFERENCES genero(idGenero),
-    FOREIGN KEY (idRol) REFERENCES Rol(idRol)
+    FOREIGN KEY (idRol) REFERENCES Rol(idRol),
+    FOREIGN KEY (idEstadoPersona) REFERENCES estadoPersona(idEstado)
     
 );
 
@@ -129,6 +137,11 @@ INSERT INTO genero (idGenero, nombre) VALUES
 (2, 'Femenino'),
 (3, 'Otro');
 
+INSERT INTO estadoPersona (idEstado, nombre) VALUE 
+(1, 'Activo'),
+(2, 'Inactivo'),
+(3, 'Bloqueado');
+
 -- Insertar datos en Rol
 INSERT INTO Rol (idRol, nombre) VALUES
 (1, 'Usuario'),
@@ -136,10 +149,10 @@ INSERT INTO Rol (idRol, nombre) VALUES
 (3, 'Administrador');
 
 -- Insertar datos en persona
-INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, clave, fechaNacimiento, direccion, estadoPersona) VALUES
-(123456789, 1, 1, 'Juan', 'Pérez', 1, 'juan.perez@example.com', '555-1234', 'hashed_password1', '1990-01-01', 'Calle 1', TRUE),
-(987654321, 2, 1, 'María', 'Gómez', 2, 'maria.gomez@example.com', '555-5678', 'hashed_password2', '1985-05-05', 'Calle 2', TRUE),
-(987653231, 2, 2, 'Natalia', 'Bautista', 2, 'natalia.bautista@example.com', '53123-5678', 'hashed_password3', '1985-06-06', 'Calle 3', TRUE);
+INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, clave, fechaNacimiento, direccion,idEstadoPersona) VALUES
+(123456789, 1, 1, 'Juan', 'Pérez', 1, 'juan.perez@example.com', '555-1234', 'hashed_password1', '1990-01-01', 'Calle 1', 1),
+(987654321, 2, 1, 'María', 'Gómez', 2, 'maria.gomez@example.com', '555-5678', 'hashed_password2', '1985-05-05', 'Calle 2', 1),
+(987653231, 2, 2, 'Natalia', 'Bautista', 2, 'natalia.bautista@example.com', '53123-5678', 'hashed_password3', '1985-06-06', 'Calle 3', 1);
 
 -- Insertar datos en tipoProblema
 INSERT INTO tipoProblema (idTipoProblema, descripcion) VALUES

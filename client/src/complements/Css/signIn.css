@@ -120,11 +120,27 @@ width: 90%;
   height: 40%;
   display: flex;
   justify-content: center;
-  margin-top: 10%;
+  margin-top: 5%;
 }
 
 .texto-error{
-color: white;
+color: black;
 margin-top: 20px;
 position: relative;
+}
+
+.texto-error1{
+  color: white;
+  margin-top: 20px;
+  position: relative;
+}
+
+.codigoRe{
+  width: 50%;
+  padding-left: 10px;
+  border-radius: 10px;
+}
+
+.botonRe{
+  padding: 5%;
 }

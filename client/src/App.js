@@ -34,7 +34,7 @@ function App() {
         <Route 
           path="/IndexEmpleado" 
           element={
-            <ProtectedRoute requiredRole={[2,3]}>
+            <ProtectedRoute requiredRole={[2]}>
               <IndexEmpleado />
             </ProtectedRoute>
           } 
@@ -106,10 +106,79 @@ function App() {
             </ProtectedRoute>
           }  />
         <Route path="/Login" element={<Login />} />
+        <Route path="/SignIn" element={<SignIn />} />
+        <Route 
+          path="/IndexCliente" 
+          element={
+            <ProtectedRoute requiredRole={[1]}>
+              <IndexCliente />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/IndexEmpleado" 
+          element={
+            <ProtectedRoute requiredRole={[2,3]}>
+              <IndexEmpleado />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/IndexAdmin" 
+          element={
+            <ProtectedRoute requiredRole={[3]}>
+              <IndexAdmin />
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/CrudCita" 
+        element={
+            <ProtectedRoute requiredRole={[2]}>
+              <CrudCita />
+            </ProtectedRoute>
+          }  />
+
+        <Route path="/AdministrarHorarios"   
+        element={
+            <ProtectedRoute requiredRole={[2]}>
+              <AdministrarHorarios />
+            </ProtectedRoute>
+          }  />
+
+        <Route path="/EmpleadoAdCitas"   
+        element={
+            <ProtectedRoute requiredRole={[2]}>
+              <EmpleadoAdCitas />
+            </ProtectedRoute>
+          }  />
+
+        <Route path="/ClienteAdCitas"  element={
+            <ProtectedRoute requiredRole={[1]}>
+              <ClienteAdCitas />
+            </ProtectedRoute>
+          }  />
+
+        <Route path="/AgendarCita"  element={
+            <ProtectedRoute requiredRole={[1]}>
+              <AgendarCita />
+            </ProtectedRoute>
+          }  />
+        <Route path="/CrudEmpleados"  element={
+            <ProtectedRoute requiredRole={[3]}>
+              <CrudEmpleados />
+            </ProtectedRoute>
+          }  />
+        <Route path="/CrudClientes"  element={
+            <ProtectedRoute requiredRole={[2]}>
+              <CrudClientes />
+            </ProtectedRoute>
+          }  />
+        <Route path="/Login" element={<Login />} />
       </Routes>
     </div>
   );
 }
 
 export default App;
+
 

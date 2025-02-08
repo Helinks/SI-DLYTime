@@ -38,7 +38,7 @@ function IndexCliente() {
             </svg>
           </div>
         </Link>
-        <CerrarSesion />
+          <CerrarSesion />
       </nav>
 
       <div class="welcomeCliente"><h1>Bienvenido <i><b></b></i></h1></div>

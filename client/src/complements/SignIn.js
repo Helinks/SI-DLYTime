@@ -13,80 +13,67 @@ export function SignIn() {
   const [password, setPassword] = useState("");
   const [Confirmar_password, setConfirmar_password] = useState("");
   const [genero, setGenero] = useState("");
-  const [error, setError] = useState(false);
+  let [error, setError] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
+  const [codigoRe, setCodigoRe] = useState("");
 
   const navigate = useNavigate();
+  let correoVerificado = false;
+
 
   const add = (e) => {
     e.preventDefault();
+    error = false;
+    setError(false);
 
-    // Aquí puedes continuar con la verificación de contraseña
+    // Aquí continua con la verificación de contraseña
     if (password === Confirmar_password) {
-      // Lógica de registro
     } else {
-      alert("Contraseña no es igual");
+      setValidationMessage("Contraseña no es igual");
+      setError(true);
       return;
     }
 
     // Validación de Campos Vacios
-    if (nombre === "" || tipodocumento === "" || apellido === "" || ndocumento === "" || correo === "" || password === "" || Confirmar_password === "" || genero === "") {
+    if (!nombre || !tipodocumento || !apellido || !ndocumento || !correo || !password || !Confirmar_password || !genero) {
+      setValidationMessage("Por favor, complete todos los campos.");
       setError(true);
       return;
     }
 
     if (ndocumento.length > 10) {
-      alert("El número de documento excede el límite permitido")
+      setValidationMessage("Limite de digitos superado");
+      setError(true);
       return;
     }
 
+   const isValidEmail = (correo) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(correo);
+  }
+    if(!isValidEmail(correo)){
+      setValidationMessage("Por favor cumplir con los requisitos -@- y -.-");
+      setError(true);
+      return;
+    }
+    
+    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (require.test(password) === false) {
+      setValidationMessage("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
+      setError(true);
+      return;
+    }
 
-
-    // Define el cliente aquí
     /* metodo get */
     const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
 
     client.info(correo, { catch_all: 0 })
       .then(response => {
-        console.log(response)
-        console.log(response.smtp_check)
-        if (response.smtp_check) {
-          setValidationMessage("El correo es válido.");
-          setError(false);
-
-          /* Validar datos con la base de datos */
-          /* Axios.get("http://localhost:3001/autenticacion/consulta", {
-            correo: correo,
-            numeroDocumento: ndocumento,
-          }).then((response) => {
-            alert(response);
-          }); */
-
-          /* Registro */
-          Axios.post("http://localhost:3001/autenticacion/registro", {
-            numeroDocumento: ndocumento,
-            idRol: 1,
-            idTipoIdentificacion: tipodocumento,
-            nombre: nombre,
-            apellido: apellido,
-            idGenero: genero,
-            correo: correo,
-            clave: password,
-          }).then((response) => {
-
-            /* Validación de correo y número de documento */
-            if (response.data.exists) {
-              alert(response.data.message)
-            }
-            else {
-              alert("Usuario Registrado");
-              navigate("/Login"); // Redirige a Login después del registro
-            }
-
-          });
-
-        } else {
+        correoVerificado = response.smtp_check;
+        console.log(response);
+        if (correoVerificado === false) {
           setValidationMessage("El correo electrónico no es válido.");
+          setError(true);
         }
       })
       .catch(err => {
@@ -94,7 +81,57 @@ export function SignIn() {
         alert("Hubo un error al verificar el correo. Intenta más tarde.");
       });
 
+    if (error) {
+      return
+    }
+    else {
+      /* Envió de correo eléctronico */
+      Axios.post("http://localhost:3001/enviarCorreo/enviarCorreoRegistro", {
+        to: correo,
+        subject: "Código para Registro",
+      }).then((response) => {
+        localStorage.setItem("codeRegister", response.data);
+
+      });
+    }
+
   };
+
+  const codeVericar = () => {
+    let codeRegistro = localStorage.getItem("codeRegister");
+    if (codeRegistro === codigoRe) {
+
+      /* Registro */
+      Axios.post("http://localhost:3001/autenticacion/registro", {
+        numeroDocumento: ndocumento,
+        idRol: 1,
+        idTipoIdentificacion: tipodocumento,
+        nombre: nombre,
+        apellido: apellido,
+        idGenero: genero,
+        correo: correo,
+        clave: password,
+      }).then((response) => {
+
+        /* Validación de correo y número de documento */
+        if (response.data.exists) {
+          setValidationMessage(response.data.message);
+          setError(true);
+        }
+        else {
+          localStorage.removeItem("codeRegister")
+          alert("Usuario Registrado");
+          navigate("/Login"); // Redirige a Login después del registro
+        }
+      });
+
+    } else {
+      setValidationMessage("Código incorrecto, intentelo otra vez")
+      setError(true);
+      return;
+    }
+  };
+
 
 
 
@@ -209,23 +246,59 @@ export function SignIn() {
               </div>
             </div>
             <div className="boton-registro">
-              <button onClick={add} className="Registrar-r">
+              <button type="button" class="Registrar-r" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={add}>
                 Registrarse
               </button>
             </div>
             {validationMessage && (
-              <p className="texto-error">{validationMessage}</p>
-            )}
-            {error && (
-              <p className="texto-error">
-                Por favor, complete todos los campos.
-              </p>
+              <p className="texto-error1">{validationMessage}</p>
             )}
           </form>
         </div>
       </div>
       <Outlet />
-    </div>
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Registro</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div className="col-auto">
+              {error && (
+                <div>
+                  <p className="texto-error">
+                    {validationMessage}
+                  </p>
+                </div>
+              )}
+              {error === false && (
+                <div>
+                  <p className="texto-error">
+                    Digitar el código enviado al correo
+                  </p>
+                  <input
+                    type="number"
+                    className="codigoRe"
+                    id="inputPassword2"
+                    placeholder="Código"
+                    value={codigoRe}
+                    onChange={(e) => setCodigoRe(e.target.value)}
+                  />
+                  <div className="botonRe">
+                    <button type="button" class="Registrar-r" onClick={codeVericar} data-bs-dismiss="modal" aria-label="Close">
+                      Registrarse
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            {/* {forgotMessage} */}
+
+          </div>
+        </div>
+      </div>
+    </div >
   );
 }
 

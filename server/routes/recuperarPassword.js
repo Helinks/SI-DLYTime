@@ -47,7 +47,10 @@ router.patch("/cambiarPassword", async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
     db.query(
         "UPDATE persona SET clave = ?  where correo = ? and reset_code = ?",
-        [hashedPassword, correo, codigo],(err,result) => {}
+        [hashedPassword, correo, codigo],(err,result) => {
+            res.status(200).send("contraseña cambiada con exito")
+
+        }
     );
 });
 
