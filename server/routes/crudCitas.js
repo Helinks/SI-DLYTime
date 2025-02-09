@@ -6,34 +6,62 @@ const db = require("../Config/db");
 /* Comienzo del Crud Citas  */
 router.get("/crudCita", (req, res) => {
 
-    const query = `SELECT
-    detalleCita.idCita,
-    horario.fecha,
-    horario.hora,
-    CONCAT(horario.fecha,' ',horario.hora) AS fechaHora,
-    CONCAT(p1.nombres,' ', p1.apellidos) AS nombreCliente,
-    CONCAT(p2.nombres,' ', p2.apellidos) AS nombreEmpleado,
-    tipoconsulta.nombre AS tipoConsulta,
-    detalleCita.direccion,
-    estadosCita.nombre AS estadoCita
-    FROM cita
-    INNER JOIN detallecita ON detallecita.idCita = cita.idCita
-    INNER jOIN horario ON horario.idHorarios = detallecita.idHorarios
-    INNER JOIN persona p1 ON cita.NumeroDocumentoCliente = p1.numeroDocumento
-    INNER JOIN persona p2 ON cita.NumeroDocumentoOftalmologo = p2.numeroDocumento 
-    INNER JOIN tipoconsulta ON tipoconsulta.idtipoConsulta = detallecita.idTipoConsulta
-    INNER JOIN estadosCita ON estadosCita.idEstadocita = detallecita.idEstadoCita
-    ORDER BY cita.idCita DESC;`;
-    db.query(query, (err, result) => {
-        if (err) {
-            console.log(err);
+    const searchQuery = req.query.q;
+    const dateQuery = req.query.fecha;
+    const tipoConsultaQuery = req.query.idTipoConsulta;
+    
+   
+        
+        let baseQuery = `SELECT
+            detalleCita.idCita,
+            horario.fecha,
+            horario.hora,
+            CONCAT(horario.fecha,' ',horario.hora) AS fechaHora,
+            CONCAT(p1.nombres,' ', p1.apellidos) AS nombreCliente,
+            CONCAT(p2.nombres,' ', p2.apellidos) AS nombreEmpleado,
+            tipoconsulta.nombre AS tipoConsulta,
+            detalleCita.direccion,
+            estadosCita.nombre AS estadoCita
+        FROM cita
+        INNER JOIN detallecita ON detallecita.idCita = cita.idCita
+        INNER JOIN horario ON horario.idHorarios = detallecita.idHorarios
+        INNER JOIN persona p1 ON cita.NumeroDocumentoCliente = p1.numeroDocumento
+        INNER JOIN persona p2 ON cita.NumeroDocumentoOftalmologo = p2.numeroDocumento 
+        INNER JOIN tipoconsulta ON tipoconsulta.idtipoConsulta = detallecita.idTipoConsulta
+        INNER JOIN estadosCita ON estadosCita.idEstadocita = detallecita.idEstadoCita
+        WHERE 1=1`;
+
+        const params = [];
+
+        if(searchQuery){
+            baseQuery+=` AND  (p1.numeroDocumento LIKE ? OR p2.numeroDocumento LIKE ?)`;
+            params.push(`%${searchQuery}%`, `%${searchQuery}%`);
         }
-        res.send(result);
-        console.log(result);
 
-    }
+        if(dateQuery){
+            baseQuery+=` AND  horario.fecha = ?`;
+            params.push(dateQuery);
+            
+        }
 
-    )
+         if(tipoConsultaQuery){
+             baseQuery+=` AND  tipoConsulta.idtipoConsulta = ?`;
+             params.push(tipoConsultaQuery);
+         }
+
+        baseQuery += ` ORDER BY cita.idCita DESC`;
+
+        db.query(baseQuery,params, (err, result) => {
+            if (err) {
+                console.error("Error en consulta:", err);
+                return res.status(500).json({ error: "Error al obtener las citas" });
+            }
+            console.log("tipo Consulta:", tipoConsultaQuery);
+            return res.json(result);
+        });
+
+        
+    
 });
 
 router.get("/crudCitaCliente", (req, res) => {
