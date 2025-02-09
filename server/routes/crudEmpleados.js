@@ -6,7 +6,15 @@ const db = require("../Config/db");
 
 /* Consulta los Usuarios que son empleados  */
 router.get("/consultaEmpleado", (req, res) => {
-    db.query("select * from persona where idRol = 2", (err, result) => {
+ 
+    const consulta = (`select p.*, td.nombre AS idTipoIdentificacion, ep.nombre AS estadoPersona, g.nombre As idGenero from persona p  
+        inner join tipoidentificacion td on p.idTipoIdentificacion = td.idTipoIdentificacion
+        inner join estadopersona ep on  ep.idEstado = p.idEstadoPersona 
+        inner join genero g on g.idGenero = p.idGenero
+        where idRol = 2`)
+
+
+    db.query(consulta, (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -28,11 +36,11 @@ router.post("/agregarEmpleado", async (req, res) => {
     const telefono = req.body.telefono;
     const estado = req.body.estadoPersona;
 
+
     try {
         const hashedPassword = await bcryptjs.hash(clave, 10);
-
         db.query(
-            "SELECT numeroDocumento, correo FROM persona WHERE numeroDocumento = ? OR correo = ?",
+            "SELECT numeroDocumento, correo FROM persona WHERE numeroDocumento = ? or correo = ?",
             [numeroDocumento, correo],
             (err, result) => {
                 if (err) {
@@ -40,7 +48,6 @@ router.post("/agregarEmpleado", async (req, res) => {
                     return res.status(500).json({ message: "Error interno del servidor." });
                 }
 
-                console.log(result.length);
 
                 if (result.length > 0) {
                     // Verifica si hay registros
@@ -49,7 +56,7 @@ router.post("/agregarEmpleado", async (req, res) => {
 
                 // Guardar el usuario en la base de datos
                 db.query(
-                    "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono , clave, estadoPersona) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                    "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono , clave, idestadoPersona) VALUES (?,?,?,?,?,?,?,?,?,?)",
                     [
                         numeroDocumento,
                         idRol,
@@ -89,7 +96,7 @@ router.patch("/actualizarEmpleado", async (req, res) => {
     const estado = req.body.estadoPersona;
 
     db.query(
-        "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, estadoPersona = ? WHERE numeroDocumento = ? ",
+        "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idestadoPersona = ? WHERE numeroDocumento = ? ",
         [
             idTipoIdentificacion,
             nombres,

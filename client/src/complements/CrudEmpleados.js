@@ -14,13 +14,12 @@ function CrudEmpleados() {
   const [telefono, settelefono] = useState("");
   const [password, setPassword] = useState("");
   const [genero, setidGenero] = useState("");
-  const [estadoPersona, setestadoPersona] = useState(0);
+  const [estadoPersona, setestadoPersona] = useState("");
   const [Fboton, setFboton] = useState(false);
 
   const [error, setError] = useState(false);
   const [validationMessage, setValidationMessage] = useState("");
   const [CrudEmple, SetcrudEmple] = useState([]);
-
 
 
 
@@ -40,7 +39,6 @@ function CrudEmpleados() {
     setidGenero("");
     setestadoPersona("");
     setPassword("");
-    setestadoPersona(true);
     setError(false)
   }
 
@@ -63,6 +61,8 @@ function CrudEmpleados() {
     settelefono(val.telefono);
     setestadoPersona(val.estadoPersona);
     setError(false)
+    
+
   }
 
 
@@ -70,7 +70,7 @@ function CrudEmpleados() {
   const RegistrarEmpleado = () => {
 
     // Validación de Campos Vacios
-    if (nombre === "" || tipodocumento === "" || apellido === "" || ndocumento === "" || correo === "" || password === "" || genero === "") {
+    if ( !nombre || !tipodocumento || !apellido || !ndocumento || !correo || !password || !genero) {
       setError(true);
       return;
     }
@@ -83,7 +83,6 @@ function CrudEmpleados() {
 
         console.log(response)
         console.log(response.smtp_check)
-
         if (response.smtp_check) {
           setValidationMessage("El correo es válido.");
           setError(false);
@@ -108,7 +107,7 @@ function CrudEmpleados() {
               getEmpleados();
               setValidationMessage("");
             }
-            
+            alert (estadoPersona)
           });
 
         } else {
@@ -126,7 +125,7 @@ function CrudEmpleados() {
   /* Modificar Empleados */
   const editarEmpleado = () => {
 
-    if (nombre === "" || apellido === "" || correo === "" || genero === "") {
+    if (!nombre || !apellido || !correo || !genero) {
       setError(true);
       return;
     }
@@ -204,6 +203,8 @@ function CrudEmpleados() {
               <td>{val.telefono}</td>
               <td>{val.estadoPersona}</td>
               <td>
+
+
                 <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#F" onClick={() => { MostrarEmpleado(val) }}>
                   Modificar
                 </button>
@@ -221,7 +222,7 @@ function CrudEmpleados() {
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{Fboton ? "Modificar Usuario" : "Agregar Usuario"}</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
 
@@ -270,7 +271,7 @@ function CrudEmpleados() {
                 aria-label="Genero"
                 value={genero}
                 onChange={(e) => setidGenero(e.target.value)}>
-                <option></option>
+                  <option></option>
                 <option value="1">Masculino</option>
                 <option value="2">Femenino</option>
                 <option value="3">Otro...</option>
@@ -300,8 +301,10 @@ function CrudEmpleados() {
                 aria-label="estadoPersona"
                 value={estadoPersona}
                 onChange={(e) => setestadoPersona(e.target.value)}>
-                <option value="0">Activo</option>
-                <option value="1">Inactivo</option>
+                <option ></option>
+                <option value="1">Activo</option>
+                <option value="2">Inactivo</option>
+                <option value="3">bloqueado</option>
               </select>
             </div>
 

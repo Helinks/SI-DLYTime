@@ -96,7 +96,7 @@ function App() {
             </ProtectedRoute>
           }  />
         <Route path="/CrudEmpleados"  element={
-            <ProtectedRoute requiredRole={[3]}>
+            <ProtectedRoute requiredRole={[2,3]}>
               <CrudEmpleados />
             </ProtectedRoute>
           }  />
