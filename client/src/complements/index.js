@@ -2,6 +2,7 @@ import './Css/indexPagina.css';
 import { Link } from "react-router-dom";
 import Axios from 'axios';
 import React, { useState } from 'react';
+import img1 from "../img/9.jpg"
 
 
 
@@ -11,78 +12,79 @@ function AdminClientes() {
   const [email, setEmail] = useState('');
   const [problem, setProblem] = useState('');
 
-  const cleanMessage= async () => {
+  const cleanMessage = async () => {
     setMNull('');
   }
 
   const handleSendEmail = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if(!email){
+    if (!email) {
       setMNull('Por favor ingresa tu correo')
-    }else if(!emailRegex.test(email)){
+    } else if (!emailRegex.test(email)) {
       setMNull('Por favor ingresa un correo valido')
-    }else if(!message || !problem){
+    } else if (!message || !problem) {
       setMNull('Por favor llena todos los campos')
     }
-    else{
+    else {
       setMNull('')
-    try {
-      const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
-        to: 'aroca3282@gmail.com',
-        subject: 'Soporte desde el sistema',
-        message,
-        email,
-        problem
-      }
-      );
-      alert(response.data.message); // Notificar al usuario
-      setMessage(''); // Limpiar el mensaje
+      try {
+        const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
+          to: 'aroca3282@gmail.com',
+          subject: 'Soporte desde el sistema',
+          message,
+          email,
+          problem
+        }
+        );
+        alert(response.data.message); // Notificar al usuario
+        setMessage(''); // Limpiar el mensaje
 
-    } catch (error) {
-      console.error(error);
-      alert('Hubo un error al enviar el mensaje.');
+      } catch (error) {
+        console.error(error);
+        alert('Hubo un error al enviar el mensaje.');
+      }
     }
-  }}
-  ;
+  }
+    ;
 
 
 
   return (
     <div className='pagina'>
+      <div class="collapse" id="navbarToggleExternalContent">
+        <div class="bg-dark p-4">
+          <Link to="/Login" className="boton-Index" id="links">Iniciar sesión</Link>
+          <Link to="/SignIn" className="boton-Index" id="links">Registrarse</Link>
+          <button className="boton-Index" id="links" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">Soporte</button>
+        </div>
+      </div>
       <nav class="navbar navbar-dark bg-danger">
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-          <div className="navbar-brand">
-            <h2>Tuslentes shop</h2>
-          </div>
-          <div class="navbar-nav">
-            <div className="d-flex">
-              <Link to="/Login" className="nav-link" id="links">Iniciar sesión</Link>
-              <Link to="/SignIn" className="nav-link" id="links">Registrarse</Link>
-              <p className="nav-link" id="links" data-bs-toggle="modal"  data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">Soporte</p>
-            </div>
-          </div>
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
       </nav>
 
       <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Soporte</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={cleanMessage}></button>
-      </div>
-      <div class="modal-body">
-      <form>
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Soporte</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={cleanMessage}></button>
+            </div>
+            <div class="modal-body">
+              <form>
                 <div class="mb-3">
                   <label for="recipient-name" class="col-form-label">Digita un correo al que te podamos contactar:</label>
                   <input type="email" id="TextInputEmail" class="form-control"
-                  onChange={(e) => setEmail(e.target.value)}/>
+                    onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">Tipo de problema:</label>
-                  <select class="form-control" id="message-text" 
-                  onChange={(e) => setProblem(e.target.value)}
+                  <select class="form-control" id="message-text"
+                    onChange={(e) => setProblem(e.target.value)}
                   >
                     <option></option>
                     <option>Problema al iniciar sesión</option>
@@ -94,21 +96,26 @@ function AdminClientes() {
                 <div class="mb-3">
                   <label for="message-text" class="col-form-label">Mensaje:</label>
                   <textarea class="form-control" id="message-text" value={message}
-                  onChange={(e) => setMessage(e.target.value)}></textarea>
+                    onChange={(e) => setMessage(e.target.value)}></textarea>
                 </div>
-                
-                <h5>{mNull}</h5>
-              </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={cleanMessage}>Cerrar</button>
-        <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-      <div className='body-cuerpo' >
+                <h5>{mNull}</h5>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={cleanMessage}>Cerrar</button>
+              <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='cuerpo-Index1'>
+        <img src={img1} className="custom-img1-Index" alt="Imagen 1" />
+        <p className="texto-superpuesto">TusLentesShop</p>
+      </div>
+
+      <div className='body-cuerpo2' >
         <div className='horarios'>
           <br></br>
           <h1 style={{ margin: 0 }}>Horarios de Atención</h1>
@@ -145,22 +152,37 @@ function AdminClientes() {
         <div className='ayuda'>
           <br></br>
           <h1>Como podemos Ayudarte </h1>
+          <div className='ayuda-options'>
+            <button className="boton-Index1"><h5>Asesoria Personalizada</h5></button>
+            <button className="boton-Index1"><h5>Jornadas de Salud Visual</h5></button>
+            <button className="boton-Index1"><h5>Lentes y Monturas</h5></button>
+          </div>
         </div>
-        <div className='Ubicacion' >
-          <h2>¿Donde estamos Ubicados?</h2>
-          <h2>Cra. 78k #35A - 82sur, Bogotá</h2>
-        </div>
+      </div>
+      <div className='Ubicacion' >
+        <h2>Cra. 78k #35A - 82sur, Bogotá</h2>
+      </div>
+      <div className='contenedor-mapa-cuerpo3'>
         <div className='Contenedor-mapa'>
           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.8265376707536!2d-74.15526952407288!3d4.6250172953497!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f9e9e99c8c65d%3A0xd258c208c28cee9d!2sCra.%2078k%20%2335D29%2C%20Kennedy%2C%20Bogot%C3%A1!5e0!3m2!1ses!2sco!4v1728793972225!5m2!1ses!2sco" loading="lazy" title="mapa" className='mapa'></iframe>
         </div>
+        <div className='cuerpo-Index3'>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br /><h1>¿Algun problema?</h1>
+          <br />
+          <br />
+          <br />
+          Si tienes algún problema o necesitas ayuda, no dudes en contactar <br /> con nuestro equipo de soporte. ¡Estamos aquí para ayudarte!
+          <div className='boton-soporte2'>
+            <button className="boton-Index" id="links" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">Soporte</button>
+          </div>
+        </div>
       </div>
+
       <div className='piece'>
-        <h1>Tus lentes shop</h1>
-        <Link to="/Login" className="nav-link text-white mx-2  lin">Inicio</Link>
-        <Link to="/Soporte" className="nav-link text-white mx-2 lin">Soporte</Link>
-        <Link to="/AcercaDe" className="nav-link text-white mx-2 lin">Acerca de</Link>
-        <h2>Ubicacion</h2>
-        <h2>Cra. 78k #35A - 82sur, Bogotá</h2>
         <div className='iconos'>
           {/* icono de instagram */}
           <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="60" height="60" viewBox="0 0 50 50">
