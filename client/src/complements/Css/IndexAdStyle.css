@@ -1,31 +1,47 @@
-  .welcomeAdmin{
+  .welcomeAdmin {
     margin-top: 10%;
     display: flex;
     justify-content: center;
   }
 
 
-  .barAdmin{
+  .barAdmin {
     display: flex;
     justify-content: center;
     margin-top: 50px;
   }
-  
-  .optionsAdmin{
+
+  .optionsAdmin {
     display: flex;
-    justify-content: center;
-    height: 350px;
+    height: 70vh;
+    width: 170vh;
+  }
+
+  .option4 {
+    width: 40vh;
+    height: 20vh;
+    position: absolute;
+    margin-top: 22%;
+    margin-left: 42.5%;
+  }
+
+  .option5 {
+    width: 40vh;
+    height: 20vh;
+    position: absolute;
+    margin-top: 22%;
+    margin-left: 67.5%;
   }
 
 
-  .navbar{
+  .navbar {
     height: 60px;
     display: flex;
     align-items: center;
     justify-content: right;
   }
 
-  .logout{
+  .logout {
     color: white;
     margin-right: 40px;
   }
