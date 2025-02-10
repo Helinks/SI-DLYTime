@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
 
-function Crud_clientes() {
+function CrudClientes() {
   const [CrudClient, SetcrudClient] = useState([]);
   const [clienteEditado, setClienteEditado] = useState({
     estadoPersona: true
@@ -180,4 +180,4 @@ function Crud_clientes() {
   );
 }
 
-export default Crud_clientes;
+export default CrudClientes;

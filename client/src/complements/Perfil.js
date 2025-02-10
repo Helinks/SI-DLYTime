@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import './Css/PerfilStyle.css';
 import { Link } from 'react-router-dom';
 import Axios from "axios";
 
 function Perfil() {
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState(null);
 
   const [nombre, setNombres] = useState();
   const [apellido, setApellidos] = useState("");
@@ -30,7 +30,7 @@ function Perfil() {
     setPassword("");
   }
 
-  const getUser = async () => {
+  const getUser = useCallback( async () => {
     console.log(id)
     Axios.get("http://localhost:3001/perfil/datosUsuario", {
       params: { id: id }
@@ -40,7 +40,7 @@ function Perfil() {
       console.error("Error al encontrar usuario:", err);
       return null;
     });
-  }
+  },[id]);
 
   const editarUsuario = () => {
     Axios.patch("http://localhost:3001/Perfil/updateUsuario", {
@@ -64,9 +64,7 @@ function Perfil() {
     });
   }
 
-  useEffect(() => {
-    getUser();
-  }, [])
+  useEffect(() => getUser(), [getUser]);
 
   return (
     <div>
@@ -136,7 +134,7 @@ function Perfil() {
               <p>{mensaje}</p>
               <div>
                 <Link to={rol === "2" ? "/IndexEmpleado": "/IndexCliente"}><button>Cancelar</button></Link>
-                <button type="button" data-bs-toggle="modal" data-bs-target={rol == 1 ? "#modalGeneral":"#modalAdmin"} onClick={() => {
+                <button type="button" data-bs-toggle="modal" data-bs-target={rol === 1 ? "#modalGeneral":"#modalAdmin"} onClick={() => {
                   setNombres(user.Nombres);
                   setApellidos(user.Apellidos);
                   setTelefono(user.telefono);

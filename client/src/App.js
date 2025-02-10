@@ -15,7 +15,7 @@ import Login from './complements/Login';
 import ProtectedRoute from './complements/RutaProtegida';
 import SignIn from './complements/SignIn';
 import Perfil from './complements/Perfil';
-import CrudClientes_Empleado from './complements/CrudClientes_Empleado';
+import CrudClientesEmpleado from './complements/CrudClientesEmpleado';
 
 function App() {
   return (
@@ -51,7 +51,7 @@ function App() {
           path="/CrudClientes_Empleado" 
           element={
             <ProtectedRoute requiredRole={[2,3]}>
-              <CrudClientes_Empleado />
+              <CrudClientesEmpleado />
             </ProtectedRoute>
           } 
         />
