@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useCallback } from 'react';
 import { Link } from "react-router-dom";
 import './Css/StyleCrudEmpleados.css';
 import Axios from 'axios';
 import Emailvalidation from '@everapi/emailvalidation-js'
 
+
 function CrudEmpleados() {
 
   const [nombre, setNombres] = useState("");
   const [apellido, setApellidos] = useState("");
-  const [tipodocumento, setidTipoIdentificacion] = useState("");
+  let [tipodocumento, setidTipoIdentificacion] = useState("");
   const [ndocumento, setnumeroDocumento] = useState("");
   const [correo, setcorreo] = useState("");
   const [telefono, settelefono] = useState("");
   const [password, setPassword] = useState("");
-  const [genero, setidGenero] = useState("");
-  const [estadoPersona, setestadoPersona] = useState("");
+  let [genero, setidGenero] = useState("");
+  let [estadoPersona, setestadoPersona] = useState("");
   const [Fboton, setFboton] = useState(false);
 
   const [error, setError] = useState(false);
@@ -22,10 +23,6 @@ function CrudEmpleados() {
   const [CrudEmple, SetcrudEmple] = useState([]);
 
 
-
-  useEffect(() => {
-    getEmpleados();
-  }, []);
 
   const datos = () => {
     setFboton(false);
@@ -76,13 +73,50 @@ function CrudEmpleados() {
     }
     setError(false)
     
-    const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
+    const client = new Emailvalidation('ema_live_7rehNckD3mKmrQKF5f0vJSoj3fbJFUHYbqTlWWRL');
 
     client.info(correo, { catch_all: 0 })
       .then(response => {
 
-        console.log(response)
-        console.log(response.smtp_check)
+        if(tipodocumento === 'Cédula'){
+          tipodocumento = 1
+        }else{
+          if(tipodocumento === 'Pasaporte')
+          {
+            tipodocumento = 2
+          }else{
+            if(tipodocumento === 'RUC'){
+              tipodocumento = 3
+            }
+          }
+        }
+    
+        if(genero === 'Masculino'){
+          genero = 1
+        }else{
+          if(genero === 'Femenino')
+          {
+            genero = 2
+          }else{
+            if(genero === 'Otro'){
+              genero = 3
+            }
+          }
+        }
+    
+        if(estadoPersona === 'Activo'){
+          estadoPersona = 1
+        }else{
+          if(estadoPersona === 'Inactivo')
+          {
+            estadoPersona = 2
+          }else{
+            if(estadoPersona === 'Bloqueado'){
+              estadoPersona = 3
+            }
+          }
+        }
+
         if (response.smtp_check) {
           setValidationMessage("El correo es válido.");
           setError(false);
@@ -107,7 +141,6 @@ function CrudEmpleados() {
               getEmpleados();
               setValidationMessage("");
             }
-            alert (estadoPersona)
           });
 
         } else {
@@ -125,14 +158,51 @@ function CrudEmpleados() {
   /* Modificar Empleados */
   const editarEmpleado = () => {
 
+
     if (!nombre || !apellido || !correo || !genero) {
       setError(true);
       return;
     }
 
     setError(false)
+    if(tipodocumento === 'Cédula'){
+      tipodocumento = 1
+    }else{
+      if(tipodocumento === 'Pasaporte')
+      {
+        tipodocumento = 2
+      }else{
+        if(tipodocumento === 'RUC'){
+          tipodocumento = 3
+        }
+      }
+    }
 
+    if(genero === 'Masculino'){
+      genero = 1
+    }else{
+      if(genero === 'Femenino')
+      {
+        genero = 2
+      }else{
+        if(genero === 'Otro'){
+          genero = 3
+        }
+      }
+    }
 
+    if(estadoPersona === 'Activo'){
+      estadoPersona = 1
+    }else{
+      if(estadoPersona === 'Inactivo')
+      {
+        estadoPersona = 2
+      }else{
+        if(estadoPersona === 'Bloqueado'){
+          estadoPersona = 3
+        }
+      }
+    }
     Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idRol: 2,
@@ -147,8 +217,33 @@ function CrudEmpleados() {
       getEmpleados();
 
     });
+    
   }
+  
+  
+    
+  const [results,setResults] = useState([]);
+  const [buscar, setBuscar] = useState("");
 
+  const searchFilter = useCallback(async()=>{
+
+    try {
+      const response = await Axios.get(`http://localhost:3001/crudEmpleados/consultaEmpleado`, {
+        params: {
+          q: buscar
+        }
+      });
+      setResults(response.data);  
+    } catch (error) {
+      console.error("Error en búsqueda:", error);
+    }
+  }, [buscar]);
+
+
+
+  useEffect(() => { 
+    searchFilter();
+        },[searchFilter]);
 
   return (<div>
     <div className='barra-head'>
@@ -171,10 +266,11 @@ function CrudEmpleados() {
 
 
     <div className="botones-acciones">
-
       <button type="button" data-bs-toggle="modal" data-bs-target="#F" className="btn btn-outline-success" onClick={datos} >Agregar Usuario</button>
-
     </div>
+
+    <input type="text" className="form-control mb-2" placeholder="buscar"
+    value={buscar} onChange={(e) => setBuscar(e.target.value)} />
 
     <table className="table table-striped" id="TablaEmpleados">
       <thead>
@@ -192,7 +288,7 @@ function CrudEmpleados() {
       </thead>
       <tbody>
         {
-          CrudEmple.map((val, key) => {
+          results.map((val, key) => {
             return <tr key={key}>
               <th scope='row'>{val.numeroDocumento}</th>
               <td>{val.idTipoIdentificacion}</td>
@@ -229,84 +325,52 @@ function CrudEmpleados() {
           <div class="modal-body">
 
             {/* Formulario */}
-            {!Fboton ? <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm" >Numero de ID</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={ndocumento} onChange={(e) => setnumeroDocumento(e.target.value)} />
-            </div> :
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm" >Numero de ID</span>
-              <input type="text" id="disabledTextInput" class="form-control" value={ndocumento} />
-            </div>}
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm" >Tipo de Identificacion</span>
-              <select
-                className="form-select"
-                aria-label="Tipo de Documento"
-                value={tipodocumento}
-                onChange={(e) => setidTipoIdentificacion(e.target.value)}
-              >
-                <option></option>
-                <option value="1">C.C</option>
-                <option value="2">T.I</option>
-                <option value="3">C.E</option>
-              </select>
-            </div>
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Nombre</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={nombre} onChange={(e) => setNombres(e.target.value)} />
-            </div>
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Apellido</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={apellido} onChange={(e) => setApellidos(e.target.value)} />
-            </div>
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Genero</span>
-              <select
-                className="form-select"
-                aria-label="Genero"
-                value={genero}
-                onChange={(e) => setidGenero(e.target.value)}>
-                  <option></option>
-                <option value="1">Masculino</option>
-                <option value="2">Femenino</option>
-                <option value="3">Otro...</option>
-              </select>
-            </div>
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Correo</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={correo} onChange={(e) => setcorreo(e.target.value)} />
-            </div>
-
-            {!Fboton && <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Contraseña</span>
-              <input type="password" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
+            {!Fboton ? 
+              <input name="ndocumento" type="text" className="form-control mb-2" placeholder="Número de Documento" value={ndocumento} onChange={(e) => setnumeroDocumento(e.target.value)} />
+            : <input name="ndocumento" type="text" className="form-control mb-2" placeholder="Número de Documento" value={ndocumento} />
             }
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Telefono</span>
-              <input type="text" className="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value={telefono} onChange={(e) => settelefono(e.target.value)} />
-            </div>
-
-            <div className="input-group input-group-sm mb-3">
-              <span className="input-group-text" id="inputGroup-sizing-sm">Estado</span>
-              <select
-                className="form-select"
-                aria-label="estadoPersona"
-                value={estadoPersona}
-                onChange={(e) => setestadoPersona(e.target.value)}>
-                <option ></option>
-                <option value="1">Activo</option>
-                <option value="2">Inactivo</option>
-                <option value="3">bloqueado</option>
+                <select
+                name="tipodocumento"
+                className="form-select mb-2"
+                value={tipodocumento}
+                onChange={(e) => setidTipoIdentificacion(e.target.value)}>
+                <option value="" >Tipo de Identificación</option>
+                <option value="Cédula">C.C</option>
+                <option value="Pasaporte">T.I</option>
+                <option value="RUC">C.E</option>
               </select>
-            </div>
+              <input name="nombre" type="text" className="form-control mb-2" placeholder="Nombre" 
+              value={nombre} onChange={(e) => setNombres(e.target.value)} />
+          
+             <input name="apellido" type="text" className="form-control mb-2" placeholder="Apellido"
+             value={apellido} onChange={(e) => setApellidos(e.target.value)} />
+          
+             <select name="genero" className="form-select mb-2" 
+             value={genero} onChange={(e) => setidGenero(e.target.value)}>
+                <option>Género</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro...</option>
+              </select>
+
+            
+              <input name="correo" type="email" className="form-control mb-2" placeholder="Correo"
+              value={correo} onChange={(e) => setcorreo(e.target.value)} />
+
+             {!Fboton &&
+              <input name="password" type="password" className="form-control mb-2" placeholder="Contraseña" 
+              value={password} onChange={(e) => setPassword(e.target.value)} />
+             }
+
+              <input name="telefono" type="text" className="form-control mb-2" placeholder="Teléfono" 
+              value={telefono} onChange={(e) => settelefono(e.target.value)} />
+
+              <select name="estadoPersona" className="form-select mb-2"
+               value={estadoPersona} onChange={(e) => setestadoPersona(e.target.value)}>
+              <option value="Activo">Activo</option>
+                <option value="Inactivo">Inactivo</option>
+                <option value="Bloqueado">Bloqueado</option>
+              </select>
 
             {validationMessage && (
               <p className="texto-errorEmpleado">{validationMessage}</p>

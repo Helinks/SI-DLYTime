@@ -1,23 +1,25 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "./Css/StyleAdminCitas.css";
 import { Link } from "react-router-dom";
+
 import Axios from "axios";
 
 function CrudCita() {
-  const [citas, setcrudCitas] = useState([]);
   const [mensaje, setMensaje] = useState("");
   const [idHorario, setIdHorario] = useState();
   const [citaSeleccionada, setCitaSeleccionada] = useState([]);
-  const [fecha, setFecha] = useState();
+  const [fecha, setFecha] = useState("");
   const [hora, setHora] = useState();
   const [selectHorario, setSelectHorario] = useState(false);
   const [horarios, setHorarios] = useState([]);
-  const [tipoConsulta, setTipoConsulta] = useState();
+  const [tipoConsulta, setTipoConsulta] = useState("");
   const [consultas, setConsultas] = useState([]);
   const [NumeroDocumentoCliente, setDocumentoCliente] = useState(0);
   const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
   const [empleados, setEmpleados] = useState([]);
   const [clientes, setClientes] = useState([]);
+  const [search,setSearch] = useState("");
+  const [results,setResults] = useState([]);
 
 
   const formatearFecha = (fecha) => {
@@ -40,6 +42,24 @@ function CrudCita() {
 
   /* SOLICITUDES */
 
+  // Filtra los datos por la barra de busqueda
+  const searchFilter = useCallback(async()=>{
+
+    try {
+      const response = await Axios.get(`http://localhost:3001/crudCitas/crudCita`, {
+        params: {
+          q: search,
+          fecha: fecha,
+          idTipoConsulta: tipoConsulta
+        }
+      });
+      setResults(response.data);  
+    } catch (error) {
+      console.error("Error en búsqueda:", error);
+    }
+  }, [search,fecha,tipoConsulta]);
+ 
+    
   /* Solicita agregar una nueva cita */
   const addCita = () => {
     const fechaFormateada = formatearFecha(fecha);
@@ -88,20 +108,13 @@ function CrudCita() {
         // Mostrar mensaje de éxito
         setMensaje("Cita agregada correctamente");
 
-        // Recargar lista de citas
-        getCita();
       })
       .catch((error) => {
         console.error("Error al agregar cita:", error);
       });
   };
 
-  /* SOLICITA LOS DETALLES DE CITA EN LA BASE DE DATOS */
-  const getCita = () => {
-    Axios.get("http://localhost:3001/crudCitas/crudCita").then((cita) => {
-      setcrudCitas(cita.data);
-    });
-  };
+
 
   /* SOLICITA LOS HORARIOS DISPONIBLES EN LA BASE DE DATOS */
   const getHorario = (fecha) => {
@@ -171,7 +184,7 @@ function CrudCita() {
       idCita: id,
     }).then(() => {
       setMensaje("Cita cancelada");
-      getCita();
+    
     });
   };
 
@@ -190,8 +203,6 @@ function CrudCita() {
       return;
     }
 
-    console.log("lllllll");
-
     Axios.patch("http://localhost:3001/crudCitas/updateCita", {
       idCita: id,
       idHorario: idHorario,
@@ -208,8 +219,6 @@ function CrudCita() {
         // Mostrar mensaje de éxito
         setMensaje("Cita actualizada correctamente");
 
-        // Recargar lista de citas
-        getCita();
       })
       .catch((error) => {
         console.error("Error al agregar cita:", error);
@@ -285,9 +294,9 @@ function CrudCita() {
         onChange={(event) => {
           setTipoConsulta(event.target.value);
         }}
-        type="number"
-        className="form-control"
+        className="p-2 border rounded"
       >
+        <option></option>
         {consulta.map((consultas, index) => (
           <option value={consultas.idtipoConsulta} key={index}>
             {consultas.nombre}
@@ -298,11 +307,11 @@ function CrudCita() {
   }
 
   useEffect(() => {
-    getCita();
+    searchFilter();
     getEmpleado();
     getConsultas();
     if (fecha) getHorario(fecha);
-  }, [fecha]);
+  }, [fecha, search,searchFilter]);
 
   return (
     <div className="Body">
@@ -344,7 +353,9 @@ function CrudCita() {
         </nav>
       </div>
 
+    
       <div className="ClientesTable">
+        {fecha}
         <h4>{mensaje}</h4>
         <button
         type="button"
@@ -354,6 +365,17 @@ function CrudCita() {
       >
         Agregar cita
       </button>
+      <input type="text" placeholder="Ingrese documento de cliente o del oftalmmologo"
+      value={search}
+      onChange={(e)=>setSearch(e.target.value)}
+      className="w-full p-2 border rounded mb-4"></input>
+      <input
+      type="date"
+      className="w-full p-2 border rounded  m-4"
+      onChange={(e)=>setFecha(e.target.value)}
+      ></input>
+      {listaTipoConsultas(consultas)}
+      
       <div
         class="modal fade"
         id="staticBackdrop1"
@@ -363,6 +385,7 @@ function CrudCita() {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
+        
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
@@ -460,14 +483,14 @@ function CrudCita() {
           <thead>
             <tr className="tr1">
               <th scope="col">Fecha/Hora</th>
-              <th scope="col">NoDocumento</th>
               <th scope="col">Paciente</th>
+              <th scope="col">Profesional</th>
               <th scope="col">TipoConsulta</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {citas.map((cita, index) => {
+            {results.map((cita, index) => {
               return (
                 <tr key={index}>
                   <th scope="row">{cita.fechaHora}</th>

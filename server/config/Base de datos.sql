@@ -150,9 +150,10 @@ INSERT INTO Rol (idRol, nombre) VALUES
 
 -- Insertar datos en persona
 INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, clave, fechaNacimiento, direccion,idEstadoPersona) VALUES
-(123456789, 1, 1, 'Juan', 'Pérez', 1, 'juan.perez@example.com', '555-1234', 'hashed_password1', '1990-01-01', 'Calle 1', 1),
-(987654321, 2, 1, 'María', 'Gómez', 2, 'maria.gomez@example.com', '555-5678', 'hashed_password2', '1985-05-05', 'Calle 2', 1),
-(987653231, 2, 2, 'Natalia', 'Bautista', 2, 'natalia.bautista@example.com', '53123-5678', 'hashed_password3', '1985-06-06', 'Calle 3', 1);
+(123456789, 1, 1, 'Juan', 'Pérez', 1, 'foxaga4008@shouxs.com', '555-1234', '$2a$10$KfdeehHgDW4uSxItDtf4JehQGxYt9h/676.R3ii8dGIohU2WTWmV.', '1990-01-01', 'Calle 1', 1),
+(987654321, 2, 1, 'María', 'Gómez', 2, 'sidigi1129@shouxs.com', '555-5678', '$2a$10$pTvGp2MVMT0w03HHWIFA1.z/twteCfqu5nUjuS0k6P/hTKy1CQnQq', '1985-05-05', 'Calle 2', 1),
+(987653231, 2, 2, 'Natalia', 'Bautista', 2, 'kodebe7783@prorsd.com', '53123-5678', '$2a$10$EP3RQaSq9qIVFBBUjs8uI.Af.UYw0RkD/B3oDm9OLS5Wq36Ifk2Vu', '1985-06-06', 'Calle 3', 1),
+(1013110701, 3, 1, 'Sebastian', 'Rodríguez', 1, 'sebitasrodriguez286@gmail.com', '', '$2a$10$egKYynqOpic9RyaOoQft8..N8S8ibk4OASdYri9RhjdIq/PJiMe1O', '1985-06-06', 'Calle 3', 1);
 
 -- Insertar datos en tipoProblema
 INSERT INTO tipoProblema (idTipoProblema, descripcion) VALUES
