@@ -48,7 +48,7 @@ function App() {
           } 
         />
         <Route 
-          path="/CrudClientes_Empleado" 
+          path="/CrudClientesEmpleado" 
           element={
             <ProtectedRoute requiredRole={[2,3]}>
               <CrudClientesEmpleado />

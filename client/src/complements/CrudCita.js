@@ -327,7 +327,7 @@ function CrudCita() {
               aria-expanded="false"
               aria-label="Toggle navigation"
             >
-              <Link to="/IndexEmpleado">
+              <Link to="/IndexAdmin">
                 <div className="BackButton">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
