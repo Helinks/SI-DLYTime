@@ -7,14 +7,23 @@ const db = require("../Config/db");
 /* Consulta los Usuarios que son empleados  */
 router.get("/consultaEmpleado", (req, res) => {
  
-    const consulta = (`select p.*, td.nombre AS idTipoIdentificacion, ep.nombre AS estadoPersona, g.nombre As idGenero from persona p  
+   const buscarfiltro = req.query.q;
+
+
+    let consulta = `select p.*, td.nombre AS idTipoIdentificacion, ep.nombre AS estadoPersona, g.nombre As idGenero from persona p  
         inner join tipoidentificacion td on p.idTipoIdentificacion = td.idTipoIdentificacion
         inner join estadopersona ep on  ep.idEstado = p.idEstadoPersona 
         inner join genero g on g.idGenero = p.idGenero
-        where idRol = 2`)
+        where idrol = 2 `
+     
+const params = [];
 
+        if (buscarfiltro){
+            consulta+=` and p.numeroDocumento like ? `
+            params.push(`%${buscarfiltro}%`)
+        }
 
-    db.query(consulta, (err, result) => {
+    db.query(consulta,params, (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -35,6 +44,17 @@ router.post("/agregarEmpleado", async (req, res) => {
     const clave = req.body.clave;
     const telefono = req.body.telefono;
     const estado = req.body.estadoPersona;
+
+    console.log(numeroDocumento,
+        idRol,
+        idTipoIdentificacion,
+        Nombres,
+        Apellidos,
+        idGenero,
+        correo,
+        telefono,
+        clave,
+        estado);
 
 
     try {
@@ -94,9 +114,8 @@ router.patch("/actualizarEmpleado", async (req, res) => {
     const correo = req.body.correo;
     const telefono = req.body.telefono;
     const estado = req.body.estadoPersona;
-
     db.query(
-        "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idestadoPersona = ? WHERE numeroDocumento = ? ",
+        "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idEstadoPersona = ? WHERE numeroDocumento = ? ",
         [
             idTipoIdentificacion,
             nombres,
