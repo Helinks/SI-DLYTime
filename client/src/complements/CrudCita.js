@@ -105,6 +105,8 @@ function CrudCita() {
         setTipoConsulta("");
         setSelectHorario(false);
 
+        setSearch();
+
         // Mostrar mensaje de éxito
         setMensaje("Cita agregada correctamente");
 
@@ -184,6 +186,7 @@ function CrudCita() {
       idCita: id,
     }).then(() => {
       setMensaje("Cita cancelada");
+      setSearch();
     
     });
   };
@@ -216,8 +219,12 @@ function CrudCita() {
         setTipoConsulta("");
         setSelectHorario(false);
 
+        
+
         // Mostrar mensaje de éxito
         setMensaje("Cita actualizada correctamente");
+
+        setSearch();
 
       })
       .catch((error) => {
