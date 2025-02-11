@@ -306,6 +306,14 @@ function CrudCita() {
     );
   }
 
+
+  
+  const RutaEstablecida = (rol) => {
+    if (rol==='2') return '/IndexEmpleado';
+    if (rol==='3') return '/IndexAdmin';
+  };
+  
+
   useEffect(() => {
     searchFilter();
     getEmpleado();
@@ -327,7 +335,7 @@ function CrudCita() {
               aria-expanded="false"
               aria-label="Toggle navigation"
             >
-              <Link to="/IndexAdmin">
+              <Link to={RutaEstablecida(localStorage.getItem("userRole"))}>
                 <div className="BackButton">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -31,14 +31,13 @@ function Perfil() {
   }
 
   const getUser = useCallback( async () => {
-    console.log(id)
     Axios.get("http://localhost:3001/perfil/datosUsuario", {
       params: { id: id }
     }).then((datosUser) => {
       setUser(datosUser.data);
     }).catch((err) => {
       console.error("Error al encontrar usuario:", err);
-      return null;
+      return () => setUser(null);
     });
   },[id]);
 
@@ -64,7 +63,17 @@ function Perfil() {
     });
   }
 
-  useEffect(() => getUser(), [getUser]);
+  useEffect(() => {
+    const fetchData = async () => {
+      await getUser();
+    };
+  
+    fetchData();
+  
+    return () => {
+      setUser(null);
+    };
+  }, [setUser,getUser]);
 
   return (
     <div>
