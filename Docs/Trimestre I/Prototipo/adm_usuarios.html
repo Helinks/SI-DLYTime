@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/usuariosADM.css">
+    <link rel="stylesheet" href="css/header_style.css">
+    <title>CRUD de Usuarios</title>
+    <header class="header">
+        <div class="head">
+    <nav class="nav">
+        <ul>
+            <div class="nav-1">
+            <div>     
+            </div>
+            <div class="nav-2">
+                  <ul>
+                    <li><a href="index.html"><img src="img/ico1.png" width="50px" height="50px"></a></li>      
+                  </ul>
+              </li>
+            </div>
+            </div>
+        </ul>
+    </nav>
+</div>
+</head>
+<body style="background-color: rgba(255, 87, 87, 0.9);">
+<div>
+    
+     </div>
+
+<main>
+
+    <form class="form" method="POST">
+        <div class="form-group">
+            <label>Primer nombre:</label>
+            <input type="text" name="nombre" class="input" required>
+        </div>
+        <div class="form-group">
+            <label>Segundo nombre:</label>
+            <input type="text" name="nombre" class="input" required>
+        </div>
+        <div class="form-group">
+            <label>Primer apellido:</label>
+            <input type="text" name="nombre" class="input" required>
+        </div>
+        <div class="form-group">
+            <label>Segundo apellido:</label>
+            <input type="text" name="nombre" class="input" required>
+        </div>
+        <div class="form-group">
+            <label for="birthdate">Fecha de Nacimiento:</label>
+            <input type="date" id="birthdate" placeholder="Añadir fecha de nacimiento">
+        </div>
+        <div class="form-group">
+            <label for="phone">Teléfono:</label>
+            <input type="tel" id="phone">
+          </div>
+        <div class="form-group">
+            <label for="gender">Género:</label>
+            <select name="genero" class="input" required>
+                <option value="masculino">Masculino</option>
+                <option value="femenino">Femenino</option>
+                <option value="otro">Otro</option>
+            </select>
+        </div>  
+        <div class="form-group">
+            <label for=>Tipo de documento:</label>
+            <input type="text">
+        </div>
+        <div class="form-group">
+            <label for=>Documento:</label>
+            <input type="text">
+        </div>
+        <div class="form-group">
+            <label>Correo:</label>
+            <input type="email" name="correo" class="input" required>
+        </div>
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" name="contrasena" class="input" required>
+        </div>
+        <button type="submit" name="agregar_usuario" class="btn-agregar">Agregar Usuario</button>
+    </form>
+
+    <div class="users-table-container">
+        <table class="users-table">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Correo</th>
+                <th>Contraseña</th>
+                <th>Acciones</th>
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>Juan Pérez</td>
+                <td>juan@example.com</td>
+                <td>••••••••</td>
+                <td>
+                    <div style="display: flex;">
+                        <form method="POST" style="margin-right: 5px;">
+                            <input type="hidden" name="id_usuario" value="1">
+                            <button type="submit" name="eliminar_usuario" class="btn-eliminar">Eliminar</button>
+                        </form>
+                        <button onclick="mostrarEditar(1, 'Juan Pérez', 'juan@example.com')" class="btn-editar">Editar</button>
+                    </div>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</main>
+
+
+<div id="editarUsuario" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 class="subtitulo">Editar Usuario</h2>
+        <form method="POST">
+            <input type="hidden" id="editId" name="id">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" id="editNombre" name="nombre" class="input" required>
+            </div>
+            <div class="form-group">
+                <label>Correo:</label>
+                <input type="email" id="editCorreo" name="correo" class="input" required>
+            </div>
+            <div class="form-group">
+                <label>Nueva Contraseña:</label>
+                <input type="password" id="editContrasena" name="contrasena">
+            </div>
+            <button type="submit" name="editar_usuario" class="btn-guardar">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

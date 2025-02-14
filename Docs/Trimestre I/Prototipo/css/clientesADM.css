@@ -1,0 +1,257 @@
+* {
+    padding: 10;
+    margin: 10;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Estilo de la lista desplegable */
+.form-group select.input {
+    appearance: none; /* Elimina el estilo por defecto del navegador */
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+    border: solid 2px #FF5757; /* Borde rojo */
+    padding: 10px 20px; /* Relleno interno */
+    border-radius: 20px; /* Bordes redondeados */
+    font-size: 16px; /* Tamaño de la fuente */
+    width: 100%; /* Ancho completo */
+    box-sizing: border-box; /* Asegura que el padding y el borde se incluyan en el ancho total */
+    color: #FF5757; /* Color del texto */
+    cursor: pointer; /* Cambia el cursor a una mano al pasar sobre el select */
+    transition: background-color .3s ease; /* Transición suave para el cambio de color de fondo */
+}
+
+/* Estilo para la flecha de la lista desplegable */
+.form-group select.input {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuNTg0MTEgNi4zMzMzTDcuOTk5OTkgOS43NDUwNkwxMS40MTU5IDYuMzMzM0wxMi41ODMgNy40OTk5OUw3Ljk5OTk5IDExLjk4MzNMMy40MTU5MSA3LjQ5OTk5TDQuNTg0MTEgNi4zMzMzWiIgZmlsbD0iIzY2NiIgLz4KPC9zdmc+Cg==');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px 10px;
+}
+
+
+
+.nav-2 {
+    position: relative; /* Establece la posición relativa en el contenedor */
+  }
+  
+  .nav-2 ul {
+    list-style-type: none; /* Quita los estilos de viñeta de la lista */
+    margin: 0;
+    padding: 0;
+    position: relative; /* Asegura que los elementos posicionados se ajusten correctamente */
+  }
+  
+  .nav-2 ul li {
+    position: absolute; /* Posiciona el elemento de manera absoluta */
+    top: 0; /* Ajusta la posición vertical */
+    right: 0; /* Ajusta la posición horizontal */
+  }
+  
+  .nav-2 ul li a {
+    display: block; /* Hace que el enlace ocupe todo el espacio del <li> */
+  }
+  
+  .nav-2 ul li img {
+    width: 50px;
+    height: 50px;
+  }
+  
+
+
+.titulo1 {
+    margin: 20px auto;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+    background-color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+}
+
+.titulo1 {
+    margin: 20px;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    width: fit-content; /* Ajustar el ancho al contenido */
+    background-color: rgba(255, 255, 255, 0.9); /* Color de fondo con opacidad */
+    text-align: left; /* Alinear el texto a la izquierda */
+}
+
+.titulo1 h1 {
+    color: #FF5757; /* Color del texto */
+}
+.titulo2 {
+    margin: 0 auto; /* Para centrar horizontalmente */
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    width: fit-content; /* Ajustar el ancho al contenido */
+    background-color: rgba(255, 255, 255, 0.9); /* Color de fondo con opacidad */
+    text-align: center; /* Para centrar el texto dentro del contenedor */
+}
+
+.titulo2 h2 {
+    color: #FF5757; /* Color del texto */
+}
+
+
+.form {
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    background-color: rgba(255, 255, 255, 0.9);
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    margin-right: 10px;
+    
+}
+
+.form-group input {
+    padding: 10px;
+    border: solid 2px rgba(255, 87, 87, 0.9);
+    border-radius: 20px;
+    outline: none;
+    width: 100%;
+}
+
+.users-table-container {
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
+    width: 60%;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-table th,
+.users-table td {
+    padding: 10px;
+    border: 1px solid rgba(255, 87, 87, 0.9);
+    text-align: left;
+}
+
+.users-table th {
+    background-color: rgba(255, 87, 87, 0.9);
+    color: #ffffff;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+}
+
+.modal-content .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-content .form-group label {
+    margin-right: 10px;
+}
+
+.modal-content .form-group input {
+    padding: 10px;
+    border: solid 2px rgba(255, 87, 87, 0.9);
+    border-radius: 20px;
+    outline: none;
+    width: 100%;
+}
+
+.btn-eliminar{
+    background-color: rgba(255, 87, 87, 0.9); /* Color de fondo del botón con opacidad */
+    outline: none;
+    border: solid 2px #FF5757;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color .3s ease;
+}
+.btn-editar{
+    background-color: rgba(255, 87, 87, 0.9); /* Color de fondo del botón con opacidad */
+    outline: none;
+    border: solid 2px #FF5757;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color .3s ease;
+}
+
+.btn-guardar{
+    background-color: rgba(255, 87, 87, 0.9); 
+    outline: none;
+    border: solid 2px #FF5757;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color .3s ease;
+}
+.btn-agregar{
+    background-color: rgba(255, 87, 87, 0.9); 
+    outline: none;
+    border: solid 2px #FF5757;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color .3s ease;
+}
+
+
+.btn-eliminar:hover{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 87, 87, 0.9);
+}
+.btn-editar:hover{
+    background-color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 87, 87, 0.9);
+}
+.btn-guardar:hover{
+    background-color: rgba(255, 255, 255, 0.9); 
+    color: rgba(255, 87, 87, 0.9);
+}
+.btn-agregar:hover{
+    background-color: rgba(255, 255, 255, 0.9); 
+    color: rgba(255, 87, 87, 0.9);
+}

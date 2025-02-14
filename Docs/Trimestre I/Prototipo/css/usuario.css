@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: rgba(255, 87, 87, 0.9); /* Fondo claro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #FF5757; /* Color de texto oscuro */
+  }
+  
+  
+
+  .profile-container {
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    color: #FF5757; /* Color de texto oscuro */
+  }
+  
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #FF5757; /* Texto oscuro para el título */
+  }
+  
+  .form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  label {
+    flex: 1;
+    color: #FF5757; /* Color de texto oscuro para etiquetas */
+  }
+  
+  input {
+    flex: 2;
+    padding: 8px;
+    border: solid 2px #FF5757; /* Borde rojo */
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco con transparencia */
+    color: #FF5757; /* Color de texto oscuro */
+    margin-right: 10px;
+    outline: none;
+  }
+  
+  input:disabled {
+    background-color: #e9e9e9;
+    border: solid 2px #FF5757; /* Borde gris para campos deshabilitados */
+  }
+  
+  .edit-btn {
+    background-color: rgba(255, 87, 87, 0.9); /* Fondo rojo con transparencia */
+    outline: none;
+    border: solid 2px #FF5757; /* Borde rojo */
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #fff; /* Texto blanco */
+    cursor: pointer;
+    transition: background-color .3s ease;
+  }
+  
+  .edit-btn:hover {
+    background-color: #ffffff; /* Fondo rojo */
+    color: #FF5757; /* Texto blanco */
+  }
+  
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(255, 87, 87, 0.9); /* Fondo rojo con transparencia */
+    outline: none;
+    border: solid 2px #FF5757; /* Borde rojo */
+    border-radius: 20px;
+    color: #fff; /* Texto blanco */
+    cursor: pointer;
+    transition: background-color .3s ease;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #ffffff; /* Fondo rojo */
+    color: #FF5757; /* Texto blanco */
+  }
+  
+  /* Cambiar el color del placeholder para todos los campos de entrada */
+input::placeholder,
+textarea::placeholder {
+  color: #FF5757; /* Color de texto gris para el placeholder */
+}
+
+/* Ejemplo específico para un campo de entrada con ID */
+#campo-id::placeholder {
+  color: #ccc; /* Color de texto más claro para el placeholder */
+}
+
+.header {
+    position: relative; /* Asegura que los elementos posicionados se ajusten correctamente */
+    height: 60px; /* Ajusta la altura del encabezado según sea necesario */
+    background-color: #f0f0f0; /* Color de fondo opcional para el header */
+  }
+  
+  .icon-container {
+    position: absolute; /* Posiciona el contenedor de la imagen de manera absoluta */
+    top: 10px; /* Distancia desde el borde superior del header */
+    right: 10px; /* Distancia desde el borde derecho del header */
+    display: flex; /* Utiliza flexbox para alinear la imagen */
+    align-items: center; /* Centra verticalmente la imagen */
+  }
+  
+  .icon-container img {
+    width: 50px; /* Tamaño de la imagen */
+    height: 50px;
+    margin-right: 10px; /* Espacio entre la imagen y el borde del contenedor */
+  }
+  

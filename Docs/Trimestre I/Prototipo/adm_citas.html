@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/citas_style.css">
+    <link rel="stylesheet" href="css/header_style.css">
+    <title>CRUD de Citas</title>
+    <header class="header">
+        <div class="head">
+    <nav class="nav">
+        <ul>
+            <div class="nav-1">
+            <div>     
+            </div>
+            <div class="nav-2">
+                  <ul>
+                    <li><a href="index.html"><img src="img/ico1.png" width="50px" height="50px"></a></li>      
+                  </ul>
+              </li>
+            </div>
+            </div>
+        </ul>
+    </nav>
+</div>
+</head>
+<body style="background-color: rgba(255, 87, 87, 0.9);">
+<div>
+    
+     </div>
+
+
+<main>
+
+    
+<form class="form" method="POST" >
+    <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" name="title" class="input" required>
+    </div>
+    <div class="form-group">
+        <label>Descripción:</label>
+        <input type="text" name="description" class="input" required>
+    </div>
+    <div class="form-group">
+        <label>Fecha de inicio:</label>
+        <input type="datetime-local" name="start" class="input" required>
+    </div>
+    <div class="form-group">
+        <label>Fecha de fin:</label>
+        <input type="datetime-local" name="end" class="input" required>
+    </div>
+    <div class="form-group">
+        <label>Tipo de consulta:</label>
+        <input type="text" class="input" required>
+    </div>
+    <div class="form-group">
+        <label>Local:</label>
+        <input type="text" class="input" required>
+    </div>
+    <button type="submit" name="agregar_cita" class="btn-agregar">Agregar Cita</button>
+</form>
+
+
+<div class="citas-table-container">
+    <table class="citas-table">
+        <tr>
+            <th class="th">ID</th>
+            <th class="th">Nombre</th>
+            <th class="th">Descripción</th>
+            <th class="th">Fecha de Inicio</th>
+            <th class="th">Fecha de Fin</th>
+            <th class="th">Acciones</th>
+        </tr>
+        
+            <tr>
+                <td class="td">1</td>
+                <td class="td">Gerson</td>
+                <td class="td">recervo una cita :D</td>
+                <td class="td">14/04/2024 09:00 A.M</td>
+                <td class="td">14/04/2024 10:00 A.M</td>
+                <td class="td">
+                    <div style="display: flex;">
+                        <form method="POST" style="margin-right: 5px;">
+                            <input type="hidden" name="id_cita">
+                            <button type="submit" name="eliminar_cita" class="btn-eliminar">Eliminar</button>
+                        </form>
+                        <button class="btn-editar">Editar</button>
+                    </div>
+                </td>
+            </tr>
+        
+    </table>
+</div>
+        </main>
+<!-- Ventana emergente para editar cita -->
+<div id="editarCita" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 class="subtitulo">Editar Cita</h2>
+        <form method="POST">
+            <input type="hidden" id="editId" name="id">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" id="editTitle" name="title" class="input" required>
+            </div>
+            <div class="form-group">
+                <label>Descripción:</label>
+                <input type="text" id="editDescription" name="description" class="input" required>
+            </div>
+            <div class="form-group">
+                <label>Fecha de inicio:</label>
+                <input type="datetime-local" id="editStart" name="start" class="input" required>
+            </div>
+            <div class="form-group">
+                <label>Fecha de fin:</label>
+                <input type="datetime-local" id="editEnd" name="end" class="input" required>
+            </div>
+            <button type="submit" name="editar_cita" class="btn-guardar">Guardar Cambios</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
