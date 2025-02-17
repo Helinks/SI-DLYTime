@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="author" content="WB DataDic" />
@@ -103,7 +103,7 @@
     <td>&nbsp;</td>
     <td>&#10004;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único de la cita.</td>
 </tr>
 <tr>
     <td>NumeroDocumentoCliente</td>
@@ -116,7 +116,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Documento del cliente que solicitó la cita.</td>
 </tr>
 <tr>
     <td>NumeroDocumentoOftalmologo</td>
@@ -129,7 +129,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Documento del oftalmólogo asignado a la cita.</td>
 </tr>
 <table id='detallecita'>
 <caption>detallecita</caption>
@@ -158,7 +158,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador de la cita a la que pertenece este detalle.</td>
 </tr>
 <tr>
     <td>idDiagnostico</td>
@@ -171,7 +171,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Identificador del diagnóstico asociado a la cita.</td>
 </tr>
 <tr>
     <td>idTipoConsulta</td>
@@ -184,7 +184,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Tipo de consulta seleccionado.</td>
 </tr>
 <tr>
     <td>idHorarios</td>
@@ -197,7 +197,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Horario en que se programá la cita.</td>
 </tr>
 <tr>
     <td>idEstadoCita</td>
@@ -210,7 +210,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Estado actual de la cita (confirmada, cancelada, etc.).</td>
 </tr>
 <tr>
     <td>direccion</td>
@@ -223,7 +223,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Dirección donde se realizará la cita</td>
 </tr>
 <table id='diagnostico'>
 <caption>diagnostico</caption>
@@ -252,7 +252,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del diagnóstico.</td>
 </tr>
 <tr>
     <td>descripcion</td>
@@ -265,7 +265,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Descripción detallada del diagnóstico oftalmologo.</td>
 </tr>
 <table id='estadopersona'>
 <caption>estadopersona</caption>
@@ -294,7 +294,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del estado.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -307,7 +307,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre o Descripción del estado.</td>
 </tr>
 <table id='estadoscita'>
 <caption>estadoscita</caption>
@@ -336,7 +336,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del estado de la cita.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -349,7 +349,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre o Descripción del estado.</td>
 </tr>
 <table id='genero'>
 <caption>genero</caption>
@@ -378,7 +378,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del género.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -391,7 +391,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre del género (masculino, femenino, etc.).</td>
 </tr>
 <table id='historialclinico'>
 <caption>historialclinico</caption>
@@ -420,7 +420,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Documento del paciente.</td>
 </tr>
 <tr>
     <td>idDiagnostico</td>
@@ -433,7 +433,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>diagnósticos asociados al historial clinico.</td>
 </tr>
 <table id='horario'>
 <caption>horario</caption>
@@ -462,7 +462,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del horario.</td>
 </tr>
 <tr>
     <td>fecha</td>
@@ -475,7 +475,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Fecha del horario.</td>
 </tr>
 <tr>
     <td>hora</td>
@@ -488,7 +488,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Hora específica del horario.</td>
 </tr>
 <table id='persona'>
 <caption>persona</caption>
@@ -517,7 +517,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Documento único de la persona.</td>
 </tr>
 <tr>
     <td>idRol</td>
@@ -530,7 +530,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Rol de la persona (Cliente, Oftalmologo, etc.).</td>
 </tr>
 <tr>
     <td>idTipoIdentificacion</td>
@@ -543,7 +543,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Tipo de identificación utilizada.</td>
 </tr>
 <tr>
     <td>Nombres</td>
@@ -556,7 +556,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre de la persona.</td>
 </tr>
 <tr>
     <td>Apellidos</td>
@@ -569,7 +569,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Apellido de la persona.</td>
 </tr>
 <tr>
     <td>idGenero</td>
@@ -582,7 +582,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>género de la persona.</td>
 </tr>
 <tr>
     <td>correo</td>
@@ -595,7 +595,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Correo electrúnico.</td>
 </tr>
 <tr>
     <td>telefono</td>
@@ -608,7 +608,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Teléfono de la persona.</td>
 </tr>
 <tr>
     <td>clave</td>
@@ -621,7 +621,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Contraseña encriptada.</td>
 </tr>
 <tr>
     <td>fechaNacimiento</td>
@@ -634,7 +634,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Fecha de nacimiento.</td>
 </tr>
 <tr>
     <td>direccion</td>
@@ -647,7 +647,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Dirección de residencia.</td>
 </tr>
 <tr>
     <td>idEstadoPersona</td>
@@ -660,7 +660,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Estado actual de la persona (activo, inactivo, etc.).</td>
 </tr>
 <tr>
     <td>reset_code</td>
@@ -673,7 +673,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Código para restablecer la contraseña.</td>
 </tr>
 <tr>
     <td>reset_expires</td>
@@ -686,7 +686,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Fecha y hora de expiración del código de restablecimiento.</td>
 </tr>
 <tr>
     <td>block_account</td>
@@ -699,7 +699,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td>NULL</td>
-    <td></td>
+    <td>Fecha y hora de bloqueo de la cuenta.</td>
 </tr>
 <table id='rol'>
 <caption>rol</caption>
@@ -728,7 +728,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del rol.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -741,7 +741,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre del rol (cliente, oftalmologo, administrador.).</td>
 </tr>
 <table id='soporte'>
 <caption>soporte</caption>
@@ -770,7 +770,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del soporte.</td>
 </tr>
 <tr>
     <td>idTipoProblema</td>
@@ -783,7 +783,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Tipo de problema reportado.</td>
 </tr>
 <tr>
     <td>numeroDocumento</td>
@@ -796,7 +796,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Documento de la persona que solicitó soporte.</td>
 </tr>
 <tr>
     <td>descripcionProblema</td>
@@ -809,7 +809,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Descripción del problema.</td>
 </tr>
 <table id='tipoconsulta'>
 <caption>tipoconsulta</caption>
@@ -838,7 +838,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del tipo de consulta.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -851,7 +851,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre o Descripción del tipo de consulta.</td>
 </tr>
 <table id='tipoidentificacion'>
 <caption>tipoidentificacion</caption>
@@ -880,7 +880,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del tipo de identificación.</td>
 </tr>
 <tr>
     <td>nombre</td>
@@ -893,7 +893,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Nombre o Descripción del tipo de identificación.</td>
 </tr>
 <table id='tipoproblema'>
 <caption>tipoproblema</caption>
@@ -922,7 +922,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Identificador único del tipo de problema.</td>
 </tr>
 <tr>
     <td>descripcion</td>
@@ -935,7 +935,7 @@
     <td>&nbsp;</td>
     <td class='attr'>&nbsp;</td>
     <td></td>
-    <td></td>
+    <td>Descripción del problema.</td>
 </tr>
 </table>
 </body>
