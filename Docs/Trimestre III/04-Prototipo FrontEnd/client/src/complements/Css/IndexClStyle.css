@@ -1,0 +1,84 @@
+.welcomeCliente {
+  margin-top: 10%;
+  display: flex;
+  justify-content: center;
+}
+
+.barCliente {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+.optionsCliente {
+  display: flex;
+  height: 70vh;
+  width: 170vh;
+}
+
+.option1 {
+  width: 40vh;
+  height: 20vh;
+  position: absolute;
+  margin-top: 5%;
+  margin-left: 42.5%;
+}
+
+.option2 {
+  width: 40vh;
+  height: 20vh;
+  position: absolute;
+  margin-top: 5%;
+  margin-left: 67.5%;
+}
+
+.option3 {
+  width: 40vh;
+  height: 20vh;
+  position: absolute;
+  margin-left: 54.5%;
+  margin-top: 20%;
+}
+
+.btn-outline-custom {
+  width: 100%;
+  height: 100%;
+  color: #FFFFFF; /* Color del texto */
+  border: 2px solid #FF5757; /* Borde claro */
+  background-color: #FF5757; /* Fondo transparente por defecto */
+  transition: all 0.3s ease-in-out; /* Efecto suave */
+}
+
+.btn-outline-custom:hover {
+  color: #FFFFFF; /* Color del texto cuando pasas el mouse */
+  background-color: #000000; /* Cambia el fondo a naranja */
+  border-color: #000000; /* Cambia el borde para que combine */
+}
+
+.btn-outline-custom1 {
+  width: 100%;
+  color: #000000; /* Color del texto */
+  border: 2px solid #ffffff; /* Borde claro */
+  background-color: transparent; /* Fondo transparente por defecto */
+  transition: all 0.3s ease-in-out; /* Efecto suave */
+}
+
+.btn-outline-custom1:hover {
+  color: #fff; /* Color del texto cuando pasas el mouse */
+  background-color: #000000; /* Cambia el fondo a naranja */
+  border-color: #000000; /* Cambia el borde para que combine */
+}
+
+.custom-img1 {
+  width: 70vh;   /* Cambia según lo que necesites */
+  height: 70vh;  /* Ajusta la altura */
+  margin-right: 100vh;
+  border-radius: 15px;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3); /* Agrega una sombra difusa */
+  filter: blur(0px); /* Difumina los bordes */
+  transition: all 0.5s ease-in-out;
+}
+
+.custom-img1:hover {
+  filter: blur(2px); /* Al pasar el mouse, la imagen se ve nítida */
+}

@@ -1,0 +1,174 @@
+.main-container {
+    max-width: 768px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+  
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .nav-button {
+    padding: 8px;
+    border-radius: 50%;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .nav-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    color: #333;
+  }
+  
+  .date-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .view-options {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  
+  .view-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .view-button.active {
+    background-color: #ff5757;
+    color: #fff;
+  }
+  
+  .today-button {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+  }
+  
+  .today-button:hover {
+    background-color: #218838;
+  }
+  
+  .calendar-container,
+  .daily-view-container {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .calendar-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: #f0f0f0;
+    padding: 8px;
+  }
+  
+  .day-box {
+    text-align: center;
+  }
+  
+  .day-name {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .day-number {
+    font-size: 16px;
+  }
+  
+  .calendar-body {
+    max-height: 384px;
+    overflow-y: auto;
+  }
+  
+  .hour-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 4px 0;
+  }
+  
+  .hour-label {
+    text-align: right;
+    padding-right: 8px;
+    color: #999;
+  }
+  
+  .day-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+  
+  .day-cell {
+    border-top: 1px solid #ddd;
+    height: 32px;
+  }
+  
+  .daily-header {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  
+  .day-name-big {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .day-number-big {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .month-name {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .daily-body {
+    max-height: 384px;
+    overflow-y: auto;
+  }
+  
+  .hour-slot {
+    border-top: 1px solid #ddd;
+    height: 48px;
+  }
+
+  .event-box {
+    background-color: #ff5757; /* Color de fondo */
+    color: white; /* Color del texto */
+    padding: 5px;
+    border-radius: 5px; /* Esquinas redondeadas */
+    text-align: center; /* Centrar el texto */
+    margin: 2px; /* Espacio entre elementos */
+    cursor: pointer; /* Cambiar el cursor a mano al pasar por encima */
+  }
+  
+  .event-box.not-available {
+    background-color: rgba(255, 87, 87, 0.6); /* Color más apagado */
+  }
+  .event-box.blue-background {
+    background-color: rgb(0, 78, 245); /* Color más apagado */
+  }
+  
