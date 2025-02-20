@@ -9,7 +9,7 @@ function IndexAdmin() {
     <div>
       <div class="collapse" id="navbarToggleExternalContent">
         <div class="bg-dark p-4">
-          <h5 class="text-white h4">cerrar sesion</h5>
+        <Link to="/login"><h5 class="text-white h4">Cerrar sesion</h5></Link>
         </div>
       </div>
       <nav class="navbar navbar-dark bg-danger">

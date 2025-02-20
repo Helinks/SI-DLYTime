@@ -32,7 +32,8 @@ function IndexCliente() {
       <div class="collapse" id="navbarToggleExternalContent">
         <div class="bg-dark p-4">
           <Link to="/Perfil"><h5 class="text-white h4">Perfíl</h5></Link>
-          <h5 class="text-white h4">Cerrar Sesion</h5>
+          <Link to="/login"><h5 class="text-white h4">Cerrar sesion</h5></Link>
+          
         </div>
       </div>
       <nav class="navbar navbar-dark bg-danger">
