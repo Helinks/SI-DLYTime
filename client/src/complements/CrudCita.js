@@ -9,10 +9,12 @@ function CrudCita() {
   const [idHorario, setIdHorario] = useState();
   const [citaSeleccionada, setCitaSeleccionada] = useState([]);
   const [fecha, setFecha] = useState("");
+  const [fechaFilter, setFechaFilter] = useState("");
   const [hora, setHora] = useState();
   const [selectHorario, setSelectHorario] = useState(false);
   const [horarios, setHorarios] = useState([]);
   const [tipoConsulta, setTipoConsulta] = useState("");
+  const [tipoConsultaFilter, setTipoConsultaFilter] = useState("");
   const [consultas, setConsultas] = useState([]);
   const [NumeroDocumentoCliente, setDocumentoCliente] = useState(0);
   const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
@@ -49,15 +51,15 @@ function CrudCita() {
       const response = await Axios.get(`http://localhost:3001/crudCitas/crudCita`, {
         params: {
           q: search,
-          fecha: fecha,
-          idTipoConsulta: tipoConsulta
+          fecha: fechaFilter,
+          idTipoConsulta: tipoConsultaFilter
         }
       });
       setResults(response.data);  
     } catch (error) {
       console.error("Error en búsqueda:", error);
     }
-  }, [search,fecha,tipoConsulta]);
+  }, [search,fechaFilter,tipoConsultaFilter]);
  
     
   /* Solicita agregar una nueva cita */
@@ -313,6 +315,24 @@ function CrudCita() {
     );
   }
 
+  function listaTipoConsultasFilter(consulta) {
+    return (
+      <select
+        onChange={(event) => {
+          setTipoConsultaFilter(event.target.value);
+        }}
+        className="p-2 border rounded"
+      >
+        <option></option>
+        {consulta.map((consultas, index) => (
+          <option value={consultas.idtipoConsulta} key={index}>
+            {consultas.nombre}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
 
   
   const RutaEstablecida = (rol) => {
@@ -326,7 +346,7 @@ function CrudCita() {
     getEmpleado();
     getConsultas();
     if (fecha) getHorario(fecha);
-  }, [fecha, search,searchFilter]);
+  }, [fecha, search,searchFilter,fechaFilter]);
 
   return (
     <div className="Body">
@@ -370,7 +390,6 @@ function CrudCita() {
 
     
       <div className="ClientesTable">
-        {fecha}
         <h4>{mensaje}</h4>
         <button
         type="button"
@@ -387,9 +406,9 @@ function CrudCita() {
       <input
       type="date"
       className="w-full p-2 border rounded  m-4"
-      onChange={(e)=>setFecha(e.target.value)}
+      onChange={(e)=>setFechaFilter(e.target.value)}
       ></input>
-      {listaTipoConsultas(consultas)}
+      {listaTipoConsultasFilter(consultas)}
       
       <div
         class="modal fade"
