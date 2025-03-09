@@ -247,6 +247,8 @@ function CrudCita() {
         type="number"
         className="form-control"
       >
+        <option value="" key="">
+          </option>
         {empleados.map((empleado, index) => (
           <option value={empleado.numeroDocumento} key={index}>
             {empleado.nombre}
@@ -480,7 +482,7 @@ function CrudCita() {
 
                 <div className="mb-3">
                   <label>
-                    Documento oftalmologo: {listaEmpleados(empleados)}
+                    Seleccione oftalmologo: {listaEmpleados(empleados)}
                   </label>
                 </div>
                 <br />
