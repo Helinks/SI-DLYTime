@@ -214,3 +214,70 @@ INSERT INTO cita (idCita, NumeroDocumentoCliente,NumeroDocumentoOftalmologo) VAL
 INSERT INTO detalleCita (idCita, idDiagnostico, idTipoConsulta, idHorarios, idEstadoCita, direccion) VALUES
 (1, 1, 1, 1, 1, 'Calle 1'),
 (2, 2, 2, 2, 2, 'Calle 2');
+
+SET GLOBAL event_scheduler = ON;
+SHOW EVENTS FROM dlytime;
+DROP EVENT IF EXISTS InsertarHorariosEvento;
+
+
+DELIMITER //
+
+CREATE PROCEDURE InsertarHorariosTresSemanas()
+BEGIN 
+    DECLARE fechaObjetivo DATE;
+    DECLARE idHorario INT;
+
+    -- Definir la fecha objetivo (21 días después de hoy)
+    SET fechaObjetivo = CURDATE() + INTERVAL 21 DAY;
+    
+    -- Obtener el último ID en la tabla Horario
+    SELECT COALESCE(MAX(idHorarios), 0) INTO idHorario FROM Horario;
+
+    -- Solo insertará si no existen horarios para esa fecha
+    IF NOT EXISTS (SELECT 1 FROM Horario WHERE fecha = fechaObjetivo) THEN 
+        INSERT INTO Horario (idHorarios, fecha, hora, estadoHorario)
+        SELECT 
+            (idHorario + ROW_NUMBER() OVER(ORDER BY hora)) AS idHorarios,
+            fechaObjetivo,
+            t.hora,
+            1  -- Estado "Disponible"
+        FROM (
+            SELECT '10:00:00' AS hora UNION ALL
+            SELECT '10:30:00' UNION ALL
+            SELECT '11:00:00' UNION ALL
+            SELECT '11:30:00' UNION ALL
+            SELECT '12:00:00' UNION ALL
+            SELECT '12:30:00' UNION ALL
+            SELECT '13:00:00' UNION ALL
+            SELECT '13:30:00' UNION ALL
+            SELECT '14:00:00' UNION ALL
+            SELECT '14:30:00' UNION ALL
+            SELECT '15:00:00' UNION ALL
+            SELECT '15:30:00' UNION ALL
+            SELECT '16:00:00' UNION ALL
+            SELECT '16:30:00' UNION ALL
+            SELECT '17:00:00' UNION ALL
+            SELECT '17:30:00' UNION ALL
+            SELECT '18:00:00' UNION ALL
+            SELECT '18:30:00' UNION ALL
+            SELECT '19:00:00' 
+        ) t
+	ORDER BY t.hora;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS InsertarHorariosEvento
+ON SCHEDULE EVERY 1 DAY
+STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
+
+DO 
+BEGIN 
+CALL InsertarHorariosTresSemanas();
+END//
+DELIMITER ;
+
+
