@@ -71,20 +71,12 @@ CREATE TABLE estadosCita (
     nombre VARCHAR(50) NOT NULL,
     PRIMARY KEY (idEstadocita)
 );
-CREATE TABLE estadoHorario (
-    idEstadoHorario INT NOT NULL,
-    nombre VARCHAR(50) NOT NULL,
-    PRIMARY KEY (idEstadoHorario)
-);
 
 CREATE TABLE Horario (
     idHorarios INT NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    estadoHorario INT NOT NULL, 
-    
-    PRIMARY KEY (idHorarios),
-    CONSTRAINT horario_fk FOREIGN KEY (estadoHorario) REFERENCES estadoHorario(idEstadoHorario)
+    PRIMARY KEY (idHorarios)
 );
 
 CREATE TABLE tipoConsulta (
@@ -179,16 +171,10 @@ INSERT INTO estadosCita (idEstadocita, nombre) VALUES
 (2, 'Confirmada'),
 (3, 'Cancelada');
 
--- Insertar datos en estadoHorario
-
-INSERT INTO estadoHorario (idEstadoHorario,nombre) VALUES
-(1,'Disponible'),
-(2,'No disponible');
-
 -- Insertar datos en Horario
-INSERT INTO Horario (idHorarios, fecha, hora,estadoHorario) VALUES
-(1, '2024-10-25', '09:00:00', 1),
-(2, '2024-10-25', '10:00:00', 1);
+INSERT INTO Horario (idHorarios, fecha, hora) VALUES
+(1, '2024-10-25', '09:00:00'),
+(2, '2024-10-25', '10:00:00');
 
 -- Insertar datos en tipoConsulta
 INSERT INTO tipoConsulta (idtipoConsulta, nombre) VALUES
