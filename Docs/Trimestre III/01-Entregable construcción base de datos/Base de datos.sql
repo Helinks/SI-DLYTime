@@ -72,11 +72,20 @@ CREATE TABLE estadosCita (
     PRIMARY KEY (idEstadocita)
 );
 
+CREATE TABLE estadoHorario (
+    idEstadoHorario INT NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idEstadoHorario)
+);
+
 CREATE TABLE Horario (
     idHorarios INT NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    PRIMARY KEY (idHorarios)
+    estadoHorario INT NOT NULL, 
+    
+    PRIMARY KEY (idHorarios),
+    CONSTRAINT horario_fk FOREIGN KEY (estadoHorario) REFERENCES estadoHorario(idEstadoHorario)
 );
 
 CREATE TABLE tipoConsulta (
@@ -86,7 +95,7 @@ CREATE TABLE tipoConsulta (
 );
 
 CREATE TABLE diagnostico (
-    idDiagnostico INT NOT NULL,
+    idDiagnostico INT NOT NULL AUTO_INCREMENT,
     descripcion VARCHAR(300) NOT NULL,
     PRIMARY KEY (idDiagnostico)
 );
