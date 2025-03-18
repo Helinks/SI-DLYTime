@@ -104,10 +104,13 @@ function CrudCita() {
         setHora("");
         setDocumentoCliente("");
         setDocumentoOftalmologo("");
-        setTipoConsulta("");
+        setTipoConsultaFilter("");
         setSelectHorario(false);
 
-        setSearch();
+        setClientes([]);
+        setEmpleados([]);
+        setConsultas([]);
+        setHorarios([]);
 
         // Mostrar mensaje de éxito
         setMensaje("Cita agregada correctamente");
@@ -324,7 +327,7 @@ function CrudCita() {
         }}
         className="p-2 border rounded"
       >
-        <option></option>
+        <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
         {consulta.map((consultas, index) => (
           <option value={consultas.idtipoConsulta} key={index}>
             {consultas.nombre}
@@ -446,6 +449,7 @@ function CrudCita() {
                           className="form-control"
                           id="fechaHora"
                           name="fechaHora"
+                          value={fecha}
                           onChange={(event) => {
                             setFecha(event.target.value);
                           }}
@@ -472,7 +476,7 @@ function CrudCita() {
                       </label>
                     </div>
                     <button
-                    type="button"
+                      type="button"
                       className="btn btn-secondary"
                       onClick={() => getCliente(NumeroDocumentoCliente)}
                       disabled={!NumeroDocumentoCliente}
@@ -487,14 +491,14 @@ function CrudCita() {
 
                     <div className="mb-3">
                       <label>
-                        Documento oftalmologo: 
+                        Documento oftalmologo:
                         {listaEmpleados(empleados)}
                       </label>
                     </div>
                     <br />
                     <div className="mb-3">
                       <label htmlFor="tipoConsulta" className="form-label">
-                        Tipo de consulta: 
+                        Tipo de consulta:
                         {listaTipoConsultas(consultas)}
                       </label>
                     </div>
@@ -503,9 +507,6 @@ function CrudCita() {
                     type="submit"
                     class="btn btn-primary"
                     data-bs-dismiss="modal"
-                    onClick={() => {
-                      addCita();
-                    }}
                   >
                     Agendar
                   </button>
