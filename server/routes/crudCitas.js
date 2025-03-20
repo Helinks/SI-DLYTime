@@ -243,7 +243,7 @@ router.get("/getEmpleados", (req, res) => {
 })
 
 router.get("/getClientes", (req, res) => {
-    const query = `SELECT CONCAT(persona.Nombres,' ',persona.Apellidos) AS nombre, numeroDocumento FROM persona WHERE idRol = 1 && numeroDocumento= ?;`;
+    const query = `SELECT CONCAT(persona.Nombres,' ',persona.Apellidos) AS nombre, numeroDocumento, correo FROM persona WHERE idRol = 1 && numeroDocumento= ?;`;
     const numero = req.query.NumeroDocumentoCliente
     db.query(query, [numero], (err, result) => {
         if (err) {

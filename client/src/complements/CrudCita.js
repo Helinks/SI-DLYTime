@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 
 function CrudCita() {
+  const [clienteBuscado, setClienteBuscado] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [idHorario, setIdHorario] = useState();
   const [citaSeleccionada, setCitaSeleccionada] = useState([]);
@@ -171,6 +172,7 @@ function CrudCita() {
         if (response.data && response.data.length > 0) {
           setMensaje("");
           setClientes(response.data);
+          setClienteBuscado(true);
         } else {
           setMensaje("Cliente no encontrado");
           setClientes([]);
@@ -249,6 +251,7 @@ function CrudCita() {
         }}
         type="number"
         className="p-2 border rounded"
+        required
       >
         <option value="" selected="" disabled="">Seleccione un empleado</option>
         {empleados.map((empleado, index) => (
@@ -308,6 +311,7 @@ function CrudCita() {
           setTipoConsulta(event.target.value);
         }}
         className="p-2 border rounded"
+        required
       >
         <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
         {consulta.map((consultas, index) => (
@@ -453,14 +457,15 @@ function CrudCita() {
                           onChange={(event) => {
                             setFecha(event.target.value);
                           }}
+                          required
                         ></input>
                       </label>
                     </div>
-                    {validarFechas(fecha) ? (
+                    {fecha==="" ? "":(validarFechas(fecha) ? (
                       listaHorario(horarios)
                     ) : (
                       <p>No hay citas diponibles</p>
-                    )}
+                    ))}
                     <div className="mb-3">
                       <label htmlFor="fechaHora" className="form-label">
                         Documento cliente:
@@ -471,7 +476,9 @@ function CrudCita() {
                           name="documentoCliente"
                           required
                           value={NumeroDocumentoCliente}
-                          onChange={(event) => setDocumentoCliente(event.target.value)}
+                          onChange={(event) => {setDocumentoCliente(event.target.value);
+                            setClienteBuscado(false);
+                          }}
                         />
                       </label>
                     </div>
@@ -485,7 +492,8 @@ function CrudCita() {
                     </button>
                     <div>
                       {clientes.map((val, key) => {
-                        return <h6>{val.nombre}</h6>;
+                        return <div><h6>{val.nombre}</h6>
+                        <h6>{val.correo}</h6></div>;
                       })}
                     </div>
 
@@ -506,7 +514,7 @@ function CrudCita() {
                   <button
                     type="submit"
                     class="btn btn-primary"
-                    data-bs-dismiss="modal"
+                    disabled={clientes.length === 0 || !clienteBuscado}
                   >
                     Agendar
                   </button>
@@ -639,7 +647,7 @@ function CrudCita() {
               <button type="button" className="btn2" data-bs-dismiss="modal">
                 Cancelar
               </button>
-              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita)}>
+              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita)} >
                 Guardar Cambios
               </button>
             </div>
