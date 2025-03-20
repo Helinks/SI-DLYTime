@@ -180,10 +180,15 @@ INSERT INTO estadosCita (idEstadocita, nombre) VALUES
 (2, 'Confirmada'),
 (3, 'Cancelada');
 
+-- Insertar datos en estadoHorario
+INSERT INTO estadoHorario (idEstadoHorario,nombre) VALUES
+(1,'Disponible'),
+(2,'No disponible');
+
 -- Insertar datos en Horario
-INSERT INTO Horario (idHorarios, fecha, hora) VALUES
-(1, '2024-10-25', '09:00:00'),
-(2, '2024-10-25', '10:00:00');
+INSERT INTO Horario (idHorarios, fecha, hora,estadoHorario) VALUES
+(1, '2024-10-25', '09:00:00', 1),
+(2, '2024-10-25', '10:00:00', 1);
 
 -- Insertar datos en tipoConsulta
 INSERT INTO tipoConsulta (idtipoConsulta, nombre) VALUES
@@ -274,3 +279,5 @@ BEGIN
 CALL InsertarHorariosTresSemanas();
 END//
 DELIMITER ;
+
+CALL InsertarHorariosTresSemanas();
