@@ -18,7 +18,7 @@ function CrudCita() {
   const [tipoConsultaFilter, setTipoConsultaFilter] = useState("");
   const [consultas, setConsultas] = useState([]);
   const [NumeroDocumentoCliente, setDocumentoCliente] = useState("");
-  const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
+  const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState("");
   const [empleados, setEmpleados] = useState([]);
   const [clientes, setClientes] = useState([]);
   const [search, setSearch] = useState("");
@@ -105,8 +105,8 @@ function CrudCita() {
         setHora("");
         setDocumentoCliente("");
         setDocumentoOftalmologo("");
-        setTipoConsultaFilter("");
         setSelectHorario(false);
+        setTipoConsulta("");
 
         setClientes([]);
         setEmpleados([]);
@@ -242,6 +242,28 @@ function CrudCita() {
 
   /* FUNCIONES */
 
+  function limpiarCamposAgregar(){
+    setFecha("");
+    setHora("");
+    setDocumentoCliente("");
+    setDocumentoOftalmologo("");
+    setTipoConsulta("");
+    setSelectHorario(false);
+
+    setClientes([]);
+    setEmpleados([]);
+    setConsultas([]);
+    setHorarios([]);
+  }
+
+  function limpiarCamposFiltro(){
+    setSearch("");
+    setTipoConsultaFilter("");
+    setFechaFilter("");
+    
+    setConsultas([]);
+  }
+
   /* Muestra los empleados registrados */
   function listaEmpleados(empleados) {
     return (
@@ -270,6 +292,7 @@ function CrudCita() {
       <div className="horarios-container">
         {horarios.map((horario, index) => (
           <button
+          type="button"
             className={`seleccionarHorario ${selectHorario && horario.hora === hora ? "activo" : ""
               }`}
             key={index}
@@ -407,12 +430,20 @@ function CrudCita() {
         >
           Agendar Cita
         </button>
+        <button
+          type="button"
+          class="btn btn-secundary"
+          onClick={() => limpiarCamposFiltro()}
+        >
+          Limpiar campos
+        </button>
         <input type="text" placeholder="Ingrese documento de cliente o del oftalmmologo"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full p-2 border rounded mb-4"></input>
         <input
           type="date"
+          value={fechaFilter}
           className="w-full p-2 border rounded  m-4"
           onChange={(e) => setFechaFilter(e.target.value)}
         ></input>
@@ -514,7 +545,8 @@ function CrudCita() {
                   <button
                     type="submit"
                     class="btn btn-primary"
-                    disabled={clientes.length === 0 || !clienteBuscado}
+                    data-bs-dismiss="modal"
+                    disabled={clientes.length === 0 || !clienteBuscado || !NumeroDocumentoOftalmologo || !tipoConsulta}
                   >
                     Agendar
                   </button>
@@ -525,6 +557,7 @@ function CrudCita() {
                   type="button"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
+                  onClick={() =>limpiarCamposAgregar()}
                 >
                   Cerrar
                 </button>
