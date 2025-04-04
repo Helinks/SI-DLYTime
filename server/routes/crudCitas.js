@@ -69,6 +69,7 @@ router.get("/crudCitaCliente", (req, res) => {
 
     const query = `SELECT
     detalleCita.idCita,
+    detalleCita.idEstadoCita,
     horario.fecha,
     horario.hora,
     CONCAT(horario.fecha,' ',horario.hora) AS fechaHora,
@@ -202,10 +203,18 @@ router.post("/addCita", async (req, res) => {
 
 
 router.patch("/cancelCita", (req, res) => {
+
     const estadoCita = req.body.estadoCita;
+    let estado = null
+    if(estadoCita === 3){
+         estado = 1 
+    }else if(estadoCita === 1) {
+        estado = 3
+    }
+    
     const idCita = req.body.idCita;
 
-    db.query(`UPDATE detallecita SET idEstadoCita = ? WHERE idCita = ?`, [estadoCita, idCita],
+    db.query(`UPDATE detallecita SET idEstadoCita = ? WHERE idCita = ?`, [estado, idCita],
         (err, result) => {
 
             if (err) return res.status(500).send("Error en la consulta");

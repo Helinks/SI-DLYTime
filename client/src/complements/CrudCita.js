@@ -187,9 +187,9 @@ function CrudCita() {
 
 
   /* SOLICITUD PARA CANCELAR CITA */
-  const changeEstado = (id) => {
+  const changeEstado = (id,estado) => {
     Axios.patch("http://localhost:3001/crudCitas/cancelCita", {
-      estadoCita: 3,
+      estadoCita: estado,
       idCita: id,
     }).then(() => {
       setMensaje("Cita cancelada");
@@ -242,7 +242,7 @@ function CrudCita() {
 
   /* FUNCIONES */
 
-  function limpiarCamposAgregar(){
+  function limpiarCampos(){
     setFecha("");
     setHora("");
     setDocumentoCliente("");
@@ -470,6 +470,7 @@ function CrudCita() {
                   type="button"
                   class="btn-close"
                   data-bs-dismiss="modal"
+                  onClick={() =>limpiarCampos()}
                   aria-label="Close"
                 ></button>
               </div>
@@ -557,7 +558,7 @@ function CrudCita() {
                   type="button"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
-                  onClick={() =>limpiarCamposAgregar()}
+                  onClick={() =>limpiarCampos()}
                 >
                   Cerrar
                 </button>
@@ -605,7 +606,7 @@ function CrudCita() {
                       </button>
                       {cita.estadoCita === "Cancelada" ? (
                         <p className="txt1">
-                          <i> Cancelada </i>
+                          <i onClick={() => setCitaSeleccionada(cita)}> Cancelada </i>
                         </p>
                       ) : (
                         <button
@@ -644,6 +645,7 @@ function CrudCita() {
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
+                onClick={() =>limpiarCampos()}
                 aria-label="Close"
               ></button>
             </div>
@@ -655,20 +657,20 @@ function CrudCita() {
                   </label>
                   <input
                     type="date"
+                    value={fecha}
                     className="form-control"
                     onChange={(event) => {
                       setFecha(event.target.value);
                     }}
                   />
                 </div>
-                {validarFechas(fecha) ? (
-                  listaHorario(horarios)
-                ) : (
-                  <p>No hay citas diponibles</p>
-                )}
+                {fecha==="" ? "":(validarFechas(fecha) ? (
+                      listaHorario(horarios)
+                    ) : (
+                      <p>No hay citas diponibles</p>
+                    ))}
                 <div className="mb-3">
                   <label htmlFor="tipoConsulta" className="form-label">
-                    Tipo de Consulta
                   </label>
 
                   {listaTipoConsultas(consultas)}
@@ -677,7 +679,7 @@ function CrudCita() {
             </div>
             <div className="modal-footer">
 
-              <button type="button" className="btn2" data-bs-dismiss="modal">
+              <button type="button" className="btn2" data-bs-dismiss="modal" onClick={() =>limpiarCampos()}>
                 Cancelar
               </button>
               <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita)} >
@@ -717,7 +719,7 @@ function CrudCita() {
                 type="button"
                 className="btn1"
                 data-bs-dismiss="modal"
-                onClick={() => changeEstado(citaSeleccionada.idCita)}
+                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idEstadoCita)}
               >
                 Cancelar
               </button>
