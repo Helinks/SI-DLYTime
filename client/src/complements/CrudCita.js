@@ -187,18 +187,30 @@ function CrudCita() {
 
 
   /* SOLICITUD PARA CANCELAR CITA */
-  const changeEstado = (id,estado) => {
+  const changeEstado = (id,identificadorHorario,idEstado,idEstadoH) => {
+
+
     Axios.patch("http://localhost:3001/crudCitas/cancelCita", {
-      estadoCita: estado,
-      idCita: id,
-    }).then(() => {
-      setMensaje("Cita cancelada");
-      setSearch();
+      idCita:id,
+      idEstadoCita: idEstado,
+      idHorario: identificadorHorario,
+      idEstadoHorario:idEstadoH,
+    }).then((response) => {
+      
+      if(!response.data.message) {
+      if(idEstado === 1){
+        setMensaje("Cita cancelada");
+      }else if(idEstado=== 3){
+        setMensaje("Cita activada");
+      }}else{
+        setMensaje(response.data.message);
+      }
+      searchFilter();
 
     });
   };
 
-  const updateCita = (id) => {
+  const updateCita = (id,idEstadoH) => {
     const fechaFormateada = formatearFecha(fecha);
     if (!idHorario) {
       setMensaje("Por favor seleccione fecha y hora");
@@ -215,6 +227,7 @@ function CrudCita() {
 
     Axios.patch("http://localhost:3001/crudCitas/updateCita", {
       idCita: id,
+      estadoHorario: idEstadoH,
       idHorario: idHorario,
       idTipoConsulta: tipoConsulta,
     })
@@ -349,6 +362,7 @@ function CrudCita() {
   function listaTipoConsultasFilter(consulta) {
     return (
       <select
+      onClick={() => {getEmpleado(); getConsultas();}}
         onChange={(event) => {
           setTipoConsultaFilter(event.target.value);
         }}
@@ -426,7 +440,8 @@ function CrudCita() {
           type="button"
           class="btn btn-primary"
           data-bs-toggle="modal"
-          data-bs-target="#staticBackdrop1"
+          data-bs-target="#agendar"
+          onClick={() => {getEmpleado(); getConsultas();}}
         >
           Agendar Cita
         </button>
@@ -451,7 +466,7 @@ function CrudCita() {
 
         <div
           class="modal fade"
-          id="staticBackdrop1"
+          id="agendar"
           data-bs-backdrop="static"
           data-bs-keyboard="false"
           tabindex="-1"
@@ -555,7 +570,7 @@ function CrudCita() {
               </div>
               <div class="modal-footer">
                 <button
-                  type="button"
+                  type="reset"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
                   onClick={() =>limpiarCampos()}
@@ -586,34 +601,38 @@ function CrudCita() {
                   <td>{cita.tipoConsulta}</td>
                   <td>
                     <div className="actions">
+                      {cita.idEstadoCita === 3 ? "":
                       <button
                         type="button"
                         className="btn1"
                         data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                        onClick={() => setCitaSeleccionada(cita)}
+                        data-bs-target="#Modificar"
+                        onClick={() => {setCitaSeleccionada(cita); getConsultas()}}
                       >
                         Modificar
-                      </button>
+                      </button>}  
                       <button
                         type="button"
                         class="btn btn-success"
                         data-bs-toggle="modal"
-                        data-bs-target="#exampleModal2"
+                        data-bs-target="#Detalles"
                         onClick={() => detallesCita(cita)}
                       >
                         Detalles
                       </button>
-                      {cita.estadoCita === "Cancelada" ? (
+                      {cita.idEstadoCita === 3 ? (
                         <p className="txt1">
-                          <i onClick={() => setCitaSeleccionada(cita)}> Cancelada </i>
+                          <i
+                          data-bs-toggle="modal"
+                          data-bs-target="#activar" 
+                          onClick={() => setCitaSeleccionada(cita)}> Cancelada </i>
                         </p>
                       ) : (
                         <button
                           type="button"
                           className="btn2"
                           data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop"
+                          data-bs-target="#cancelar"
                           onClick={() => setCitaSeleccionada(cita)}
                         >
                           Cancelar
@@ -630,7 +649,7 @@ function CrudCita() {
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id="Modificar"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -682,7 +701,7 @@ function CrudCita() {
               <button type="button" className="btn2" data-bs-dismiss="modal" onClick={() =>limpiarCampos()}>
                 Cancelar
               </button>
-              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita)} >
+              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita,citaSeleccionada.idEstadoHorario)} >
                 Guardar Cambios
               </button>
             </div>
@@ -692,7 +711,45 @@ function CrudCita() {
 
       <div
         className="modal fade"
-        id="staticBackdrop"
+        id="activar"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                activar
+              </h5>
+            </div>
+            <div className="modal-body">
+              ¿Está seguro que desea activar esta cita?
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn2" data-bs-dismiss="modal"
+                onClick={() => setMensaje("")}
+              >
+                Cerrar
+              </button>
+              <button
+                type="button"
+                className="btn1"
+                data-bs-dismiss="modal"
+                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idHorarios,citaSeleccionada.idEstadoCita, citaSeleccionada.estadoHorario)}
+              >
+                Activar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="cancelar"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -719,7 +776,7 @@ function CrudCita() {
                 type="button"
                 className="btn1"
                 data-bs-dismiss="modal"
-                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idEstadoCita)}
+                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idHorarios,citaSeleccionada.idEstadoCita, citaSeleccionada.estadoHorario)}
               >
                 Cancelar
               </button>
@@ -730,7 +787,7 @@ function CrudCita() {
 
       <div
         class="modal fade"
-        id="exampleModal2"
+        id="Detalles"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
