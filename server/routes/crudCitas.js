@@ -307,6 +307,7 @@ router.patch("/updateCita", async (req, res) => {
     const idCita = req.body.idCita;
     const idHorario = req.body.idHorario;
     const idTipoConsulta = req.body.idTipoConsulta;
+    const idHorario1 = req.body.idHorario1;
     db.getConnection((err, connection) => {
         if (err) return res.status(500).send("Error al conectar con la base de datos");
 
@@ -316,7 +317,7 @@ router.patch("/updateCita", async (req, res) => {
                 return res.status(500).send("Error al iniciar la transacción");
             }
             try {
-                // Paso 1: Insertar un nuevo diagnóstico
+                // Paso 1: Insertar un nuevo detalleCita
                 const updateResult = await new Promise((resolve, reject) => {
                     connection.query(
                         `UPDATE detallecita SET idHorarios = ?, idTipoConsulta = ? WHERE idCita = ?`,
@@ -336,6 +337,15 @@ router.patch("/updateCita", async (req, res) => {
                         resolve(results);
                     });
                 });
+
+                 // Paso 3: Actualizar el estado del horario
+                 const horarioPasdadoQuery = 'UPDATE horario SET estadoHorario = 1 WHERE idHorarios = ?';
+                 const horarioPasadoResult = await new Promise((resolve, reject) => {
+                     connection.query(horarioQuery, [idHorario1], (error, results) => {
+                         if (error || results.affectedRows === 0) return reject(new Error("Error al actualizar el horario"));
+                         resolve(results);
+                     });
+                 });
 
                 console.log("Horario actualizado correctamente:", horarioResult);
 

@@ -210,7 +210,7 @@ function CrudCita() {
     });
   };
 
-  const updateCita = (id,idEstadoH) => {
+  const updateCita = (id,idEstadoH,idHorario1) => {
     const fechaFormateada = formatearFecha(fecha);
     if (!idHorario) {
       setMensaje("Por favor seleccione fecha y hora");
@@ -228,6 +228,7 @@ function CrudCita() {
     Axios.patch("http://localhost:3001/crudCitas/updateCita", {
       idCita: id,
       estadoHorario: idEstadoH,
+      idHorario1: idHorario1,
       idHorario: idHorario,
       idTipoConsulta: tipoConsulta,
     })
@@ -669,6 +670,7 @@ function CrudCita() {
               ></button>
             </div>
             <div className="modal-body">
+            <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); updateCita(citaSeleccionada.idCita,citaSeleccionada.idEstadoHorario,citaSeleccionada.idHorarios); }}>
               <div>
                 <div className="mb-3">
                   <label htmlFor="fechaHora" className="form-label">
@@ -678,6 +680,7 @@ function CrudCita() {
                     type="date"
                     value={fecha}
                     className="form-control"
+                    required
                     onChange={(event) => {
                       setFecha(event.target.value);
                     }}
@@ -695,15 +698,17 @@ function CrudCita() {
                   {listaTipoConsultas(consultas)}
                 </div>
               </div>
+              <button type="submit" className="btn btn btn-danger" data-bs-dismiss="modal" disabled={!tipoConsulta || !hora}>
+                Guardar Cambios
+              </button>
+              </form>
             </div>
             <div className="modal-footer">
 
               <button type="button" className="btn2" data-bs-dismiss="modal" onClick={() =>limpiarCampos()}>
                 Cancelar
               </button>
-              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita,citaSeleccionada.idEstadoHorario)} >
-                Guardar Cambios
-              </button>
+              
             </div>
           </div>
         </div>
