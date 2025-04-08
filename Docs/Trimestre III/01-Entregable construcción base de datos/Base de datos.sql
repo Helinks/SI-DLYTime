@@ -50,6 +50,15 @@ CREATE TABLE persona (
     
 );
 
+CREATE TABLE clientes_historial (
+  idHistorial INT AUTO_INCREMENT PRIMARY KEY,
+  numeroDocumento INT,  -- Asegúrate de que sea INT si en persona es INT
+  descripcion TEXT,
+  archivoPDF VARCHAR(255),
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (numeroDocumento) REFERENCES persona(numeroDocumento) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE tipoProblema (
     idTipoProblema INT NOT NULL,
     descripcion VARCHAR(45) NOT NULL,
