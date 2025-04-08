@@ -5,21 +5,24 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 
 function CrudCita() {
+  const [clienteBuscado, setClienteBuscado] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [idHorario, setIdHorario] = useState();
   const [citaSeleccionada, setCitaSeleccionada] = useState([]);
   const [fecha, setFecha] = useState("");
+  const [fechaFilter, setFechaFilter] = useState("");
   const [hora, setHora] = useState();
   const [selectHorario, setSelectHorario] = useState(false);
   const [horarios, setHorarios] = useState([]);
   const [tipoConsulta, setTipoConsulta] = useState("");
+  const [tipoConsultaFilter, setTipoConsultaFilter] = useState("");
   const [consultas, setConsultas] = useState([]);
-  const [NumeroDocumentoCliente, setDocumentoCliente] = useState(0);
-  const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
+  const [NumeroDocumentoCliente, setDocumentoCliente] = useState("");
+  const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState("");
   const [empleados, setEmpleados] = useState([]);
   const [clientes, setClientes] = useState([]);
-  const [search,setSearch] = useState("");
-  const [results,setResults] = useState([]);
+  const [search, setSearch] = useState("");
+  const [results, setResults] = useState([]);
 
 
   const formatearFecha = (fecha) => {
@@ -43,23 +46,23 @@ function CrudCita() {
   /* SOLICITUDES */
 
   // Filtra los datos por la barra de busqueda
-  const searchFilter = useCallback(async()=>{
+  const searchFilter = useCallback(async () => {
 
     try {
       const response = await Axios.get(`http://localhost:3001/crudCitas/crudCita`, {
         params: {
           q: search,
-          fecha: fecha,
-          idTipoConsulta: tipoConsulta
+          fecha: fechaFilter,
+          idTipoConsulta: tipoConsultaFilter
         }
       });
-      setResults(response.data);  
+      setResults(response.data);
     } catch (error) {
       console.error("Error en búsqueda:", error);
     }
-  }, [search,fecha,tipoConsulta]);
- 
-    
+  }, [search, fechaFilter, tipoConsultaFilter]);
+
+
   /* Solicita agregar una nueva cita */
   const addCita = () => {
     const fechaFormateada = formatearFecha(fecha);
@@ -102,10 +105,13 @@ function CrudCita() {
         setHora("");
         setDocumentoCliente("");
         setDocumentoOftalmologo("");
-        setTipoConsulta("");
         setSelectHorario(false);
+        setTipoConsulta("");
 
-        setSearch();
+        setClientes([]);
+        setEmpleados([]);
+        setConsultas([]);
+        setHorarios([]);
 
         // Mostrar mensaje de éxito
         setMensaje("Cita agregada correctamente");
@@ -166,6 +172,7 @@ function CrudCita() {
         if (response.data && response.data.length > 0) {
           setMensaje("");
           setClientes(response.data);
+          setClienteBuscado(true);
         } else {
           setMensaje("Cliente no encontrado");
           setClientes([]);
@@ -177,21 +184,33 @@ function CrudCita() {
       });
   }, []);
 
-  
-  
+
+
   /* SOLICITUD PARA CANCELAR CITA */
-  const changeEstado = (id) => {
+  const changeEstado = (id,identificadorHorario,idEstado,idEstadoH) => {
+
+
     Axios.patch("http://localhost:3001/crudCitas/cancelCita", {
-      estadoCita: 3,
-      idCita: id,
-    }).then(() => {
-      setMensaje("Cita cancelada");
-      setSearch();
-    
+      idCita:id,
+      idEstadoCita: idEstado,
+      idHorario: identificadorHorario,
+      idEstadoHorario:idEstadoH,
+    }).then((response) => {
+      
+      if(!response.data.message) {
+      if(idEstado === 1){
+        setMensaje("Cita cancelada");
+      }else if(idEstado=== 3){
+        setMensaje("Cita activada");
+      }}else{
+        setMensaje(response.data.message);
+      }
+      searchFilter();
+
     });
   };
 
-  const updateCita = (id) => {
+  const updateCita = (id,idEstadoH,idHorario1) => {
     const fechaFormateada = formatearFecha(fecha);
     if (!idHorario) {
       setMensaje("Por favor seleccione fecha y hora");
@@ -208,6 +227,8 @@ function CrudCita() {
 
     Axios.patch("http://localhost:3001/crudCitas/updateCita", {
       idCita: id,
+      estadoHorario: idEstadoH,
+      idHorario1: idHorario1,
       idHorario: idHorario,
       idTipoConsulta: tipoConsulta,
     })
@@ -219,7 +240,7 @@ function CrudCita() {
         setTipoConsulta("");
         setSelectHorario(false);
 
-        
+        setConsultas([]);
 
         // Mostrar mensaje de éxito
         setMensaje("Cita actualizada correctamente");
@@ -235,6 +256,28 @@ function CrudCita() {
 
   /* FUNCIONES */
 
+  function limpiarCampos(){
+    setFecha("");
+    setHora("");
+    setDocumentoCliente("");
+    setDocumentoOftalmologo("");
+    setTipoConsulta("");
+    setSelectHorario(false);
+
+    setClientes([]);
+    setEmpleados([]);
+    setConsultas([]);
+    setHorarios([]);
+  }
+
+  function limpiarCamposFiltro(){
+    setSearch("");
+    setTipoConsultaFilter("");
+    setFechaFilter("");
+    
+    setConsultas([]);
+  }
+
   /* Muestra los empleados registrados */
   function listaEmpleados(empleados) {
     return (
@@ -243,8 +286,10 @@ function CrudCita() {
           setDocumentoOftalmologo(event.target.value);
         }}
         type="number"
-        className="form-control"
+        className="p-2 border rounded"
+        required
       >
+        <option value="" selected="" disabled="">Seleccione un empleado</option>
         {empleados.map((empleado, index) => (
           <option value={empleado.numeroDocumento} key={index}>
             {empleado.nombre}
@@ -261,6 +306,7 @@ function CrudCita() {
       <div className="horarios-container">
         {horarios.map((horario, index) => (
           <button
+          type="button"
             className={`seleccionarHorario ${selectHorario && horario.hora === hora ? "activo" : ""
               }`}
             key={index}
@@ -302,8 +348,28 @@ function CrudCita() {
           setTipoConsulta(event.target.value);
         }}
         className="p-2 border rounded"
+        required
       >
-        <option></option>
+        <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
+        {consulta.map((consultas, index) => (
+          <option value={consultas.idtipoConsulta} key={index}>
+            {consultas.nombre}
+          </option>
+        ))}
+      </select>
+    );
+  }
+
+  function listaTipoConsultasFilter(consulta) {
+    return (
+      <select
+      onClick={() => {getEmpleado(); getConsultas();}}
+        onChange={(event) => {
+          setTipoConsultaFilter(event.target.value);
+        }}
+        className="p-2 border rounded"
+      >
+        <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
         {consulta.map((consultas, index) => (
           <option value={consultas.idtipoConsulta} key={index}>
             {consultas.nombre}
@@ -314,19 +380,19 @@ function CrudCita() {
   }
 
 
-  
+
   const RutaEstablecida = (rol) => {
-    if (rol==='2') return '/IndexEmpleado';
-    if (rol==='3') return '/IndexAdmin';
+    if (rol === '2') return '/IndexEmpleado';
+    if (rol === '3') return '/IndexAdmin';
   };
-  
+
 
   useEffect(() => {
     searchFilter();
     getEmpleado();
     getConsultas();
     if (fecha) getHorario(fecha);
-  }, [fecha, search,searchFilter]);
+  }, [fecha, search, searchFilter, fechaFilter]);
 
   return (
     <div className="Body">
@@ -368,132 +434,154 @@ function CrudCita() {
         </nav>
       </div>
 
-    
+
       <div className="ClientesTable">
-        {fecha}
         <h4>{mensaje}</h4>
         <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop1"
-      >
-        Agregar cita
-      </button>
-      <input type="text" placeholder="Ingrese documento de cliente o del oftalmmologo"
-      value={search}
-      onChange={(e)=>setSearch(e.target.value)}
-      className="w-full p-2 border rounded mb-4"></input>
-      <input
-      type="date"
-      className="w-full p-2 border rounded  m-4"
-      onChange={(e)=>setFecha(e.target.value)}
-      ></input>
-      {listaTipoConsultas(consultas)}
-      
-      <div
-        class="modal fade"
-        id="staticBackdrop1"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">
-                Agregar Cita
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div>
-                <div className="mb-3">
-                  <label htmlFor="fechaHora" className="form-label">
-                    Fecha:{" "}
-                    <input
-                      type="date"
-                      className="form-control"
-                      onChange={(event) => {
-                        setFecha(event.target.value);
-                      }}
-                    ></input>
-                  </label>
-                </div>
-                {validarFechas(fecha) ? (
-                  listaHorario(horarios)
-                ) : (
-                  <p>No hay citas diponibles</p>
-                )}
-                <div className="mb-3">
-                  <label htmlFor="fechaHora" className="form-label">
-                    Documento cliente:{" "}
-                    <input
-                      onChange={(event) =>
-                        setDocumentoCliente(event.target.value)
-                      }
-                      type="number"
-                      className="form-control"
-                      value={NumeroDocumentoCliente}
-                    />
-                  </label>
-                </div>
-                <button
-                  className=""
-                  onClick={() => getCliente(NumeroDocumentoCliente)}
-                  disabled={!NumeroDocumentoCliente}
-                >
-                  Buscar Cliente
-                </button>
-                <div>
-                  {clientes.map((val, key) => {
-                    return <h6>{val.nombre}</h6>;
-                  })}
-                </div>
+          type="button"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#agendar"
+          onClick={() => {getEmpleado(); getConsultas();}}
+        >
+          Agendar Cita
+        </button>
+        <button
+          type="button"
+          class="btn btn-secundary"
+          onClick={() => limpiarCamposFiltro()}
+        >
+          Limpiar campos
+        </button>
+        <input type="text" placeholder="Ingrese documento de cliente o del oftalmmologo"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 border rounded mb-4"></input>
+        <input
+          type="date"
+          value={fechaFilter}
+          className="w-full p-2 border rounded  m-4"
+          onChange={(e) => setFechaFilter(e.target.value)}
+        ></input>
+        {listaTipoConsultasFilter(consultas)}
 
-                <div className="mb-3">
-                  <label>
-                    Documento oftalmologo: {listaEmpleados(empleados)}
-                  </label>
-                </div>
-                <br />
-                <div className="mb-3">
-                  <label>
-                    Tipo de consulta: {listaTipoConsultas(consultas)}
-                  </label>
-                </div>
+        <div
+          class="modal fade"
+          id="agendar"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          aria-labelledby="staticBackdropLabel"
+          aria-hidden="true"
+        >
+          {/* MODAL PARA AGREGAR CITA */}
+
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">
+                  Agendar Cita
+                </h1>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  onClick={() =>limpiarCampos()}
+                  aria-label="Close"
+                ></button>
               </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Cerrar
-              </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                data-bs-dismiss="modal"
-                onClick={() => {
-                  addCita();
-                }}
-              >
-                Confirmar
-              </button>
+              <div class="modal-body">
+                <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); addCita(); }}>
+                  <div>
+                    <div className="mb-3">
+                      <label htmlFor="fechaHora" className="form-label">
+                        Fecha:
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="fechaHora"
+                          name="fechaHora"
+                          value={fecha}
+                          onChange={(event) => {
+                            setFecha(event.target.value);
+                          }}
+                          required
+                        ></input>
+                      </label>
+                    </div>
+                    {fecha==="" ? "":(validarFechas(fecha) ? (
+                      listaHorario(horarios)
+                    ) : (
+                      <p>No hay citas diponibles</p>
+                    ))}
+                    <div className="mb-3">
+                      <label htmlFor="fechaHora" className="form-label">
+                        Documento cliente:
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="documentoCliente"
+                          name="documentoCliente"
+                          required
+                          value={NumeroDocumentoCliente}
+                          onChange={(event) => {setDocumentoCliente(event.target.value);
+                            setClienteBuscado(false);
+                          }}
+                        />
+                      </label>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => getCliente(NumeroDocumentoCliente)}
+                      disabled={!NumeroDocumentoCliente}
+                    >
+                      Buscar Cliente
+                    </button>
+                    <div>
+                      {clientes.map((val, key) => {
+                        return <div><h6>{val.nombre}</h6>
+                        <h6>{val.correo}</h6></div>;
+                      })}
+                    </div>
+
+                    <div className="mb-3">
+                      <label>
+                        Documento oftalmologo:
+                        {listaEmpleados(empleados)}
+                      </label>
+                    </div>
+                    <br />
+                    <div className="mb-3">
+                      <label htmlFor="tipoConsulta" className="form-label">
+                        Tipo de consulta:
+                        {listaTipoConsultas(consultas)}
+                      </label>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                    disabled={clientes.length === 0 || !clienteBuscado || !NumeroDocumentoOftalmologo || !tipoConsulta}
+                  >
+                    Agendar
+                  </button>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="reset"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                  onClick={() =>limpiarCampos()}
+                >
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
         <table className="table">
           <thead>
             <tr className="tr1">
@@ -513,35 +601,39 @@ function CrudCita() {
                   <td>{cita.nombreEmpleado}</td>
                   <td>{cita.tipoConsulta}</td>
                   <td>
-                  <div className="actions">
+                    <div className="actions">
+                      {cita.idEstadoCita === 3 ? "":
                       <button
                         type="button"
                         className="btn1"
                         data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"
-                        onClick={() => setCitaSeleccionada(cita)}
+                        data-bs-target="#Modificar"
+                        onClick={() => {setCitaSeleccionada(cita); getConsultas()}}
                       >
                         Modificar
-                      </button>
+                      </button>}  
                       <button
                         type="button"
                         class="btn btn-success"
                         data-bs-toggle="modal"
-                        data-bs-target="#exampleModal2"
+                        data-bs-target="#Detalles"
                         onClick={() => detallesCita(cita)}
                       >
                         Detalles
                       </button>
-                      {cita.estadoCita === "Cancelada" ? (
+                      {cita.idEstadoCita === 3 ? (
                         <p className="txt1">
-                          <i> Cancelada </i>
+                          <i
+                          data-bs-toggle="modal"
+                          data-bs-target="#activar" 
+                          onClick={() => setCitaSeleccionada(cita)}> Cancelada </i>
                         </p>
                       ) : (
                         <button
                           type="button"
                           className="btn2"
                           data-bs-toggle="modal"
-                          data-bs-target="#staticBackdrop"
+                          data-bs-target="#cancelar"
                           onClick={() => setCitaSeleccionada(cita)}
                         >
                           Cancelar
@@ -558,7 +650,7 @@ function CrudCita() {
 
       <div
         className="modal fade"
-        id="exampleModal"
+        id="Modificar"
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
@@ -573,10 +665,12 @@ function CrudCita() {
                 type="button"
                 className="btn-close"
                 data-bs-dismiss="modal"
+                onClick={() =>limpiarCampos()}
                 aria-label="Close"
               ></button>
             </div>
             <div className="modal-body">
+            <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); updateCita(citaSeleccionada.idCita,citaSeleccionada.idEstadoHorario,citaSeleccionada.idHorarios); }}>
               <div>
                 <div className="mb-3">
                   <label htmlFor="fechaHora" className="form-label">
@@ -584,33 +678,74 @@ function CrudCita() {
                   </label>
                   <input
                     type="date"
+                    value={fecha}
                     className="form-control"
+                    required
                     onChange={(event) => {
                       setFecha(event.target.value);
                     }}
                   />
                 </div>
-                {validarFechas(fecha) ? (
-                  listaHorario(horarios)
-                ) : (
-                  <p>No hay citas diponibles</p>
-                )}
+                {fecha==="" ? "":(validarFechas(fecha) ? (
+                      listaHorario(horarios)
+                    ) : (
+                      <p>No hay citas diponibles</p>
+                    ))}
                 <div className="mb-3">
                   <label htmlFor="tipoConsulta" className="form-label">
-                    Tipo de Consulta
                   </label>
 
                   {listaTipoConsultas(consultas)}
                 </div>
               </div>
+              <button type="submit" className="btn btn btn-danger" data-bs-dismiss="modal" disabled={!tipoConsulta || !hora}>
+                Guardar Cambios
+              </button>
+              </form>
             </div>
             <div className="modal-footer">
 
-              <button type="button" className="btn2" data-bs-dismiss="modal">
+              <button type="button" className="btn2" data-bs-dismiss="modal" onClick={() =>limpiarCampos()}>
                 Cancelar
               </button>
-              <button type="button" className="btn1" data-bs-dismiss="modal" onClick={() => updateCita(citaSeleccionada.idCita)}>
-                Guardar Cambios
+              
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="activar"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabIndex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="staticBackdropLabel">
+                activar
+              </h5>
+            </div>
+            <div className="modal-body">
+              ¿Está seguro que desea activar esta cita?
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn2" data-bs-dismiss="modal"
+                onClick={() => setMensaje("")}
+              >
+                Cerrar
+              </button>
+              <button
+                type="button"
+                className="btn1"
+                data-bs-dismiss="modal"
+                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idHorarios,citaSeleccionada.idEstadoCita, citaSeleccionada.estadoHorario)}
+              >
+                Activar
               </button>
             </div>
           </div>
@@ -619,7 +754,7 @@ function CrudCita() {
 
       <div
         className="modal fade"
-        id="staticBackdrop"
+        id="cancelar"
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -646,7 +781,7 @@ function CrudCita() {
                 type="button"
                 className="btn1"
                 data-bs-dismiss="modal"
-                onClick={() => changeEstado(citaSeleccionada.idCita)}
+                onClick={() => changeEstado(citaSeleccionada.idCita,citaSeleccionada.idHorarios,citaSeleccionada.idEstadoCita, citaSeleccionada.estadoHorario)}
               >
                 Cancelar
               </button>
@@ -657,7 +792,7 @@ function CrudCita() {
 
       <div
         class="modal fade"
-        id="exampleModal2"
+        id="Detalles"
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"

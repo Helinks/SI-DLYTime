@@ -9,19 +9,22 @@ router.get("/crudCita", (req, res) => {
     const searchQuery = req.query.q;
     const dateQuery = req.query.fecha;
     const tipoConsultaQuery = req.query.idTipoConsulta;
-    
-   
-        
-        let baseQuery = `SELECT
+
+
+
+    let baseQuery = `SELECT
             detalleCita.idCita,
             horario.fecha,
             horario.hora,
+            horario.estadoHorario,
             CONCAT(horario.fecha,' ',horario.hora) AS fechaHora,
             CONCAT(p1.nombres,' ', p1.apellidos) AS nombreCliente,
             CONCAT(p2.nombres,' ', p2.apellidos) AS nombreEmpleado,
             tipoconsulta.nombre AS tipoConsulta,
             detalleCita.direccion,
-            estadosCita.nombre AS estadoCita
+            estadosCita.idEstadoCita, 
+            estadosCita.nombre AS estadoCita,
+            detalleCita.idHorarios
         FROM cita
         INNER JOIN detallecita ON detallecita.idCita = cita.idCita
         INNER JOIN horario ON horario.idHorarios = detallecita.idHorarios
@@ -31,37 +34,37 @@ router.get("/crudCita", (req, res) => {
         INNER JOIN estadosCita ON estadosCita.idEstadocita = detallecita.idEstadoCita
         WHERE 1=1`;
 
-        const params = [];
+    const params = [];
 
-        if(searchQuery){
-            baseQuery+=` AND  (p1.numeroDocumento LIKE ? OR p2.numeroDocumento LIKE ?)`;
-            params.push(`%${searchQuery}%`, `%${searchQuery}%`);
+    if (searchQuery) {
+        baseQuery += ` AND  (p1.numeroDocumento LIKE ? OR p2.numeroDocumento LIKE ?)`;
+        params.push(`%${searchQuery}%`, `%${searchQuery}%`);
+    }
+
+    if (dateQuery) {
+        baseQuery += ` AND  horario.fecha = ?`;
+        params.push(dateQuery);
+
+    }
+
+    if (tipoConsultaQuery) {
+        baseQuery += ` AND  tipoConsulta.idtipoConsulta = ?`;
+        params.push(tipoConsultaQuery);
+    }
+
+    baseQuery += ` ORDER BY cita.idCita DESC`;
+
+    db.query(baseQuery, params, (err, result) => {
+        if (err) {
+            console.error("Error en consulta:", err);
+            return res.status(500).json({ error: "Error al obtener las citas" });
         }
+        console.log("tipo Consulta:", tipoConsultaQuery);
+        return res.json(result);
+    });
 
-        if(dateQuery){
-            baseQuery+=` AND  horario.fecha = ?`;
-            params.push(dateQuery);
-            
-        }
 
-         if(tipoConsultaQuery){
-             baseQuery+=` AND  tipoConsulta.idtipoConsulta = ?`;
-             params.push(tipoConsultaQuery);
-         }
 
-        baseQuery += ` ORDER BY cita.idCita DESC`;
-
-        db.query(baseQuery,params, (err, result) => {
-            if (err) {
-                console.error("Error en consulta:", err);
-                return res.status(500).json({ error: "Error al obtener las citas" });
-            }
-            console.log("tipo Consulta:", tipoConsultaQuery);
-            return res.json(result);
-        });
-
-        
-    
 });
 
 router.get("/crudCitaCliente", (req, res) => {
@@ -97,6 +100,7 @@ router.get("/crudCitaCliente", (req, res) => {
 
     )
 });
+
 
 router.post("/addCita", async (req, res) => {
     const cliente = req.body.NumeroDocumentoCliente;
@@ -201,20 +205,85 @@ router.post("/addCita", async (req, res) => {
 
 
 
-router.patch("/cancelCita", (req, res) => {
-    const estadoCita = req.body.estadoCita;
+router.patch("/cancelCita", async (req, res) => {
+
     const idCita = req.body.idCita;
+    const idEstadoCita = req.body.idEstadoCita;
+    const idHorario = req.body.idHorario;
+    const idEstadoHorario = req.body.idEstadoHorario;
 
-    db.query(`UPDATE detallecita SET idEstadoCita = ? WHERE idCita = ?`, [estadoCita, idCita],
-        (err, result) => {
+    let estadoCita = null;
+    let estadoHorario = null;
 
-            if (err) return res.status(500).send("Error en la consulta");
 
-            if (result.affectedRows == 0) return res.status(404).send('Cita no encontrada');
+    if (idEstadoHorario === 2) {
+        estadoHorario = 1
+    } else {
+        estadoHorario = 2
+    }
 
-            res.status(200).json({ message: "Estado cambiado", estadoCita, idCita });
+    if (idEstadoCita === 3) {
+        estadoCita = 1
+    } else {
+        estadoCita = 3
+    }
 
+    if (idEstadoCita === 3 && idEstadoHorario === 2) {
+        return res.status(201).json({ message: "No se puede activar la cita porque ya fue atendida"});
+    }
+    else {
+        db.getConnection((err, connection) => {
+            if (err) return res.status(500).send("Error al conectar con la base de datos");
+
+            connection.beginTransaction(async (transErr) => {
+                if (transErr) {
+                    connection.release();
+                    return res.status(500).send("Error al iniciar la transacción");
+                }
+
+                try {
+                    // Paso 1: Actualizar el estado del horario
+                    const horarioQuery = 'UPDATE horario SET estadoHorario = ? WHERE idHorarios = ?';
+                    const horarioResult = await new Promise((resolve, reject) => {
+                        connection.query(horarioQuery, [estadoHorario, idHorario], (error, results) => {
+                            if (error || results.affectedRows === 0) return reject(new Error("Error al actualizar el estado del horario"));
+                            resolve(results);
+                        });
+                    });
+
+                    console.log("Horario actualizado correctamente:", horarioResult);
+                    // Paso 2: Actualizar el estado de la cita
+                    const estadoQuery = 'UPDATE detallecita SET idEstadoCita = ? WHERE idCita = ?';
+                    const estadoResult = await new Promise((resolve, reject) => {
+                        connection.query(estadoQuery, [estadoCita, idCita], (error, results) => {
+                            if (error || results.affectedRows === 0) return reject(new Error("Error al actualizar el estado de la cita"));
+                            resolve(results);
+                        });
+                    });
+
+                    console.log("Estado actualizado correctamente:", estadoResult);
+
+                    // Confirmar la transacción
+                    await new Promise((resolve, reject) => {
+                        connection.commit((commitErr) => {
+                            if (commitErr) return reject(commitErr);
+                            resolve();
+                        });
+                    });
+
+                    res.status(201).send("Cita cancelada");
+                } catch (error) {
+                    // Revertir la transacción en caso de error
+                    connection.rollback(() => {
+                        res.status(500).send("Error durante la transacción: " + error.message);
+                    });
+                } finally {
+                    // Liberar la conexión
+                    connection.release();
+                }
+            });
         });
+    }
 })
 
 router.get("/getHorarios", (req, res) => {
@@ -243,7 +312,7 @@ router.get("/getEmpleados", (req, res) => {
 })
 
 router.get("/getClientes", (req, res) => {
-    const query = `SELECT CONCAT(persona.Nombres,' ',persona.Apellidos) AS nombre, numeroDocumento FROM persona WHERE idRol = 1 && numeroDocumento= ?;`;
+    const query = `SELECT CONCAT(persona.Nombres,' ',persona.Apellidos) AS nombre, numeroDocumento, correo FROM persona WHERE idRol = 1 && numeroDocumento= ?;`;
     const numero = req.query.NumeroDocumentoCliente
     db.query(query, [numero], (err, result) => {
         if (err) {
@@ -273,6 +342,9 @@ router.patch("/updateCita", async (req, res) => {
     const idCita = req.body.idCita;
     const idHorario = req.body.idHorario;
     const idTipoConsulta = req.body.idTipoConsulta;
+    const idHorario1 = req.body.idHorario1;
+
+
     db.getConnection((err, connection) => {
         if (err) return res.status(500).send("Error al conectar con la base de datos");
 
@@ -282,7 +354,7 @@ router.patch("/updateCita", async (req, res) => {
                 return res.status(500).send("Error al iniciar la transacción");
             }
             try {
-                // Paso 1: Insertar un nuevo diagnóstico
+                // Paso 1: Insertar un nuevo detalleCita
                 const updateResult = await new Promise((resolve, reject) => {
                     connection.query(
                         `UPDATE detallecita SET idHorarios = ?, idTipoConsulta = ? WHERE idCita = ?`,
@@ -295,7 +367,7 @@ router.patch("/updateCita", async (req, res) => {
                 });
 
                 // Paso 2: Actualizar el estado del horario
-                const horarioQuery = 'UPDATE horario SET estadoHorario = 1 WHERE idHorarios = ?';
+                const horarioQuery = 'UPDATE horario SET estadoHorario = 2 WHERE idHorarios = ?';
                 const horarioResult = await new Promise((resolve, reject) => {
                     connection.query(horarioQuery, [idHorario], (error, results) => {
                         if (error || results.affectedRows === 0) return reject(new Error("Error al actualizar el horario"));
@@ -303,7 +375,16 @@ router.patch("/updateCita", async (req, res) => {
                     });
                 });
 
-                console.log("Horario actualizado correctamente:", horarioResult);
+                 // Paso 3: Actualizar el estado del horario
+                 const horarioPasdadoQuery = 'UPDATE horario SET estadoHorario = 1 WHERE idHorarios = ?';
+                 const horarioPasadoResult = await new Promise((resolve, reject) => {
+                     connection.query(horarioPasdadoQuery, [idHorario1], (error, results) => {
+                         if (error || results.affectedRows === 0) return reject(new Error("Error al actualizar el horario"));
+                         resolve(results);
+                     });
+                 });
+
+                console.log("Horario actualizado correctamente:", horarioPasadoResult);
 
 
                 console.log("Cita actualizada correctamente");
