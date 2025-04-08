@@ -240,7 +240,7 @@ function CrudCita() {
         setTipoConsulta("");
         setSelectHorario(false);
 
-
+        setConsultas([]);
 
         // Mostrar mensaje de éxito
         setMensaje("Cita actualizada correctamente");
