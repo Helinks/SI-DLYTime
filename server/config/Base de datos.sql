@@ -52,7 +52,7 @@ CREATE TABLE persona (
 
 CREATE TABLE clientes_historial (
   idHistorial INT AUTO_INCREMENT PRIMARY KEY,
-  numeroDocumento INT,  -- Asegúrate de que sea INT si en persona es INT
+  numeroDocumento INT, 
   descripcion TEXT,
   archivoPDF VARCHAR(255),
   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
