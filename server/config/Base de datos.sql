@@ -50,6 +50,15 @@ CREATE TABLE persona (
     
 );
 
+CREATE TABLE clientes_historial (
+  idHistorial INT AUTO_INCREMENT PRIMARY KEY,
+  numeroDocumento INT,  -- Asegúrate de que sea INT si en persona es INT
+  descripcion TEXT,
+  archivoPDF VARCHAR(255),
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (numeroDocumento) REFERENCES persona(numeroDocumento) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE tipoProblema (
     idTipoProblema INT NOT NULL,
     descripcion VARCHAR(45) NOT NULL,
@@ -72,11 +81,20 @@ CREATE TABLE estadosCita (
     PRIMARY KEY (idEstadocita)
 );
 
+CREATE TABLE estadoHorario (
+    idEstadoHorario INT NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idEstadoHorario)
+);
+
 CREATE TABLE Horario (
     idHorarios INT NOT NULL,
     fecha DATE NOT NULL,
     hora TIME NOT NULL,
-    PRIMARY KEY (idHorarios)
+    estadoHorario INT NOT NULL, 
+    
+    PRIMARY KEY (idHorarios),
+    CONSTRAINT horario_fk FOREIGN KEY (estadoHorario) REFERENCES estadoHorario(idEstadoHorario)
 );
 
 CREATE TABLE tipoConsulta (
@@ -86,7 +104,7 @@ CREATE TABLE tipoConsulta (
 );
 
 CREATE TABLE diagnostico (
-    idDiagnostico INT NOT NULL,
+    idDiagnostico INT NOT NULL AUTO_INCREMENT,
     descripcion VARCHAR(300) NOT NULL,
     PRIMARY KEY (idDiagnostico)
 );
@@ -171,10 +189,15 @@ INSERT INTO estadosCita (idEstadocita, nombre) VALUES
 (2, 'Confirmada'),
 (3, 'Cancelada');
 
+-- Insertar datos en estadoHorario
+INSERT INTO estadoHorario (idEstadoHorario,nombre) VALUES
+(1,'Disponible'),
+(2,'No disponible');
+
 -- Insertar datos en Horario
-INSERT INTO Horario (idHorarios, fecha, hora) VALUES
-(1, '2024-10-25', '09:00:00'),
-(2, '2024-10-25', '10:00:00');
+INSERT INTO Horario (idHorarios, fecha, hora,estadoHorario) VALUES
+(1, '2024-10-25', '09:00:00', 1),
+(2, '2024-10-25', '10:00:00', 1);
 
 -- Insertar datos en tipoConsulta
 INSERT INTO tipoConsulta (idtipoConsulta, nombre) VALUES
@@ -200,3 +223,70 @@ INSERT INTO cita (idCita, NumeroDocumentoCliente,NumeroDocumentoOftalmologo) VAL
 INSERT INTO detalleCita (idCita, idDiagnostico, idTipoConsulta, idHorarios, idEstadoCita, direccion) VALUES
 (1, 1, 1, 1, 1, 'Calle 1'),
 (2, 2, 2, 2, 2, 'Calle 2');
+
+SET GLOBAL event_scheduler = ON;
+SHOW EVENTS FROM dlytime;
+DROP EVENT IF EXISTS InsertarHorariosEvento;
+
+
+DELIMITER //
+
+CREATE PROCEDURE InsertarHorariosTresSemanas()
+BEGIN 
+    DECLARE fechaObjetivo DATE;
+    DECLARE idHorario INT;
+
+    -- Definir la fecha objetivo (21 días después de hoy)
+    SET fechaObjetivo = CURDATE() + INTERVAL 21 DAY;
+    
+    -- Obtener el último ID en la tabla Horario
+    SELECT COALESCE(MAX(idHorarios), 0) INTO idHorario FROM Horario;
+
+    -- Solo insertará si no existen horarios para esa fecha
+    IF NOT EXISTS (SELECT 1 FROM Horario WHERE fecha = fechaObjetivo) THEN 
+        INSERT INTO Horario (idHorarios, fecha, hora, estadoHorario)
+        SELECT 
+            (idHorario + ROW_NUMBER() OVER(ORDER BY hora)) AS idHorarios,
+            fechaObjetivo,
+            t.hora,
+            1  -- Estado "Disponible"
+        FROM (
+            SELECT '10:00:00' AS hora UNION ALL
+            SELECT '10:30:00' UNION ALL
+            SELECT '11:00:00' UNION ALL
+            SELECT '11:30:00' UNION ALL
+            SELECT '12:00:00' UNION ALL
+            SELECT '12:30:00' UNION ALL
+            SELECT '13:00:00' UNION ALL
+            SELECT '13:30:00' UNION ALL
+            SELECT '14:00:00' UNION ALL
+            SELECT '14:30:00' UNION ALL
+            SELECT '15:00:00' UNION ALL
+            SELECT '15:30:00' UNION ALL
+            SELECT '16:00:00' UNION ALL
+            SELECT '16:30:00' UNION ALL
+            SELECT '17:00:00' UNION ALL
+            SELECT '17:30:00' UNION ALL
+            SELECT '18:00:00' UNION ALL
+            SELECT '18:30:00' UNION ALL
+            SELECT '19:00:00' 
+        ) t
+	ORDER BY t.hora;
+    END IF;
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS InsertarHorariosEvento
+ON SCHEDULE EVERY 1 DAY
+STARTS TIMESTAMP(CURRENT_DATE, '00:00:00')
+
+DO 
+BEGIN 
+CALL InsertarHorariosTresSemanas();
+END//
+DELIMITER ;
+
+CALL InsertarHorariosTresSemanas();
