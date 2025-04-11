@@ -7,6 +7,7 @@ import Axios from "axios";
 function CrudCita() {
   const [clienteBuscado, setClienteBuscado] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [mensajeModal, setMensajeModal] = useState("");
   const [idHorario, setIdHorario] = useState();
   const [citaSeleccionada, setCitaSeleccionada] = useState([]);
   const [fecha, setFecha] = useState("");
@@ -67,25 +68,25 @@ function CrudCita() {
   const addCita = () => {
     const fechaFormateada = formatearFecha(fecha);
     if (!idHorario) {
-      setMensaje("Por favor seleccione fecha y hora");
+      setMensajeModal("Por favor seleccione fecha y hora");
       return;
     }
 
     if (!NumeroDocumentoCliente) {
-      setMensaje("Número de documento de cliente inválido");
+      setMensajeModal("Número de documento de cliente inválido");
       return;
     }
 
     if (!NumeroDocumentoOftalmologo) {
-      setMensaje("Debe seleccionar un oftalmólogo");
+      setMensajeModal("Debe seleccionar un oftalmólogo");
       return;
     }
     if (!tipoConsulta) {
-      setMensaje("Debe seleccionar un tipo de consulta");
+      setMensajeModal("Debe seleccionar un tipo de consulta");
       return;
     }
     if (!fechaFormateada || !hora) {
-      setMensaje("Fecha u hora inválidas");
+      setMensajeModal("Fecha u hora inválidas");
       return;
     }
 
@@ -114,7 +115,7 @@ function CrudCita() {
         setHorarios([]);
 
         // Mostrar mensaje de éxito
-        setMensaje("Cita agregada correctamente");
+        setMensajeModal("Cita agregada correctamente");
 
       })
       .catch((error) => {
