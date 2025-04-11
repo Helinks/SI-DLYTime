@@ -16,6 +16,7 @@ function AgendarCita() {
     const [idHorario, setIdHorario] = useState();
     const [fecha, setFecha] = useState();
     const [consultas, setConsultas] = useState([]);
+    const [empleados, setEmpleados] = useState([]);
     const [tipoConsulta, setTipoConsulta] = useState();
     const [NumeroDocumentoCliente, setDocumentoCliente] = useState(0);
     const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
@@ -63,6 +64,15 @@ function AgendarCita() {
       })
       .catch((error) => {
         console.error("Error al agregar cita:", error);
+      });
+  };
+  const getEmpleado = () => {
+    Axios.get("http://localhost:3001/crudCitas/getEmpleados", {})
+      .then((empleado) => {
+        setEmpleados(empleado.data || []);
+      })
+      .catch((error) => {
+        console.error("Error obteniendo empleados:", error);
       });
   };
 
@@ -190,13 +200,14 @@ function AgendarCita() {
     const goToToday = () => {
         setCurrentDate(new Date());
         setSelectedDate(null);
+        setFecha(null);
     };
 
     /* MUESTRA LOS HORARIOS COMO BOTONES */
     function listaHorario(horarios) {
         return (
             <div className="horariosCalendar-container">
-                <h4>Horarios diponibles</h4>
+                <h4>Horarios diponibles para el {fecha}</h4>
                 {horarios.map((horario, index) => (
                     <button
                         className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
@@ -233,28 +244,48 @@ function AgendarCita() {
     }
     function listaTipoConsultas(consulta) {
         return (
-            <select
-                onChange={(event) => {
-                    setTipoConsulta(event.target.value);
-                }}
-                type="select"
-                className="form-control"
-            >
-                {consulta.map((consultas, index) => (
-                    <option value={consultas.idtipoConsulta} key={index}>
-                        {consultas.nombre}
-                    </option>
-                ))}
-            </select>
+          <select
+            onChange={(event) => {
+              setTipoConsulta(event.target.value);
+            }}
+            className="p-2 border rounded"
+            required
+          >
+            <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
+            {consulta.map((consultas, index) => (
+              <option value={consultas.idtipoConsulta} key={index}>
+                {consultas.nombre}
+              </option>
+            ))}
+          </select>
         );
-    }
+      }
+    function listaEmpleados(empleados) {
+        return (
+          <select
+            onChange={(event) => {
+              setDocumentoOftalmologo(event.target.value);
+            }}
+            type="number"
+            className="p-2 border rounded"
+            required
+          >
+            <option value="" selected="" disabled="">Seleccione un empleado</option>
+            {empleados.map((empleado, index) => (
+              <option value={empleado.numeroDocumento} key={index}>
+                {empleado.nombre}
+              </option>
+            ))}
+          </select>
+        );
+      }    
 
     useEffect(() => {
+        getEmpleado();
         setDocumentoCliente(id)
-        setDocumentoOftalmologo(1031807020)
         getConsultas();
         if (fecha) getHorario(fecha);
-    }, [fecha]);
+    }, [fecha,id]);
 
     return (
         <div>
@@ -271,6 +302,10 @@ function AgendarCita() {
                         </Link>
                     </div>
                 </nav>
+            </div>
+            
+            <div><h1>Agende su cita</h1>
+            <p>Seleccione el día en el que desea su cita</p>
             </div>
 
             <div className="containerCalendario">
@@ -344,10 +379,17 @@ function AgendarCita() {
                 </div>
             </div>
 
+            <div className='tipoConsultaCalendario'>
+                <h4>Tipo de consulta</h4>
+                <div>
+                {listaEmpleados(empleados)}
+                </div>
+            </div>
+
             <button
                   className=""
                   onClick={()=> addCita()}
-                  disabled={!idHorario && !tipoConsulta}
+                  disabled={!idHorario || !tipoConsulta || !hora || !NumeroDocumentoOftalmologo}
                 >
                   Agendar
                 </button>

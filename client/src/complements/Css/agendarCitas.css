@@ -10,113 +10,13 @@
     box-sizing: border-box;
 }
 
-
-#nav1 {
-    background-color: #ff5757;
-    height: 60px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-family: 'Open Sans';
-    position: relative;
-    z-index: 1000;
-}
-
-.nav-left {
-    display: flex;
-    align-items: center;
-}
-
-.nav-text a {
-    font-size: 20px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: bold;
-
-}
-
-.nav-right {
-    display: flex;
-    align-items: center;
-}
-
-.nav-item {
-    margin-left: 20px;
-}
-
-.nav-item a {
-    color: #fff;
-    text-decoration: none;
-}
-.btn{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.btn img{
-    width: 30px;
-    height: 30px;
-}
-.btn-nav{
-background-color: #ff5757;
-color: white;
-border: none;
-display: flex;
-align-items: center;
-justify-content: center;
-}
-.btn-nav:hover{
-    background-color: white;
-    color: #ff5757;
-    border: none;
-        transition: 0.5s;
-        cursor: pointer;
-    }
-
-.sidebar {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1001;
-    top: 0;
-    left: 0;
-    background-color: #ff5757;
-    overflow-x: hidden;
-    transition: 0.5s;
-    padding-top: 60px;
-}
-.sidebar a {
-    padding: 10px 15px;
-    text-decoration: none;
-    font-size: 20px;
-    color: #fff;
-    display: block;
-    transition: 0.3s;
-}
-
-.sidebar a:hover {
-    background-color: #fff;
-    color: #ff5757;
-}
-
-.sidebar #close-sidebar {
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    font-size: 36px;
-    padding: 0px 10px;
-    
-}
-
 .containerCalendario{
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 100%;
     padding-bottom: 1px;
-    min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+
 }
 .calendario{
     width: 100%;
@@ -250,12 +150,6 @@ justify-content: center;
 .horariosCalendario{
     width: 100%;
     display: flex;
-    justify-content: center;
+
 }
 
-.tipoConsultaCalendario div{
-    max-width: 30%;
-    margin-left: 35%;
-    display: flex;
-    justify-content: center;
-}
