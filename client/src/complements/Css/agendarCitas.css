@@ -9,6 +9,22 @@
     padding: 0;
     box-sizing: border-box;
 }
+.bodyAgendar{
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10%;
+    padding-right: 13%;
+
+}
+
+.agendar{
+    display: none;
+}
+.agendar.activo{
+    display: block;
+    margin-top: 10%;
+    max-width: 400px;
+}
 
 .containerCalendario{
     margin-top: 10px;
@@ -119,7 +135,7 @@
 } 
 
 .horariosCalendar-container{
-    max-width: 40%;
+    max-width: 100%;
     border-top: 1px;
     border-color: black;
 }
@@ -128,7 +144,7 @@
     background-color: #dc3545;
     border: 1px solid white;
     color: white;
-    padding: 10px;
+    padding: 6px;
     border-radius: 5px;
     margin: 5px;
 }
@@ -149,7 +165,5 @@
 
 .horariosCalendario{
     width: 100%;
-    display: flex;
-
 }
 

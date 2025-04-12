@@ -22,61 +22,63 @@ function AgendarCita() {
     const [NumeroDocumentoOftalmologo, setDocumentoOftalmologo] = useState(0);
 
     /* Solicita agregar una nueva cita */
-  const addCita = () => {
-    if (!idHorario) {
-      setMensaje("Por favor seleccione fecha y hora");
-      return;
-    }
+    const addCita = () => {
+        if (!idHorario) {
+            setMensaje("Por favor seleccione fecha y hora");
+            return;
+        }
 
-    if (!NumeroDocumentoCliente) {
-      setMensaje("Número de documento de cliente inválido");
-      return;
-    }
+        if (!NumeroDocumentoCliente) {
+            setMensaje("Número de documento de cliente inválido");
+            return;
+        }
 
-    if (!NumeroDocumentoOftalmologo) {
-      setMensaje("Debe seleccionar un oftalmólogo");
-      return;
-    }
-    if (!tipoConsulta) {
-      setMensaje("Debe seleccionar un tipo de consulta");
-      return;
-    }
+        if (!NumeroDocumentoOftalmologo) {
+            setMensaje("Debe seleccionar un oftalmólogo");
+            return;
+        }
+        if (!tipoConsulta) {
+            setMensaje("Debe seleccionar un tipo de consulta");
+            return;
+        }
 
 
 
-    Axios.post("http://localhost:3001/crudCitas/addCita", {
-      idHorario: idHorario,
-      fecha: fecha,
-      hora: hora,
-      NumeroDocumentoCliente: NumeroDocumentoCliente,
-      NumeroDocumentoOftalmologo: NumeroDocumentoOftalmologo,
-      idTipoConsulta: tipoConsulta,
-    })
+        Axios.post("http://localhost:3001/crudCitas/addCita", {
+            idHorario: idHorario,
+            fecha: fecha,
+            hora: hora,
+            NumeroDocumentoCliente: NumeroDocumentoCliente,
+            NumeroDocumentoOftalmologo: NumeroDocumentoOftalmologo,
+            idTipoConsulta: tipoConsulta,
+        })
 
-      .then((response) => {
-        setFecha("");
-        setHora("");
-        setTipoConsulta("");
-        setSelectHorario(false);
+            .then((response) => {
+                setFecha("");
+                setHora("");
+                setTipoConsulta("");
+                setSelectHorario(false);
 
-        // Mostrar mensaje de éxito
-        setMensaje("Cita agregada correctamente");
-      })
-      .catch((error) => {
-        console.error("Error al agregar cita:", error);
-      });
-  };
-  const getEmpleado = () => {
-    Axios.get("http://localhost:3001/crudCitas/getEmpleados", {})
-      .then((empleado) => {
-        setEmpleados(empleado.data || []);
-      })
-      .catch((error) => {
-        console.error("Error obteniendo empleados:", error);
-      });
-  };
+                // Mostrar mensaje de éxito
+                setMensaje("Cita agregada correctamente");
 
-  
+                alert("Cita agendada con exito")
+            })
+            .catch((error) => {
+                console.error("Error al agregar cita:", error);
+            });
+    };
+    const getEmpleado = () => {
+        Axios.get("http://localhost:3001/crudCitas/getEmpleados", {})
+            .then((empleado) => {
+                setEmpleados(empleado.data || []);
+            })
+            .catch((error) => {
+                console.error("Error obteniendo empleados:", error);
+            });
+    };
+
+
 
     /* SOLICITA LOS HORARIOS DISPONIBLES EN LA BASE DE DATOS */
     const getHorario = (fecha) => {
@@ -206,31 +208,32 @@ function AgendarCita() {
     /* MUESTRA LOS HORARIOS COMO BOTONES */
     function listaHorario(horarios) {
         return (
-            <div className="horariosCalendar-container">
-                <h4>Horarios diponibles para el {fecha}</h4>
-                {horarios.map((horario, index) => (
-                    <button
-                        className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
-                            }`}
-                        key={index}
-                        onClick={() => {
-                            if (!selectHorario) {
-                                setHora(horario.hora);
-                                setSelectHorario(true);
-                                setIdHorario(horario.id);
-                            } else {
-                                setHora("");
-                                setSelectHorario(false);
-                                setIdHorario([]);
-                            }
-                        }}
-                    >
-                        {horario.hora}
-                    </button>
-                ))}
-            </div>
+          <div className="horarios-container">
+            <h4><b>Citas para el {fecha}</b></h4>
+            {horarios.map((horario, index) => (
+              <button
+              type="button"
+                className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
+                  }`}
+                key={index}
+                onClick={() => {
+                  if (!selectHorario) {
+                    setHora(horario.hora);
+                    setSelectHorario(true);
+                    setIdHorario(horario.id);
+                  } else {
+                    setHora("");
+                    setSelectHorario(false);
+                    setIdHorario([]);
+                  }
+                }}
+              >
+                {horario.hora}
+              </button>
+            ))}
+          </div>
         );
-    }
+      }
 
     function validarFechas(fecha) {
         if (!fecha) return false;
@@ -244,48 +247,48 @@ function AgendarCita() {
     }
     function listaTipoConsultas(consulta) {
         return (
-          <select
-            onChange={(event) => {
-              setTipoConsulta(event.target.value);
-            }}
-            className="p-2 border rounded"
-            required
-          >
-            <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
-            {consulta.map((consultas, index) => (
-              <option value={consultas.idtipoConsulta} key={index}>
-                {consultas.nombre}
-              </option>
-            ))}
-          </select>
+            <select
+                onChange={(event) => {
+                    setTipoConsulta(event.target.value);
+                }}
+                className="p-2 border rounded"
+                required
+            >
+                <option value="" selected="" disabled="">Seleccione tipo de consulta</option>
+                {consulta.map((consultas, index) => (
+                    <option value={consultas.idtipoConsulta} key={index}>
+                        {consultas.nombre}
+                    </option>
+                ))}
+            </select>
         );
-      }
+    }
     function listaEmpleados(empleados) {
         return (
-          <select
-            onChange={(event) => {
-              setDocumentoOftalmologo(event.target.value);
-            }}
-            type="number"
-            className="p-2 border rounded"
-            required
-          >
-            <option value="" selected="" disabled="">Seleccione un empleado</option>
-            {empleados.map((empleado, index) => (
-              <option value={empleado.numeroDocumento} key={index}>
-                {empleado.nombre}
-              </option>
-            ))}
-          </select>
+            <select
+                onChange={(event) => {
+                    setDocumentoOftalmologo(event.target.value);
+                }}
+                type="number"
+                className="p-2 border rounded"
+                required
+            >
+                <option value="" selected="" disabled="">Seleccione un empleado</option>
+                {empleados.map((empleado, index) => (
+                    <option value={empleado.numeroDocumento} key={index}>
+                        {empleado.nombre}
+                    </option>
+                ))}
+            </select>
         );
-      }    
+    }
 
     useEffect(() => {
         getEmpleado();
         setDocumentoCliente(id)
         getConsultas();
         if (fecha) getHorario(fecha);
-    }, [fecha,id]);
+    }, [fecha, id]);
 
     return (
         <div>
@@ -303,97 +306,101 @@ function AgendarCita() {
                     </div>
                 </nav>
             </div>
-            
-            <div><h1>Agende su cita</h1>
-            <p>Seleccione el día en el que desea su cita</p>
-            </div>
 
-            <div className="containerCalendario">
-                <div className="calendario">
-                    <div className="header">
-                        <div className="mes">
-                            {months[currentDate.getMonth()]} {currentDate.getFullYear()}
-                        </div>
-                        <div className="btns">
-                            <div className="btn today-btn" onClick={goToToday}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar-event-fill" viewBox="0 0 16 16">
-                                    <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
-                                </svg>
-                            </div>
+            <div className='bodyAgendar'>
+                <div className='calendar'>
+                    <div><h1>Agende su cita</h1>
+                        <p>Seleccione el día en el que desea su cita</p>
+                    </div>
 
-                            {canGoToPreviousMonth() && (
-                                <div className="btn prev-btn" onClick={() => changeMonth(-1)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                                        <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
-                                    </svg>
+                    <div className="containerCalendario">
+                        <div className="calendario">
+                            <div className="header">
+                                <div className="mes">
+                                    {months[currentDate.getMonth()]} {currentDate.getFullYear()}
                                 </div>
-                            )}
-                            <div className="btn next-btn" onClick={() => changeMonth(1)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
-                                    <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                                </svg>
+                                <div className="btns">
+                                    <div className="btn today-btn" onClick={goToToday}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-calendar-event-fill" viewBox="0 0 16 16">
+                                            <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-3.5-7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5" />
+                                        </svg>
+                                    </div>
+
+                                    {canGoToPreviousMonth() && (
+                                        <div className="btn prev-btn" onClick={() => changeMonth(-1)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                                                <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
+                                            </svg>
+                                        </div>
+                                    )}
+                                    <div className="btn next-btn" onClick={() => changeMonth(1)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                                            <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+                                        </svg>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="weekdays">
-                        <div className="day">Dom</div>
-                        <div className="day">Lun</div>
-                        <div className="day">Mar</div>
-                        <div className="day">Mie</div>
-                        <div className="day">Jue</div>
-                        <div className="day">Vie</div>
-                        <div className="day">Sab</div>
-                    </div>
-                    <div className="dias">
-                        {renderCalendarDays().map((dayObj, index) => (
-                            <div
-                                key={index}
-                                className={`dia ${dayObj.type} 
+                            <div className="weekdays">
+                                <div className="day">Dom</div>
+                                <div className="day">Lun</div>
+                                <div className="day">Mar</div>
+                                <div className="day">Mie</div>
+                                <div className="day">Jue</div>
+                                <div className="day">Vie</div>
+                                <div className="day">Sab</div>
+                            </div>
+                            <div className="dias">
+                                {renderCalendarDays().map((dayObj, index) => (
+                                    <div
+                                        key={index}
+                                        className={`dia ${dayObj.type} 
                                     ${dayObj.isSelected ? 'selected' : ''} 
                                     ${dayObj.type === 'today' ? 'today' : ''}`}
-                                onClick={() => { handleDayClick(dayObj.day, dayObj.type); }}
-                            >
-                                {dayObj.day}
+                                        onClick={() => { handleDayClick(dayObj.day, dayObj.type); }}
+                                    >
+                                        {dayObj.day}
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+
+                        </div>
+
+
                     </div>
 
                 </div>
+                <div className={`agendar ${fecha ? "activo" : ""
+                  }`}>
 
+                    <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); addCita(); }}>
+                    <div className='horariosCalendario'>
+                            {listaHorario(horarios)}
+                    </div>
 
-            </div>
+                    <div className='tipoConsultaCalendario'>
+                        <h4>Tipo de consulta</h4>
+                        <div>
+                            {listaTipoConsultas(consultas)}
+                        </div>
+                    </div>
 
+                    <div className='tipoConsultaCalendario'>
+                        <h4>Tipo de consulta</h4>
+                        <div>
+                            {listaEmpleados(empleados)}
+                        </div>
+                    </div>
 
-            <div className='horariosCalendario'>
-                {validarFechas(fecha) ? (
-                    listaHorario(horarios)
-                ) : (
-                    <p>No hay citas diponibles</p>
-                )}
-            </div>
-
-            <div className='tipoConsultaCalendario'>
-                <h4>Tipo de consulta</h4>
-                <div>
-                    {listaTipoConsultas(consultas)}
+                    <button
+                        className="btn btn-primary mt-3"
+                        type="submit"
+                        disabled={!idHorario || !tipoConsulta || !hora || !NumeroDocumentoOftalmologo}
+                    >
+                        Agendar
+                    </button>
+                    </form>
                 </div>
             </div>
-
-            <div className='tipoConsultaCalendario'>
-                <h4>Tipo de consulta</h4>
-                <div>
-                {listaEmpleados(empleados)}
-                </div>
-            </div>
-
-            <button
-                  className=""
-                  onClick={()=> addCita()}
-                  disabled={!idHorario || !tipoConsulta || !hora || !NumeroDocumentoOftalmologo}
-                >
-                  Agendar
-                </button>
-                {mensaje}
         </div>
     );
 }
