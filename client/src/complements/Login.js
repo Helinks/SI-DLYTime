@@ -30,7 +30,7 @@ function Login() {
       return;
     }
 
-    if(!correo_i.includes("@") && correo_i.length > 0){
+    if (!correo_i.includes("@") && correo_i.length > 0) {
       setErrorMessage("Por favor completar los requisitos")
       return;
     }
@@ -137,7 +137,7 @@ function Login() {
       correo: forgotEmail,
       password: password,
       codigo: codigoV,
-    }).then((response)=> {
+    }).then((response) => {
       alert(response.data)
       setCurrentView("email")
       setForgotEmail("")
@@ -152,6 +152,20 @@ function Login() {
 
   return (
     <div>
+      <div className='navBar'>
+        <nav className="navbar navbar-dark bg-danger">
+          <div className="container-fluid">
+            <Link to="/" className="navbar-toggler">
+              <div className='BackButton'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                  <path fillRule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                  <path fillRule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                </svg>
+              </div>
+            </Link>
+          </div>
+        </nav>
+      </div>
       <div
         className="body-login"
         style={{ backgroundImage: "url(img/fondo.png)" }}
@@ -166,10 +180,11 @@ function Login() {
             </div>
           </div>
           <div className="derecha">
-            <form className="form" method="POST" noValidate>
-              <h1 id="Titulo">
-                <b>Iniciar Sesión</b>
-              </h1>
+
+            <h1 id="Titulo">
+              <b>Iniciar Sesión</b>
+            </h1>
+            <form onSubmit={(e) => { consulta(e); }}>
               <div className="inputs">
                 <div className="input-group mb-3">
                   <span className="input-group-text" id="basic-addon1">@</span>
@@ -199,28 +214,25 @@ function Login() {
                   />
                 </div>
               </div>
+              {errorMessage && <p className="texto-error1">{errorMessage}</p>}
+              <div className="botones-inicio">
+
+
+                <button
+                  type="submit"
+                  className="iniciar" // Aplicamos clase de estilo CSS personalizada
+                >
+                  Iniciar sesión
+                </button>
+                <button
+                  type="button"
+                  className="olvidar" // Aplicamos clase de estilo CSS personalizada
+                  onClick={() => setShowForgotModal(true)}
+                >
+                  Olvidaste tu contraseña
+                </button>
+              </div>
             </form>
-            {errorMessage && <p className="texto-error1">{errorMessage}</p>}
-            <div className="botones-inicio">
-
-
-              <button
-                type="submit"
-                className="iniciar" // Aplicamos clase de estilo CSS personalizada
-                onClick={consulta}
-              >
-                Iniciar sesión
-              </button>
-              <button
-                type="button"
-                className="olvidar" // Aplicamos clase de estilo CSS personalizada
-                onClick={() => setShowForgotModal(true)}
-              >
-                Olvidaste tu contraseña
-              </button>
-
-
-            </div>
           </div>
         </div>
       </div>
@@ -303,7 +315,7 @@ function Login() {
                   value={Confirmar_password}
                   onChange={(e) => setConfirmar_password(e.target.value)}
                 />
-                
+
               </div>
               <div style={{ textAlign: "right" }}>
                 <button type="button" className="olvidar" onClick={restablecer} >

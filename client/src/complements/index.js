@@ -45,8 +45,7 @@ function AdminClientes() {
         alert('Hubo un error al enviar el mensaje.');
       }
     }
-  }
-    ;
+  };
 
 
 

@@ -58,7 +58,7 @@ function AgendarCita() {
                 setHora("");
                 setTipoConsulta("");
                 setSelectHorario(false);
-
+                setSelectedDate(null);
                 // Mostrar mensaje de éxito
                 setMensaje("Cita agregada correctamente");
 
@@ -208,32 +208,32 @@ function AgendarCita() {
     /* MUESTRA LOS HORARIOS COMO BOTONES */
     function listaHorario(horarios) {
         return (
-          <div className="horarios-container">
-            <h4><b>Citas para el {fecha}</b></h4>
-            {horarios.map((horario, index) => (
-              <button
-              type="button"
-                className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
-                  }`}
-                key={index}
-                onClick={() => {
-                  if (!selectHorario) {
-                    setHora(horario.hora);
-                    setSelectHorario(true);
-                    setIdHorario(horario.id);
-                  } else {
-                    setHora("");
-                    setSelectHorario(false);
-                    setIdHorario([]);
-                  }
-                }}
-              >
-                {horario.hora}
-              </button>
-            ))}
-          </div>
+            <div className="horarios-container">
+                <h4><b>Citas para el {fecha}</b></h4>
+                {horarios.map((horario, index) => (
+                    <button
+                        type="button"
+                        className={`seleccionarHorarioCalendario ${selectHorario && horario.hora === hora ? "activo" : ""
+                            }`}
+                        key={index}
+                        onClick={() => {
+                            if (!selectHorario) {
+                                setHora(horario.hora);
+                                setSelectHorario(true);
+                                setIdHorario(horario.id);
+                            } else {
+                                setHora("");
+                                setSelectHorario(false);
+                                setIdHorario([]);
+                            }
+                        }}
+                    >
+                        {horario.hora}
+                    </button>
+                ))}
+            </div>
         );
-      }
+    }
 
     function validarFechas(fecha) {
         if (!fecha) return false;
@@ -245,6 +245,7 @@ function AgendarCita() {
 
         return fechaSeleccionada > fechaActual && fechaSeleccionada <= fechaLimite;
     }
+
     function listaTipoConsultas(consulta) {
         return (
             <select
@@ -369,36 +370,36 @@ function AgendarCita() {
                     </div>
 
                 </div>
-                <div className={`agendar ${fecha ? "activo" : ""
-                  }`}>
+                <div className="agendar activo" >
+                    {fecha ?( horarios.length > 0  ?
+                        <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); addCita(); }}>
+                            <div className='horariosCalendario'>
+                                {listaHorario(horarios)}
+                            </div>
 
-                    <form method="POST" role="form" onSubmit={(e) => { e.preventDefault(); addCita(); }}>
-                    <div className='horariosCalendario'>
-                            {listaHorario(horarios)}
-                    </div>
+                            <div className='tipoConsultaCalendario'>
+                                <h4>Tipo de consulta</h4>
+                                <div>
+                                    {listaTipoConsultas(consultas)}
+                                </div>
+                            </div>
 
-                    <div className='tipoConsultaCalendario'>
-                        <h4>Tipo de consulta</h4>
-                        <div>
-                            {listaTipoConsultas(consultas)}
-                        </div>
-                    </div>
+                            <div className='tipoConsultaCalendario'>
+                                <h4>Tipo de consulta</h4>
+                                <div>
+                                    {listaEmpleados(empleados)}
+                                </div>
+                            </div>
 
-                    <div className='tipoConsultaCalendario'>
-                        <h4>Tipo de consulta</h4>
-                        <div>
-                            {listaEmpleados(empleados)}
-                        </div>
-                    </div>
+                            <button
+                                className="btn btn-primary mt-3"
+                                type="submit"
+                                disabled={!idHorario || !tipoConsulta || !hora || !NumeroDocumentoOftalmologo}
+                            >
+                                Agendar
+                            </button>
+                        </form>: "No citas disponibles para el día seleccionado" ): "Porfavor seleccione una cita"}
 
-                    <button
-                        className="btn btn-primary mt-3"
-                        type="submit"
-                        disabled={!idHorario || !tipoConsulta || !hora || !NumeroDocumentoOftalmologo}
-                    >
-                        Agendar
-                    </button>
-                    </form>
                 </div>
             </div>
         </div>
