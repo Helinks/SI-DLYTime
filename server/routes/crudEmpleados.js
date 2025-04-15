@@ -35,17 +35,18 @@ const params = [];
 /* Agregar Nuevos empleados */
 router.post("/agregarEmpleado", async (req, res) => {
     const numeroDocumento = req.body.numeroDocumento;
-    const idRol = req.body.idRol;
+    const idRol = 2;
     const idTipoIdentificacion = req.body.idTipoIdentificacion;
-    const Nombres = req.body.nombre;
-    const Apellidos = req.body.apellido;
+    const Nombres = req.body.Nombres;
+    const Apellidos = req.body.Apellidos;
     const idGenero = req.body.idGenero;
     const correo = req.body.correo;
     const clave = req.body.clave;
     const telefono = req.body.telefono;
-    const estado = req.body.estadoPersona;
+    const estado = req.body.idEstadoPersona;
 
-    console.log(numeroDocumento,
+    console.log(
+        numeroDocumento,
         idRol,
         idTipoIdentificacion,
         Nombres,
@@ -108,12 +109,12 @@ router.post("/agregarEmpleado", async (req, res) => {
 router.patch("/actualizarEmpleado", async (req, res) => {
     const numeroDocumento = req.body.numeroDocumento;
     const idTipoIdentificacion = req.body.idTipoIdentificacion;
-    const nombres = req.body.nombre;
-    const apellidos = req.body.apellido;
+    const nombres = req.body.Nombres;
+    const apellidos = req.body.Apellids;
     const idGenero = req.body.idGenero;
     const correo = req.body.correo;
     const telefono = req.body.telefono;
-    const estado = req.body.estadoPersona;
+    const estado = req.body.idEstadoPersona;
     db.query(
         "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idEstadoPersona = ? WHERE numeroDocumento = ? ",
         [

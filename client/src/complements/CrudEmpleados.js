@@ -122,15 +122,14 @@ function CrudEmpleados() {
           setError(false);
           Axios.post("http://localhost:3001/crudEmpleados/agregarEmpleado", {
             numeroDocumento: ndocumento,
-            idRol: 2,
             idTipoIdentificacion: tipodocumento,
-            nombre: nombre,
-            apellido: apellido,
+            Nombres: nombre,
+            Apellidos: apellido,
             idGenero: genero,
             correo: correo,
             clave: password,
             telefono: telefono,
-            estadoPersona: estadoPersona,
+            idEstadoPersona: estadoPersona,
           }).then((response) => {
             /* Validación de correo y número de documento */
             if (response.data.exists) {
@@ -207,12 +206,12 @@ function CrudEmpleados() {
       numeroDocumento: ndocumento,
       idRol: 2,
       idTipoIdentificacion: tipodocumento,
-      nombre: nombre,
-      apellido: apellido,
+      Nombres: nombre,
+      Apellidos: apellido,
       idGenero: genero,
       correo: correo,
       telefono: telefono,
-      estadoPersona: estadoPersona,
+      idEstadoPersona: estadoPersona,
     }).then(() => {
       getEmpleados();
 
