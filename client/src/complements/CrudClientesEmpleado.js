@@ -82,64 +82,76 @@ function CrudClientes() {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("Historia Clínica de Optometría", 20, 20);
-
-    // Aquí agregamos cada sección con los datos del formulario
-    doc.text(`N° Historia: ${formData.numeroHistoria}`, 20, 30);
-    doc.text(`Teléfono: ${formData.telefono}`, 20, 40);
-    doc.text(`Fecha: ${formData.fecha}`, 20, 50);
-    doc.text(`Filiación: ${formData.filiacion}`, 20, 60);
-    doc.text(`Nombres: ${formData.nombres}`, 20, 70);
-    doc.text(`Edad: ${formData.edad}`, 20, 80);
-    doc.text(`Ocupación: ${formData.ocupacion}`, 20, 90);
-    doc.text(`Sexo: ${formData.sexo}`, 20, 100);
-    doc.text(`Procedencia: ${formData.procedencia}`, 20, 110);
-    doc.text(`Motivo de la consulta: ${formData.motivoConsulta}`, 20, 120);
-    doc.text(`Antecedentes: ${formData.antecedentes}`, 20, 130);
-    doc.text(`Desarrollo Psicomotriz: ${formData.desarrolloPsicomotriz}`, 20, 140);
-    doc.text(`¿Usa Rx?: ${formData.usaRx}`, 20, 150);
-    doc.text(`RX en uso: ${formData.rxUso}`, 20, 160);
-    doc.text(`OD: ${formData.odUso}`, 20, 170);
-    doc.text(`OI: ${formData.oiUso}`, 20, 180);
-    doc.text(`Última fecha de control: ${formData.ultimaFechaControl}`, 20, 190);
-    doc.text(`Cirugías oculares: ${formData.cirugiasOculares}`, 20, 200);
-    doc.text(`Otros: ${formData.otros}`, 20, 210);
-    doc.text(`Antecedentes familiares: ${formData.antecedentesFamiliares}`, 20, 220);
-
-    doc.text(`Diagnóstico 1: ${formData.diagnostico1}`, 20, 230);
-    doc.text(`CIE 10 (1): ${formData.cie1}`, 20, 240);
-    doc.text(`Diagnóstico 2: ${formData.diagnostico2}`, 20, 250);
-    doc.text(`CIE 10 (2): ${formData.cie2}`, 20, 260);
-    doc.text(`Observaciones: ${formData.observaciones}`, 20, 270);
-    doc.text(`Plan de trabajo: ${formData.planTrabajo}`, 20, 280);
-    doc.text(`Tratamiento: ${formData.tratamiento}`, 20, 290);
-    doc.text(`Recomendaciones: ${formData.recomendaciones}`, 20, 300);
-
+  
+    let yPosition = 30; // Posición inicial para el texto
+    
+    // Aquí agregamos cada sección con los datos del formulario, controlando el salto de página
+    const addTextToPDF = (text) => {
+      if (yPosition + 10 > doc.internal.pageSize.height) { // Verifica si el texto se sale de la página
+        doc.addPage(); // Agrega una nueva página
+        yPosition = 20; // Reinicia la posición vertical
+      }
+      doc.text(text, 20, yPosition);
+      yPosition += 10; // Espacio para la siguiente línea de texto
+    };
+  
+    addTextToPDF(`N° Historia: ${formData.numeroHistoria}`);
+    addTextToPDF(`Teléfono: ${formData.telefono}`);
+    addTextToPDF(`Fecha: ${formData.fecha}`);
+    addTextToPDF(`Filiación: ${formData.filiacion}`);
+    addTextToPDF(`Nombres: ${formData.nombres}`);
+    addTextToPDF(`Edad: ${formData.edad}`);
+    addTextToPDF(`Ocupación: ${formData.ocupacion}`);
+    addTextToPDF(`Sexo: ${formData.sexo}`);
+    addTextToPDF(`Procedencia: ${formData.procedencia}`);
+    addTextToPDF(`Motivo de la consulta: ${formData.motivoConsulta}`);
+    addTextToPDF(`Antecedentes: ${formData.antecedentes}`);
+    addTextToPDF(`Desarrollo Psicomotriz: ${formData.desarrolloPsicomotriz}`);
+    addTextToPDF(`¿Usa Rx?: ${formData.usaRx}`);
+    addTextToPDF(`RX en uso: ${formData.rxUso}`);
+    addTextToPDF(`OD: ${formData.odUso}`);
+    addTextToPDF(`OI: ${formData.oiUso}`);
+    addTextToPDF(`Última fecha de control: ${formData.ultimaFechaControl}`);
+    addTextToPDF(`Cirugías oculares: ${formData.cirugiasOculares}`);
+    addTextToPDF(`Otros: ${formData.otros}`);
+    addTextToPDF(`Antecedentes familiares: ${formData.antecedentesFamiliares}`);
+    
+    addTextToPDF(`Diagnóstico 1: ${formData.diagnostico1}`);
+    addTextToPDF(`CIE 10 (1): ${formData.cie1}`);
+    addTextToPDF(`Diagnóstico 2: ${formData.diagnostico2}`);
+    addTextToPDF(`CIE 10 (2): ${formData.cie2}`);
+    addTextToPDF(`Observaciones: ${formData.observaciones}`);
+    addTextToPDF(`Plan de trabajo: ${formData.planTrabajo}`);
+    addTextToPDF(`Tratamiento: ${formData.tratamiento}`);
+    addTextToPDF(`Recomendaciones: ${formData.recomendaciones}`);
+  
     // Convertir el archivo PDF en un blob
     const pdfOutput = doc.output("blob");
-
-  // Crear el nombre del archivo con el número de documento
-  const timestamp = Date.now();
-  const nombreArchivo = `${numeroDocumentoSeleccionado}_${timestamp}.pdf`;
-
-  const archivoPDF = new File([pdfOutput], nombreArchivo, { type: "application/pdf" });
-
-  const formDataPDF = new FormData();
-  formDataPDF.append("archivoPDF", archivoPDF);
-  formDataPDF.append("numeroDocumento", numeroDocumentoSeleccionado);
-
-  Axios.post("http://localhost:3001/crudClientes/agregarHistorialClinico", formDataPDF, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  })
-    .then((response) => {
-      console.log("PDF guardado correctamente:", response.data);
-      alert("Historia clínica guardada exitosamente.");
+  
+    // Crear el nombre del archivo con el número de documento
+    const timestamp = Date.now();
+    const nombreArchivo = `${numeroDocumentoSeleccionado}_${timestamp}.pdf`;
+  
+    const archivoPDF = new File([pdfOutput], nombreArchivo, { type: "application/pdf" });
+  
+    const formDataPDF = new FormData();
+    formDataPDF.append("archivoPDF", archivoPDF);
+    formDataPDF.append("numeroDocumento", numeroDocumentoSeleccionado);
+  
+    Axios.post("http://localhost:3001/crudClientes/agregarHistorialClinico", formDataPDF, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     })
-    .catch((error) => {
-      console.error("Error al guardar PDF:", error);
-    });
-  }    
+      .then((response) => {
+        console.log("PDF guardado correctamente:", response.data);
+        alert("Historia clínica guardada exitosamente.");
+      })
+      .catch((error) => {
+        console.error("Error al guardar PDF:", error);
+      });
+  };
+  
 
 
   return (
