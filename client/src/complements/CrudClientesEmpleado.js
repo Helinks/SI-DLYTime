@@ -82,19 +82,28 @@ function CrudClientes() {
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("Historia Clínica de Optometría", 20, 20);
-  
-    let yPosition = 30; // Posición inicial para el texto
     
-    // Aquí agregamos cada sección con los datos del formulario, controlando el salto de página
-    const addTextToPDF = (text) => {
+    let yPosition = 30; // Posición inicial para el texto
+  
+    // Función para agregar texto y controlar el salto de página
+    const addTextToPDF = (text, title = false) => {
       if (yPosition + 10 > doc.internal.pageSize.height) { // Verifica si el texto se sale de la página
         doc.addPage(); // Agrega una nueva página
         yPosition = 20; // Reinicia la posición vertical
       }
-      doc.text(text, 20, yPosition);
+  
+      if (title) {
+        doc.setFontSize(14);
+        doc.text(text, 20, yPosition);
+        doc.setFontSize(12);
+      } else {
+        doc.text(text, 20, yPosition);
+      }
       yPosition += 10; // Espacio para la siguiente línea de texto
     };
   
+    // Sección de Datos Personales
+    addTextToPDF("Datos Personales:", true);
     addTextToPDF(`N° Historia: ${formData.numeroHistoria}`);
     addTextToPDF(`Teléfono: ${formData.telefono}`);
     addTextToPDF(`Fecha: ${formData.fecha}`);
@@ -104,6 +113,9 @@ function CrudClientes() {
     addTextToPDF(`Ocupación: ${formData.ocupacion}`);
     addTextToPDF(`Sexo: ${formData.sexo}`);
     addTextToPDF(`Procedencia: ${formData.procedencia}`);
+    
+    // Sección de Motivo de Consulta y Antecedentes
+    addTextToPDF("Motivo de la Consulta y Antecedentes:", true);
     addTextToPDF(`Motivo de la consulta: ${formData.motivoConsulta}`);
     addTextToPDF(`Antecedentes: ${formData.antecedentes}`);
     addTextToPDF(`Desarrollo Psicomotriz: ${formData.desarrolloPsicomotriz}`);
@@ -116,6 +128,8 @@ function CrudClientes() {
     addTextToPDF(`Otros: ${formData.otros}`);
     addTextToPDF(`Antecedentes familiares: ${formData.antecedentesFamiliares}`);
     
+    // Sección de Diagnóstico y Tratamiento
+    addTextToPDF("Diagnóstico y Tratamiento:", true);
     addTextToPDF(`Diagnóstico 1: ${formData.diagnostico1}`);
     addTextToPDF(`CIE 10 (1): ${formData.cie1}`);
     addTextToPDF(`Diagnóstico 2: ${formData.diagnostico2}`);
@@ -151,6 +165,7 @@ function CrudClientes() {
         console.error("Error al guardar PDF:", error);
       });
   };
+  
   
 
 
