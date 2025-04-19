@@ -104,40 +104,73 @@ function CrudClientes() {
   
     // Sección de Datos Personales
     addTextToPDF("Datos Personales:", true);
-    addTextToPDF(`N° Historia: ${formData.numeroHistoria}`);
-    addTextToPDF(`Teléfono: ${formData.telefono}`);
-    addTextToPDF(`Fecha: ${formData.fecha}`);
-    addTextToPDF(`Filiación: ${formData.filiacion}`);
-    addTextToPDF(`Nombres: ${formData.nombres}`);
-    addTextToPDF(`Edad: ${formData.edad}`);
-    addTextToPDF(`Ocupación: ${formData.ocupacion}`);
-    addTextToPDF(`Sexo: ${formData.sexo}`);
-    addTextToPDF(`Procedencia: ${formData.procedencia}`);
-    
+    const personalData = [
+      ["N° Historia", formData.numeroHistoria],
+      ["Teléfono", formData.telefono],
+      ["Fecha", formData.fecha],
+      ["Filiación", formData.filiacion],
+      ["Nombres", formData.nombres],
+      ["Edad", formData.edad],
+      ["Ocupación", formData.ocupacion],
+      ["Sexo", formData.sexo],
+      ["Procedencia", formData.procedencia]
+    ];
+  
+    personalData.forEach((row, index) => {
+      if (yPosition + 10 > doc.internal.pageSize.height) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text(row[0] + ": " + row[1], 20, yPosition);
+      yPosition += 8;
+    });
+  
     // Sección de Motivo de Consulta y Antecedentes
     addTextToPDF("Motivo de la Consulta y Antecedentes:", true);
-    addTextToPDF(`Motivo de la consulta: ${formData.motivoConsulta}`);
-    addTextToPDF(`Antecedentes: ${formData.antecedentes}`);
-    addTextToPDF(`Desarrollo Psicomotriz: ${formData.desarrolloPsicomotriz}`);
-    addTextToPDF(`¿Usa Rx?: ${formData.usaRx}`);
-    addTextToPDF(`RX en uso: ${formData.rxUso}`);
-    addTextToPDF(`OD: ${formData.odUso}`);
-    addTextToPDF(`OI: ${formData.oiUso}`);
-    addTextToPDF(`Última fecha de control: ${formData.ultimaFechaControl}`);
-    addTextToPDF(`Cirugías oculares: ${formData.cirugiasOculares}`);
-    addTextToPDF(`Otros: ${formData.otros}`);
-    addTextToPDF(`Antecedentes familiares: ${formData.antecedentesFamiliares}`);
-    
+    const consultationData = [
+      ["Motivo de la consulta", formData.motivoConsulta],
+      ["Antecedentes", formData.antecedentes],
+      ["Desarrollo Psicomotriz", formData.desarrolloPsicomotriz],
+      ["¿Usa Rx?", formData.usaRx],
+      ["RX en uso", formData.rxUso],
+      ["OD", formData.odUso],
+      ["OI", formData.oiUso],
+      ["Última fecha de control", formData.ultimaFechaControl],
+      ["Cirugías oculares", formData.cirugiasOculares],
+      ["Otros", formData.otros],
+      ["Antecedentes familiares", formData.antecedentesFamiliares]
+    ];
+  
+    consultationData.forEach((row, index) => {
+      if (yPosition + 10 > doc.internal.pageSize.height) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text(row[0] + ": " + row[1], 20, yPosition);
+      yPosition += 8;
+    });
+  
     // Sección de Diagnóstico y Tratamiento
     addTextToPDF("Diagnóstico y Tratamiento:", true);
-    addTextToPDF(`Diagnóstico 1: ${formData.diagnostico1}`);
-    addTextToPDF(`CIE 10 (1): ${formData.cie1}`);
-    addTextToPDF(`Diagnóstico 2: ${formData.diagnostico2}`);
-    addTextToPDF(`CIE 10 (2): ${formData.cie2}`);
-    addTextToPDF(`Observaciones: ${formData.observaciones}`);
-    addTextToPDF(`Plan de trabajo: ${formData.planTrabajo}`);
-    addTextToPDF(`Tratamiento: ${formData.tratamiento}`);
-    addTextToPDF(`Recomendaciones: ${formData.recomendaciones}`);
+    const treatmentData = [
+      ["Diagnóstico 1", formData.diagnostico1],
+      ["CIE 10 (1)", formData.cie1],
+      ["Diagnóstico 2", formData.diagnostico2],
+      ["CIE 10 (2)", formData.cie2],
+      ["Observaciones", formData.observaciones],
+      ["Plan de trabajo", formData.planTrabajo],
+      ["Tratamiento", formData.tratamiento],
+      ["Recomendaciones", formData.recomendaciones]
+    ];
+  
+    treatmentData.forEach((row, index) => {
+      if (yPosition + 10 > doc.internal.pageSize.height) {
+        doc.addPage();
+        yPosition = 20;
+      }
+      doc.text(row[0] + ": " + row[1], 20, yPosition);
+      yPosition += 8;
+    });
   
     // Convertir el archivo PDF en un blob
     const pdfOutput = doc.output("blob");
@@ -166,9 +199,6 @@ function CrudClientes() {
       });
   };
   
-  
-
-
   return (
     <div>
       <div className='barra-head'>
