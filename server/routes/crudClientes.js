@@ -2,29 +2,24 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const router = express.Router();
 const db = require("../Config/db");
-const multer = require("multer"); // Añadido para insertar archivos localmente y en base de datos
+const multer = require("multer");
 const path = require("path");
-const fs = require("fs");  // Añadido para leer archivos en el servidor
+const fs = require("fs"); 
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "./uploads/");
     },
     filename: (req, file, cb) => {
-      console.log(req.body); // Verifica qué está llegando en el body
-      const { numeroDocumento, nombres } = req.body;
-      const timestamp = Date.now();
-      const ext = path.extname(file.originalname);
-      const nombreLimpio = nombres ? nombres.replace(/\s+/g, "_") : "sin_nombre";
-      cb(null, `${nombreLimpio}_${numeroDocumento}_${timestamp}${ext}`);
-    }
+      // El nombre ya lo genera el frontend, solo lo usamos aquí directamente
+      cb(null, file.originalname);
+    },
   });
-  
   
   const fileFilter = (req, file, cb) => {
     const extname = path.extname(file.originalname);
-    if (extname !== '.pdf') {
-      return cb(new Error('Solo se permiten archivos PDF'), false);
+    if (extname !== ".pdf") {
+      return cb(new Error("Solo se permiten archivos PDF"), false);
     }
     cb(null, true);
   };
@@ -32,29 +27,32 @@ const storage = multer.diskStorage({
   const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
-    limits: { fileSize: 50 * 1024 * 1024 }
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
   });
   
-  // Ruta con renombramiento posterior
   router.post("/agregarHistorialClinico", upload.single("archivoPDF"), (req, res) => {
-    const { numeroDocumento, descripcion, nombres } = req.body;
+    const { numeroDocumento } = req.body;
   
     if (!req.file) {
       return res.status(400).send("No se ha enviado un archivo PDF.");
     }
   
-    const fileExtension = path.extname(req.file.originalname);
-    const nuevoNombre = `${nombres}_${numeroDocumento}_${Date.now()}${fileExtension}`;
-    const oldPath = req.file.path;
-    const newPath = path.join(path.dirname(oldPath), nuevoNombre);
+    const archivoNombre = req.file.filename;
   
-    fs.rename(oldPath, newPath, (err) => {
+    // 1. Obtener el último número consecutivo
+    const countQuery = "SELECT COUNT(*) AS total FROM clientes_historial";
+  
+    db.query(countQuery, (err, result) => {
       if (err) {
-        return res.status(500).send("Error al renombrar el archivo.");
+        return res.status(500).send("Error al obtener el conteo de historiales.");
       }
   
-      const query = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
-      db.query(query, [numeroDocumento, descripcion, nuevoNombre], (err, result) => {
+      const nuevoNumero = result[0].total + 1;
+      const descripcion = `Historial Clínico #${nuevoNumero}`;
+  
+      // 2. Insertar el nuevo historial
+      const insertQuery = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
+      db.query(insertQuery, [numeroDocumento, descripcion, archivoNombre], (err, result) => {
         if (err) {
           return res.status(500).send("Error al guardar historial clínico.");
         }

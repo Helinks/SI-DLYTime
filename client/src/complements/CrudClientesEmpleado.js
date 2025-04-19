@@ -3,7 +3,7 @@ import Axios from 'axios';
 import './Css/StyleAdminClientes.css';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { jsPDF } from "jspdf"; // Importamos jsPDF
+import { jsPDF } from "jspdf";
 import { Link } from 'react-router-dom';
 
 function CrudClientes() {
@@ -115,20 +115,23 @@ function CrudClientes() {
     doc.text(`Recomendaciones: ${formData.recomendaciones}`, 20, 300);
 
     // Convertir el archivo PDF en un blob
-    const pdfOutput = doc.output('blob');
+    const pdfOutput = doc.output("blob");
 
-    // Crear un FormData para enviar el archivo al backend
-    const formDataPDF = new FormData();
-    formDataPDF.append("archivoPDF", pdfOutput, "historia_clinica.pdf");
-    formDataPDF.append("numeroDocumento", numeroDocumentoSeleccionado);
-    formDataPDF.append("nombres", formData.nombres); // Agregar nombres aquí      
-    
-    // Enviar el archivo PDF al backend
-    Axios.post("http://localhost:3001/crudClientes/agregarHistorialClinico", formDataPDF, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  // Crear el nombre del archivo con el número de documento
+  const timestamp = Date.now();
+  const nombreArchivo = `${numeroDocumentoSeleccionado}_${timestamp}.pdf`;
+
+  const archivoPDF = new File([pdfOutput], nombreArchivo, { type: "application/pdf" });
+
+  const formDataPDF = new FormData();
+  formDataPDF.append("archivoPDF", archivoPDF);
+  formDataPDF.append("numeroDocumento", numeroDocumentoSeleccionado);
+
+  Axios.post("http://localhost:3001/crudClientes/agregarHistorialClinico", formDataPDF, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  })
     .then((response) => {
       console.log("PDF guardado correctamente:", response.data);
       alert("Historia clínica guardada exitosamente.");
@@ -136,7 +139,8 @@ function CrudClientes() {
     .catch((error) => {
       console.error("Error al guardar PDF:", error);
     });
-  };
+  }    
+
 
   return (
     <div>
