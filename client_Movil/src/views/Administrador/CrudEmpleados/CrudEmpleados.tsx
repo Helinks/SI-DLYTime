@@ -4,7 +4,6 @@ import axios from 'axios';
 import Styles from './Styles';
 import useEmpleadoState from '../../../hooks/useEmpleadoState';
 import filtro from '../../Administrador/CrudEmpleados/componentes/filtro';
-import { url } from '../../../Global/url';
 import { Getcrud, addCrud, patchCrud } from './api/Services';
 import { validarCampos } from './componentes/validarCampos';
 import { Picker } from '@react-native-picker/picker';

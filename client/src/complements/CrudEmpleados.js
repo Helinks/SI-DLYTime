@@ -190,18 +190,6 @@ function CrudEmpleados() {
       }
     }
 
-    if(estadoPersona === 'Activo'){
-      estadoPersona = 1
-    }else{
-      if(estadoPersona === 'Inactivo')
-      {
-        estadoPersona = 2
-      }else{
-        if(estadoPersona === 'Bloqueado'){
-          estadoPersona = 3
-        }
-      }
-    }
     Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idRol: 2,
@@ -296,7 +284,7 @@ function CrudEmpleados() {
               <td>{val.idGenero}</td>
               <td>{val.correo}</td>
               <td>{val.telefono}</td>
-              <td>{val.estadoPersona}</td>
+              <td>{val.idEstadoPersona}</td>
               <td>
 
 

@@ -7,6 +7,8 @@ app.use(express.json());
 
 const db = require("./Config/db"); //Conexión a la base de datos
 
+const miniConsulta = require("./routes/miniConsultaSelect"); // Gestión de consultas pequeñas como generos o tipos de ID
+app.use("/miniConsultaSelect", miniConsulta);
 const recuperar = require("./routes/recuperarPassword"); // Gestión de validación y recuperación de contraseña
 app.use("/recuperarPassword", recuperar);
 const autenticacion = require("./routes/autenticacion"); // Autenticación y Registro 

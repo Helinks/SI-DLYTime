@@ -10,11 +10,7 @@ router.get("/consultaEmpleado", (req, res) => {
    const buscarfiltro = req.query.q;
 
 
-    let consulta = `select p.*, td.nombre AS idTipoIdentificacion, ep.nombre AS estadoPersona, g.nombre As idGenero from persona p  
-        inner join tipoidentificacion td on p.idTipoIdentificacion = td.idTipoIdentificacion
-        inner join estadopersona ep on  ep.idEstado = p.idEstadoPersona 
-        inner join genero g on g.idGenero = p.idGenero
-        where idrol = 2 `
+    let consulta = `select * from persona where idrol = 2 `
      
 const params = [];
 
