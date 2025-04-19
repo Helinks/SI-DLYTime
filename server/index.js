@@ -24,7 +24,8 @@ const crudCitas = require("./routes/crudCitas"); // Crud Citas
 app.use("/crudCitas", crudCitas);
 const perfiluser = require("./routes/perfil"); // Perfil usuario
 app.use("/perfil", perfiluser);
-
+const { swaggerUi, swaggerDocument } = require('./swagger/swagger');// Cargar el archivo swagger.js
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument)); // http://localhost:3001/api-docs
 
 const PORT = 3001;
 app.listen(PORT, () => {
