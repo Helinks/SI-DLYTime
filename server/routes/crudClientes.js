@@ -31,36 +31,36 @@ const storage = multer.diskStorage({
   });
   
   router.post("/agregarHistorialClinico", upload.single("archivoPDF"), (req, res) => {
-    const { numeroDocumento } = req.body;
-  
-    if (!req.file) {
-      return res.status(400).send("No se ha enviado un archivo PDF.");
+  const { numeroDocumento } = req.body;
+
+  if (!req.file) {
+    return res.status(400).send("No se ha enviado un archivo PDF.");
+  }
+
+  const archivoNombre = req.file.filename;
+
+  // 1. Obtener el último número consecutivo
+  const countQuery = "SELECT COUNT(*) AS total FROM clientes_historial";
+
+  db.query(countQuery, (err, result) => {
+    if (err) {
+      return res.status(500).send("Error al obtener el conteo de historiales.");
     }
-  
-    const archivoNombre = req.file.filename;
-  
-    // 1. Obtener el último número consecutivo
-    const countQuery = "SELECT COUNT(*) AS total FROM clientes_historial";
-  
-    db.query(countQuery, (err, result) => {
+
+    const nuevoNumero = result[0].total + 1;
+    const descripcion = `Historial Clínico #${nuevoNumero} - ${numeroDocumento} - ${new Date().toLocaleDateString('es-ES')} - ${new Date().toLocaleTimeString('es-ES')}`;
+
+    // 2. Insertar el nuevo historial
+    const insertQuery = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
+    db.query(insertQuery, [numeroDocumento, descripcion, archivoNombre], (err, result) => {
       if (err) {
-        return res.status(500).send("Error al obtener el conteo de historiales.");
+        return res.status(500).send("Error al guardar historial clínico.");
       }
-  
-      const nuevoNumero = result[0].total + 1;
-      const descripcion = `Historial Clínico #${nuevoNumero}`;
-  
-      // 2. Insertar el nuevo historial
-      const insertQuery = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
-      db.query(insertQuery, [numeroDocumento, descripcion, archivoNombre], (err, result) => {
-        if (err) {
-          return res.status(500).send("Error al guardar historial clínico.");
-        }
-        res.send("Historial clínico agregado con éxito.");
-      });
+      res.send("Historial clínico agregado con éxito.");
     });
   });
-  
+});
+
   
   // Ruta para obtener historial clínico
   router.get("/consultaHistorialClinico/:numeroDocumento", (req, res) => {

@@ -3,14 +3,18 @@ import Axios from 'axios';
 import './Css/StyleAdminClientes.css';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { jsPDF } from "jspdf";
 import { Link } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
+import { autoTable } from 'jspdf-autotable';
+
 
 function CrudClientes() {
   const [CrudClient, SetcrudClient] = useState([]);
   const [showHistorialModal, setShowHistorialModal] = useState(false);
   const [historialClinico, setHistorialClinico] = useState([]);
   const [numeroDocumentoSeleccionado, setNumeroDocumentoSeleccionado] = useState('');
+
+  
   
   const [formData, setFormData] = useState({
     numeroHistoria: '',
@@ -77,19 +81,23 @@ function CrudClientes() {
       [name]: value
     });
   };
+  
 
   const guardarPDF = () => {
+    // Verificar los datos capturados en el formulario
+    console.log(formData); // Verifica que los datos estén correctos
+    
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("Historia Clínica de Optometría", 20, 20);
-    
+  
     let yPosition = 30; // Posición inicial para el texto
   
-    // Función para agregar texto y controlar el salto de página
+    // Función para añadir texto al PDF
     const addTextToPDF = (text, title = false) => {
-      if (yPosition + 10 > doc.internal.pageSize.height) { // Verifica si el texto se sale de la página
-        doc.addPage(); // Agrega una nueva página
-        yPosition = 20; // Reinicia la posición vertical
+      if (yPosition + 10 > doc.internal.pageSize.height) {
+        doc.addPage(); // Añadir nueva página si se excede la actual
+        yPosition = 20;
       }
   
       if (title) {
@@ -99,10 +107,11 @@ function CrudClientes() {
       } else {
         doc.text(text, 20, yPosition);
       }
-      yPosition += 10; // Espacio para la siguiente línea de texto
+  
+      yPosition += 10; // Espacio para el siguiente bloque de texto
     };
   
-    // Sección de Datos Personales
+    // Datos Personales
     addTextToPDF("Datos Personales:", true);
     const personalData = [
       ["N° Historia", formData.numeroHistoria],
@@ -116,16 +125,18 @@ function CrudClientes() {
       ["Procedencia", formData.procedencia]
     ];
   
-    personalData.forEach((row, index) => {
-      if (yPosition + 10 > doc.internal.pageSize.height) {
-        doc.addPage();
-        yPosition = 20;
+    autoTable(doc, {
+      startY: yPosition,
+      body: personalData,
+      theme: "striped",
+      margin: { top: 1, bottom: 10 },
+      styles: { cellPadding: 2, fontSize: 10 },
+      didDrawPage: function (data) {
+        yPosition = data.cursor.y + 10;
       }
-      doc.text(row[0] + ": " + row[1], 20, yPosition);
-      yPosition += 8;
     });
   
-    // Sección de Motivo de Consulta y Antecedentes
+    // Motivo de Consulta y Antecedentes
     addTextToPDF("Motivo de la Consulta y Antecedentes:", true);
     const consultationData = [
       ["Motivo de la consulta", formData.motivoConsulta],
@@ -141,16 +152,18 @@ function CrudClientes() {
       ["Antecedentes familiares", formData.antecedentesFamiliares]
     ];
   
-    consultationData.forEach((row, index) => {
-      if (yPosition + 10 > doc.internal.pageSize.height) {
-        doc.addPage();
-        yPosition = 20;
+    autoTable(doc, {
+      startY: yPosition,
+      body: consultationData,
+      theme: "striped",
+      margin: { top: 1, bottom: 10 },
+      styles: { cellPadding: 2, fontSize: 10 },
+      didDrawPage: function (data) {
+        yPosition = data.cursor.y + 10;
       }
-      doc.text(row[0] + ": " + row[1], 20, yPosition);
-      yPosition += 8;
     });
   
-    // Sección de Diagnóstico y Tratamiento
+    // Diagnóstico y Tratamiento
     addTextToPDF("Diagnóstico y Tratamiento:", true);
     const treatmentData = [
       ["Diagnóstico 1", formData.diagnostico1],
@@ -163,19 +176,19 @@ function CrudClientes() {
       ["Recomendaciones", formData.recomendaciones]
     ];
   
-    treatmentData.forEach((row, index) => {
-      if (yPosition + 10 > doc.internal.pageSize.height) {
-        doc.addPage();
-        yPosition = 20;
+    autoTable(doc, {
+      startY: yPosition,
+      body: treatmentData,
+      theme: "striped",
+      margin: { top: 1, bottom: 10 },
+      styles: { cellPadding: 2, fontSize: 10 },
+      didDrawPage: function (data) {
+        yPosition = data.cursor.y + 10;
       }
-      doc.text(row[0] + ": " + row[1], 20, yPosition);
-      yPosition += 8;
     });
   
-    // Convertir el archivo PDF en un blob
+    // Convertir PDF en Blob
     const pdfOutput = doc.output("blob");
-  
-    // Crear el nombre del archivo con el número de documento
     const timestamp = Date.now();
     const nombreArchivo = `${numeroDocumentoSeleccionado}_${timestamp}.pdf`;
   
@@ -185,6 +198,7 @@ function CrudClientes() {
     formDataPDF.append("archivoPDF", archivoPDF);
     formDataPDF.append("numeroDocumento", numeroDocumentoSeleccionado);
   
+    // Subir PDF
     Axios.post("http://localhost:3001/crudClientes/agregarHistorialClinico", formDataPDF, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -198,6 +212,8 @@ function CrudClientes() {
         console.error("Error al guardar PDF:", error);
       });
   };
+  
+  
   
   return (
     <div>
@@ -263,46 +279,70 @@ function CrudClientes() {
           <Modal.Title>Historia Clínica de Optometría</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div id="formularioHistoria" style={{ backgroundColor: '#fff', padding: '10px' }}>
+        <div id="formularioHistoria" style={{ backgroundColor: '#fff', padding: '10px' }}>
             <h5>Anamnesis</h5>
             {/* Aquí renderizamos todos los campos de texto para la historia clínica */}
-            {["N° Historia", "Teléfono", "Fecha", "Filiación", "Nombres", "Edad", "Ocupación", "Sexo", "Procedencia", "Motivo de la consulta", "Antecedentes", "Desarrollo Psicomotriz", "¿Usa Rx?", "RX en uso", "OD", "OI", "Última fecha de control", "Cirugías oculares", "Otros", "Antecedentes familiares"].map(field => (
+            {["numeroHistoria", "telefono", "fecha", "filiacion", "nombres", "edad", "ocupacion", "sexo", "procedencia", "motivoConsulta", "antecedentes", "desarrolloPsicomotriz", "usaRx", "rxUso", "odUso", "oiUso", "ultimaFechaControl", "cirugiasOculares", "otros", "antecedentesFamiliares"].map(field => (
               <Form.Group key={field} className="mb-3">
-                <Form.Label>{field}</Form.Label>
+                <Form.Label>{field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</Form.Label>
                 <Form.Control
                   type="text"
                   name={field}
-                  value={formData[field]}
+                  value={formData[field] || ''}
                   onChange={handleChange}
                 />
               </Form.Group>
             ))}
 
             <h5>Diagnóstico y Tratamiento</h5>
-            {["Diagnóstico 1", "CIE 10 (1)", "Diagnóstico 2", "CIE 10 (2)", "Observaciones", "Plan de trabajo", "Tratamiento", "Recomendaciones"].map(field => (
+            {["diagnostico1", "cie1", "diagnostico2", "cie2", "observaciones", "planTrabajo", "tratamiento", "recomendaciones"].map(field => (
               <Form.Group key={field} className="mb-3">
-                <Form.Label>{field}</Form.Label>
+                <Form.Label>{field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</Form.Label>
                 <Form.Control
                   type="text"
                   name={field}
-                  value={formData[field]}
+                  value={formData[field] || ''}
                   onChange={handleChange}
                 />
               </Form.Group>
             ))}
           </div>
-          <button onClick={guardarPDF} className="btn btn-success mt-3">Guardar</button>
+
+          <button onClick={guardarPDF} className="btn1">Guardar</button>
 
           <h5 className="mt-4">Historiales Existentes</h5>
-          <ul>
-            {historialClinico.map((item, i) => (
-              <li key={i}>{item.descripcion} - <a href={`http://localhost:3001/uploads/${item.archivoPDF}`} target="_blank" rel="noreferrer">Ver PDF</a></li>
-            ))}
-          </ul>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th scope="col">Descripción</th>
+                  <th scope="col">Acciones</th> {/* Columna para las acciones */}
+                </tr>
+              </thead>
+              <tbody>
+                {historialClinico.map((item, i) => (
+                  <tr key={i}>
+                    <td>{item.descripcion}</td>
+                    <td>
+                      {/* Botón para ver el PDF */}
+                      <a
+                        href={`http://localhost:3001/uploads/${item.archivoPDF}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn1 text-decoration-none" // Eliminar subrayado
+                      >
+                        Ver PDF
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+
         </Modal.Body>
 
         <Modal.Footer>
-          <button onClick={() => setShowHistorialModal(false)} className="btn btn-secondary">Cerrar</button>
+          <button onClick={() => setShowHistorialModal(false)} className="btn2">Cerrar</button>
         </Modal.Footer>
       </Modal>
     </div>
