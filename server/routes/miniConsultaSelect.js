@@ -15,3 +15,5 @@ router.get("/consultarGenero", (req, res) => {
         }
     });
 });
+
+module.exports = router;

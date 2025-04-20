@@ -1,4 +1,4 @@
 export const url = () => {
-    return 'http://192.168.20.26:3001';
+    return 'http://192.168.1.13:3001';
 }
 
