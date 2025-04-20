@@ -1,25 +1,19 @@
-import { Text, TextInput, View, Button, ScrollView, TouchableOpacity, Modal } from 'react-native';
+import { Text, TextInput, View, Button, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Styles from './Styles';
 import useEmpleadoState from '../../../hooks/useEmpleadoState';
 import filtro from '../../Administrador/CrudEmpleados/componentes/filtro';
-import { Getcrud, addCrud, patchCrud } from './api/Services';
+import { Getcrud, addCrud, patchCrud, getGenero, getIdentificacion, getEstado } from './controller/Services';
 import { validarCampos } from './componentes/validarCampos';
 import { Picker } from '@react-native-picker/picker';
 
 
 export default function CrudEmpleados() {
 
-
-    const tiposIdentificacion = [
-        { id: 1, nombre: 'Cédula de Ciudadanía' },
-        { id: 2, nombre: 'Tarjeta de Identidad' },
-        { id: 3, nombre: 'RUC' },
-        // Agrega más si lo necesitas
-    ];
-
     const {
+        tiposIdentification, setIdentification,
+        tiposGenero, setTiposGenero,
+        tipoEstado, setTipoEstado,
         modoEdicion, setModoEdicion,
         modalVisible, setModalVisible,
         personas, setPersonas,
@@ -27,9 +21,16 @@ export default function CrudEmpleados() {
         busqueda, setBusqueda
     } = useEmpleadoState();
 
+    const Consultas = async () => {
+        await getGenero(setTiposGenero);
+        await getIdentificacion(setIdentification);
+        await getEstado(setTipoEstado);
+    };
+
     const personasFiltradas = filtro(personas, busqueda);
 
     useEffect(() => {
+        Consultas();
         Getcrud(setPersonas);
     }, []);
 
@@ -90,8 +91,6 @@ export default function CrudEmpleados() {
                 </ScrollView>
             </View>
 
-            {/* MODAL DE AGREGAR */}
-
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -99,185 +98,185 @@ export default function CrudEmpleados() {
                 onRequestClose={() => setModalVisible(false)}
             >
                 <View style={Styles.modalFondo}>
-                    <View style={Styles.modalContenido}>
-                        <Text style={Styles.titulo}>
-                            {modoEdicion ? "Editar Empleado" : "Agregar Empleado"}
-                        </Text>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={Styles.modalContenido}
+                    >
 
-                        {personaSeleccionada && (
-                            <>
-                                {modoEdicion ?
-                                    "" :
+                        <ScrollView contentContainerStyle={Styles.scrollViewContent}>
+                            <Text style={Styles.titulo}>
+                                {modoEdicion ? "Editar Empleado" : "Agregar Empleado"}
+                            </Text>
+                            {personaSeleccionada && (
+                                <>
+                                    {modoEdicion ?
+                                        "" :
+                                        <TextInput
+                                            style={Styles.inputText}
+                                            value={modoEdicion ? personaSeleccionada.numeroDocumento?.toString() : undefined}
+                                            placeholder="Número de Documento"
+                                            keyboardType="numeric"
+                                            onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, numeroDocumento: texto === "" ? "" : parseInt(texto) })}
+                                        />
+
+                                    }
+
+                                    <View style={Styles.textPicker}>
+                                        <Picker
+                                            style={Styles.Picker}
+                                            selectedValue={personaSeleccionada.idTipoIdentificacion}
+                                            onValueChange={(itemValue) => {
+                                                setPersonaSeleccionada({
+                                                    ...personaSeleccionada,
+                                                    idTipoIdentificacion: itemValue,
+                                                });
+                                            }}
+                                        >
+                                            <Picker.Item label="tipo de identificación" value={0} />
+                                            {tiposIdentification.map((tipo) => (
+                                                <Picker.Item key={tipo.idTipoIdentificacion} label={tipo.nombre} value={tipo.idTipoIdentificacion} />
+                                            ))}
+                                        </Picker>
+                                    </View>
                                     <TextInput
-                                        value={modoEdicion ? personaSeleccionada.numeroDocumento?.toString() : undefined}
-                                        placeholder="Número de Documento"
-                                        keyboardType="numeric"
-                                        onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, numeroDocumento: texto === "" ? "" : parseInt(texto) })}
+                                        style={Styles.inputText}
+                                        value={modoEdicion ? personaSeleccionada.Nombres : undefined}
+                                        placeholder="Nombres"
+                                        onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, Nombres: texto })}
                                     />
 
-                                }
+                                    <TextInput
+                                        style={Styles.inputText}
+                                        value={modoEdicion ? personaSeleccionada.Apellidos : undefined}
+                                        placeholder="Apellidos"
+                                        onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, Apellidos: texto })}
+                                    />
 
-                                <Picker
-                                    selectedValue={personaSeleccionada.idTipoIdentificacion}
-                                    onValueChange={(itemValue) => {
-                                        setPersonaSeleccionada({
-                                            ...personaSeleccionada,
-                                            idTipoIdentificacion: itemValue,
-                                        });
+                                    <View style={Styles.textPicker}>
+                                        <Picker
+                                            style={Styles.Picker}
+                                            selectedValue={personaSeleccionada.idGenero}
+                                            onValueChange={(itemValue) => {
+                                                setPersonaSeleccionada({
+                                                    ...personaSeleccionada,
+                                                    idGenero: itemValue,
+                                                });
+                                            }}
+                                        >
+                                            <Picker.Item label="tipo de Genero" value={0} />
+                                            {tiposGenero.map((tipo) => (
+                                                <Picker.Item key={tipo.idGenero} label={tipo.nombre} value={tipo.idGenero} />
+                                            ))}
+                                        </Picker>
+                                    </View>
+
+                                    <TextInput
+                                        style={Styles.inputText}
+                                        value={modoEdicion ? personaSeleccionada.correo : undefined}
+                                        placeholder="Correo Electrónico"
+                                        onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, correo: texto })}
+                                    />
+
+                                    <TextInput
+                                        style={Styles.inputText}
+                                        value={modoEdicion ? personaSeleccionada.telefono : undefined}
+                                        placeholder="Telefono"
+                                        onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, telefono: texto })}
+                                    />
+
+                                    {modoEdicion ?
+                                        "" :
+                                        <TextInput
+                                            style={Styles.inputText}
+                                            value={modoEdicion ? personaSeleccionada.clave?.toString() : undefined}
+                                            placeholder="Clave"
+                                            secureTextEntry={true}
+                                            onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, clave: texto })}
+                                        />
+
+                                    }
+                                    <View style={Styles.textPicker}>
+                                        <Picker
+                                            style={Styles.Picker}
+                                            selectedValue={personaSeleccionada.idEstadoPersona}
+                                            onValueChange={(itemValue) => {
+                                                setPersonaSeleccionada({
+                                                    ...personaSeleccionada,
+                                                    idEstadoPersona: itemValue,
+                                                });
+                                            }}
+                                        >
+                                            <Picker.Item label="tipo de Estado" value={0} />
+                                            {tipoEstado.map((tipo) => (
+                                                <Picker.Item key={tipo.idEstado} label={tipo.nombre} value={tipo.idEstado} />
+                                            ))}
+                                        </Picker>
+                                    </View>
+                                </>
+                            )}
+
+                            <View style={Styles.buttonContainer}>
+                                < Button
+                                    title="Guardar"
+                                    color="#FF5757"
+                                    onPress={async () => {
+
+                                        if (validarCampos(personaSeleccionada)) {
+                                            return;
+                                        }
+
+                                        if (modoEdicion) {
+
+                                            // Modificar datos
+                                            await patchCrud(personaSeleccionada);
+
+                                            // Actualizar la lista
+                                            await Getcrud(setPersonas);
+                                            alert("actualizado");
+
+                                            // Cerrar el modal
+                                            setModalVisible(false);
+
+                                            // Limpiar el formulario
+                                            setPersonaSeleccionada(null);
+
+
+                                        } else {
+
+                                            // Agregar datos
+                                            await addCrud(personaSeleccionada);
+
+                                            // Actualizar la lista
+                                            await Getcrud(setPersonas);
+                                            alert("Usuario agregado");
+
+                                            // Cerrar el modal
+                                            setModalVisible(false);
+
+                                            // Limpiar el formulario
+                                            setPersonaSeleccionada(null);
+                                        }
+
                                     }}
-                                >
-                                    <Picker.Item label="Seleccione un tipo de identificación" value={0} />
-                                    {tiposIdentificacion.map((tipo) => (
-                                        <Picker.Item key={tipo.id} label={tipo.nombre} value={tipo.id} />
-                                    ))}
-                                </Picker>
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.Nombres : undefined}
-                                    placeholder="Nombres"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, Nombres: texto })}
                                 />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.Apellidos : undefined}
-                                    placeholder="Apellidos"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, Apellidos: texto })}
+                            </View>
+                            <View style={Styles.buttonContainer}>
+                                <Button
+                                    color="#FF5757"
+                                    title="Cancelar"
+                                    onPress={() => {
+                                        // Cancelar edición
+                                        setModalVisible(false);
+                                    }}
                                 />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.idGenero?.toString() : undefined}
-                                    placeholder="ID Género"
-                                    keyboardType="numeric"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, idGenero: texto === "" ? "" : parseInt(texto) })}
-                                />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.correo : undefined}
-                                    placeholder="Correo Electrónico"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, correo: texto })}
-                                />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.telefono : undefined}
-                                    placeholder="Telefono"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, telefono: texto })}
-                                />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.clave : undefined}
-                                    placeholder="Clave"
-                                    secureTextEntry
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, clave: texto })}
-                                />
-
-                                <TextInput
-                                    value={modoEdicion ? personaSeleccionada.idEstadoPersona?.toString() : undefined}
-                                    placeholder="ID Estado Persona"
-                                    keyboardType="numeric"
-                                    onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, idEstadoPersona: texto === "" ? "" : parseInt(texto) })}
-                                />
-                            </>
-                        )}
-                        < Button
-                            title="Guardar"
-                            onPress={ async () => {
-
-                                if (validarCampos(personaSeleccionada)) {
-                                    return;
-                                }
-
-                                if (modoEdicion) {
-
-                                    // Modificar datos
-                                    await patchCrud(personaSeleccionada);
-
-                                    // Actualizar la lista
-                                    await Getcrud(setPersonas);
-
-                                    // Cerrar el modal
-                                    setModalVisible(false);
-
-                                    // Limpiar el formulario
-                                    setPersonaSeleccionada(null);
-
-
-                                } else {
-
-                                    // Agregar datos
-                                    await addCrud(personaSeleccionada);
-
-                                    // Actualizar la lista
-                                    await Getcrud(setPersonas);
-
-                                    // Cerrar el modal
-                                    setModalVisible(false);
-
-                                    // Limpiar el formulario
-                                    setPersonaSeleccionada(null);
-                                }
-
-                            }}
-                        />
-                        <Button
-                            title="Cancelar"
-                            onPress={() => {
-                                // Cancelar edición
-                                setModalVisible(false);
-                            }}
-                        />
-                    </View>
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
                 </View>
-            </Modal>
+            </Modal >
 
-        </View>
+        </View >
 
 
     );
 }
-
-
-/* // Suponiendo que tienes un arreglo de tipos de identificación
-
-
-// En tu JSX:
-<Picker
-  selectedValue={personaSeleccionada.idTipoIdentificacion}
-  onValueChange={(itemValue) =>
-    setPersonaSeleccionada({ ...personaSeleccionada, idTipoIdentificacion: itemValue })
-  }
->
-  <Picker.Item label="Seleccione un tipo de identificación" value={0} />
-  {tiposIdentificacion.map((tipo) => (
-    <Picker.Item key={tipo.id} label={tipo.nombre} value={tipo.id} />
-  ))}
-</Picker> 
-
-
-
-
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-
-type TipoIdentificacion = {
-  id: number;
-  nombre: string;
-};
-
-type Persona = {
-  idTipoIdentificacion: number;
-  // Puedes agregar otros campos como nombres, apellidos, etc.
-};
-
-type Props = {
-  personaSeleccionada: Persona;
-  setPersonaSeleccionada: React.Dispatch<React.SetStateAction<Persona>>;
-};
-
-const tiposIdentificacion: TipoIdentificacion[] = [
-  { id: 1, nombre: 'Cédula de Ciudadanía' },
-  { id: 2, nombre: 'Tarjeta de Identidad' },
-  { id: 3, nombre: 'Pasaporte' },
-];
-
-*/

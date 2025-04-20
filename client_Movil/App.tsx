@@ -9,9 +9,6 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <NavigationContainer>
         <DrawerNavigation />
-        <View style={{ padding: 10 }}>
-          <Text>tengo sueño</Text>
-        </View>
       </NavigationContainer>
     </SafeAreaView>
   );

@@ -285,9 +285,9 @@ function CrudEmpleados() {
               <td>{val.correo}</td>
               <td>{val.telefono}</td>
               <td>{val.idEstadoPersona}</td>
+
+              
               <td>
-
-
                 <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#F" onClick={() => { MostrarEmpleado(val) }}>
                   Modificar
                 </button>
