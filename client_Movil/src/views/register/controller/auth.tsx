@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
-const url = 'http://192.168.1.13:3001';
+const url = 'http://192.168.137.209:3001';
 
 export const registerUser = async (formData: {
     numeroDocumento: string;
@@ -21,7 +21,7 @@ export const registerUser = async (formData: {
     }
     else {
         try {
-            const response = await axios.post(`${url}/autenticacion/registro`, formData);
+            const response = await axios.post<{message?:string;}>(`${url}/autenticacion/registro`, formData);
             if (response.status === 201) {
                 Alert.alert('Registro Exitoso', response.data.message);
                 return { success: true };
@@ -29,12 +29,10 @@ export const registerUser = async (formData: {
                 Alert.alert('Error de Registro', response.data.message || 'Ocurrió un error durante el registro.');
                 return { success: false, error: response.data.message || 'Error al registrar.' };
             };
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.log('Axios error:', error.message);
-            } else {
-                console.log('Unexpected error:', error);
-            }
+        } catch (error:any) {
+            console.error('Error al registrarse', error);
+            Alert.alert(error.response?.data?.message || "Ocurrio un error inesperado");
+            return { success: false, error};
         }
     }
 }

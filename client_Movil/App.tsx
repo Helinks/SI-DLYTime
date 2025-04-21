@@ -55,6 +55,8 @@ export default function App() {
 
   const handleLogout = async () => {
     await AsyncStorage.removeItem('authToken');
+    await AsyncStorage.removeItem('userRole');
+    await AsyncStorage.removeItem('userId');
     setIsLoggedIn(false);
   };
 

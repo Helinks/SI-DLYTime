@@ -9,7 +9,7 @@ export default function IndexAdmin() {
   return (
     <View>
       <Text>Index</Text>
-      <Button title='Cerrar Sesión' onPress={handleLogoutPress}></Button>
+      
     </View>
 
   )
