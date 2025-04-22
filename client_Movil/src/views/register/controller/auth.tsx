@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
-const url = 'http://192.168.137.209:3001';
+const url = 'http://192.168.221.1:3001';
 
 export const registerUser = async (formData: {
     numeroDocumento: string;
