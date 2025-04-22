@@ -10,6 +10,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@everapi/emailvalidation-js": "^1.0.6",
     "@react-native-picker/picker": "^2.11.0",
     "@react-navigation/drawer": "^7.3.9",
     "axios": "^1.8.4",
