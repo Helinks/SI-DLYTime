@@ -6,20 +6,26 @@ const db = require("../Config/db");
 
 /* Consulta los Usuarios que son empleados  */
 router.get("/consultaEmpleado", (req, res) => {
- 
-   const buscarfiltro = req.query.q;
+
+    const buscarfiltro = req.query.q;
 
 
-    let consulta = `select * from persona where idrol = 2 `
-     
-const params = [];
+    let consulta = `SELECT 
+    persona.*,
+    genero.nombre AS nombreGenero,
+    estadoPersona.nombre AS nombreEstado
+    FROM persona
+    JOIN genero ON persona.idGenero = genero.idGenero
+    JOIN estadopersona ON persona.idEstadoPersona = estadoPersona.idEstado where idRol = 2 `
 
-        if (buscarfiltro){
-            consulta+=` and p.numeroDocumento like ? `
-            params.push(`%${buscarfiltro}%`)
-        }
+    const params = [];
 
-    db.query(consulta,params, (err, result) => {
+    if (buscarfiltro) {
+        consulta += ` and p.numeroDocumento like ? `
+        params.push(`%${buscarfiltro}%`)
+    }
+
+    db.query(consulta, params, (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -106,7 +112,7 @@ router.patch("/actualizarEmpleado", async (req, res) => {
     const numeroDocumento = req.body.numeroDocumento;
     const idTipoIdentificacion = req.body.idTipoIdentificacion;
     const nombres = req.body.Nombres;
-    const apellidos = req.body.Apellids;
+    const apellidos = req.body.Apellidos;
     const idGenero = req.body.idGenero;
     const correo = req.body.correo;
     const telefono = req.body.telefono;
