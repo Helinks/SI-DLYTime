@@ -28,6 +28,7 @@ router.get("/consultarGenero", (req, res) => {
     });
 });
 
+
 router.get("/consultarEstado", (req, res) => {
 
     let consulta = `select * from estadopersona`

@@ -57,6 +57,7 @@
 
 .btn-outline-custom1 {
   width: 100%;
+  margin: 0;
   color: #000000; /* Color del texto */
   border: 2px solid #ffffff; /* Borde claro */
   background-color: transparent; /* Fondo transparente por defecto */
@@ -81,4 +82,10 @@
 
 .custom-img1:hover {
   filter: blur(2px); /* Al pasar el mouse, la imagen se ve nítida */
+}
+
+.option3{
+  display: block;
+  justify-content: center;
+  align-items: center;
 }

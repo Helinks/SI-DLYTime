@@ -12,6 +12,7 @@
     "are-we-there-yet": "^2.0.0",
     "argon2": "^0.41.1",
     "array-flatten": "^1.1.1",
+    "axios": "^1.8.4",
     "balanced-match": "^1.0.2",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
@@ -135,6 +136,9 @@
     "string-width": "^4.2.3",
     "strip-ansi": "^6.0.1",
     "supports-color": "^5.5.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "swagger-ui-react": "^5.21.0",
     "tar": "^6.2.1",
     "to-regex-range": "^5.0.1",
     "toidentifier": "^1.0.1",
@@ -151,7 +155,8 @@
     "whatwg-url": "^5.0.0",
     "wide-align": "^1.1.5",
     "wrappy": "^1.0.2",
-    "yallist": "^4.0.0"
+    "yallist": "^4.0.0",
+    "yamljs": "^0.3.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -159,5 +164,8 @@
   },
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/axios": "^0.9.36"
+  }
 }

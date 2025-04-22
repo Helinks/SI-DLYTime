@@ -9,22 +9,42 @@ import img1 from "../img/15.jpg"
 function IndexCliente() {
 
   const [message, setMessage] = useState('');
+  const [mNull, setMNull] = useState('');
+  const [email, setEmail] = useState('');
+  const [problem, setProblem] = useState('');
+
+  const cleanMessage = async () => {
+    setMNull('');
+  }
 
   const handleSendEmail = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    try {
-      const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
-        to: 'dlytime987@gmail.com',
-        subject: 'Soporte desde el sistema',
-        message,
+    if (!email) {
+      setMNull('Por favor ingresa tu correo')
+    } else if (!emailRegex.test(email)) {
+      setMNull('Por favor ingresa un correo valido')
+    } else if (!message || !problem) {
+      setMNull('Por favor llena todos los campos')
+    }
+    else {
+      setMNull('')
+      try {
+        const response = await Axios.post('http://localhost:3001/enviarCorreo/enviar-soporte', {
+          to: 'aroca3282@gmail.com',
+          subject: 'Soporte desde el sistema',
+          message,
+          email,
+          problem
+        }
+        );
+        alert(response.data.message); // Notificar al usuario
+        setMessage(''); // Limpiar el mensaje
+
+      } catch (error) {
+        console.error(error);
+        alert('Hubo un error al enviar el mensaje.');
       }
-      );
-      alert(response.data.message); // Notificar al usuario
-      setMessage(''); // Limpiar el mensaje
-
-    } catch (error) {
-      console.error(error);
-      alert('Hubo un error al enviar el mensaje.');
     }
   };
 
@@ -75,43 +95,58 @@ function IndexCliente() {
               </Link>
             </div>
             <div className='option3'>
-              <div class="btn btn-outline-custom" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+              <div class="btn btn-outline-custom" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">
                 <svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" fill="currentColor" class="bi bi-person-raised-hand" viewBox="0 0 16 16">
                   <path d="M6 6.207v9.043a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H6.236a1 1 0 0 1-.447-.106l-.33-.165A.83.83 0 0 1 5 2.488V.75a.75.75 0 0 0-1.5 0v2.083c0 .715.404 1.37 1.044 1.689L5.5 5c.32.32.5.754.5 1.207" />
                   <path d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
                 </svg>
               </div>
-              <div className='btn btn-outline-custom1' data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+              <button className='btn btn-outline-custom1' id="links" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-whatever="@mdo">
                 Soporte
-              </div>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Soporte</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Soporte</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={cleanMessage}></button>
             </div>
             <div class="modal-body">
               <form>
                 <div class="mb-3">
-                  <label for="recipient-name" class="col-form-label">Recipiente:</label>
-                  <input type="text" id="disabledTextInput" class="form-control" value='dlytime987@gmail.com' />
+                  <label for="recipient-name" class="col-form-label">Digita un correo al que te podamos contactar:</label>
+                  <input type="email" id="TextInputEmail" class="form-control"
+                    onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div class="mb-3">
-                  <label for="message-text" class="col-form-label">Mensage:</label>
+                  <label for="message-text" class="col-form-label">Tipo de problema:</label>
+                  <select class="form-control" id="message-text"
+                    onChange={(e) => setProblem(e.target.value)}
+                  >
+                    <option></option>
+                    <option>Problema al iniciar sesión</option>
+                    <option>Problema al agendar una cita</option>
+                    <option>Problema con mis datos</option>
+                    <option>Otro</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Mensaje:</label>
                   <textarea class="form-control" id="message-text" value={message}
                     onChange={(e) => setMessage(e.target.value)}></textarea>
                 </div>
+
+                <h5>{mNull}</h5>
               </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-              <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar mensaje</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={cleanMessage}>Cerrar</button>
+              <button type="button" class="btn btn-primary" onClick={handleSendEmail}>Enviar</button>
             </div>
           </div>
         </div>
