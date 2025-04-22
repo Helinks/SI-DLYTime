@@ -7,7 +7,7 @@ import CrudCita from './complements/CrudCita';
 import CrudClientes from './complements/CrudClientes';
 import CrudEmpleados from './complements/CrudEmpleados';
 import EmpleadoAdCitas from './complements/EmpleadoAdCitas';
-import Index from './complements/index';
+import Index from './Views/Home/index';
 import IndexAdmin from './complements/IndexAdmin';
 import IndexCliente from './complements/IndexCliente';
 import IndexEmpleado from './complements/IndexEmpleado';

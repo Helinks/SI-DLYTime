@@ -233,21 +233,24 @@ DELIMITER //
 
 CREATE PROCEDURE InsertarHorariosTresSemanas()
 BEGIN 
+    DECLARE fechaActual DATE;
     DECLARE fechaObjetivo DATE;
     DECLARE idHorario INT;
 
     -- Definir la fecha objetivo (21 días después de hoy)
+    SET fechaActual = CURDATE();
     SET fechaObjetivo = CURDATE() + INTERVAL 21 DAY;
     
     -- Obtener el último ID en la tabla Horario
     SELECT COALESCE(MAX(idHorarios), 0) INTO idHorario FROM Horario;
-
+    
+    WHILE fechaActual <= fechaObjetivo DO
     -- Solo insertará si no existen horarios para esa fecha
-    IF NOT EXISTS (SELECT 1 FROM Horario WHERE fecha = fechaObjetivo) THEN 
+    IF NOT EXISTS (SELECT 1 FROM Horario WHERE fecha = fechaActual) THEN 
         INSERT INTO Horario (idHorarios, fecha, hora, estadoHorario)
         SELECT 
-            (idHorario + ROW_NUMBER() OVER(ORDER BY hora)) AS idHorarios,
-            fechaObjetivo,
+            (idHorario + ROW_NUMBER() OVER(ORDER BY hora)) + DATEDIFF(fechaActual, CURDATE()) * 100 AS idHorarios,
+            fechaActual,
             t.hora,
             1  -- Estado "Disponible"
         FROM (
@@ -273,6 +276,9 @@ BEGIN
         ) t
 	ORDER BY t.hora;
     END IF;
+    
+    SET fechaActual = fechaActual + INTERVAL 1 DAY;
+    END WHILE;
 END //
 
 DELIMITER ;
