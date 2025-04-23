@@ -1,10 +1,9 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-
+import { url } from '../../../Global/url';
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
-const url = 'http://192.168.221.1:3001';
 
 export const registerUser = async (formData: {
     numeroDocumento: string;
@@ -21,7 +20,7 @@ export const registerUser = async (formData: {
     }
     else {
         try {
-            const response = await axios.post<{message?:string;}>(`${url}/autenticacion/registro`, formData);
+            const response = await axios.post<{message?:string;}>(`${url()}/autenticacion/registro`, formData);
             if (response.status === 201) {
                 Alert.alert('Registro Exitoso', response.data.message);
                 return { success: true };

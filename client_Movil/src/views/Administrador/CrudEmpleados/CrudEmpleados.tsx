@@ -221,7 +221,8 @@ export default function CrudEmpleados() {
                                     color="#FF5757"
                                     onPress={async () => {
 
-                                        if (validarCampos(personaSeleccionada)) {
+                                        const valid = await validarCampos(personaSeleccionada)
+                                        if (valid) {
                                             return;
                                         }
 
@@ -244,12 +245,11 @@ export default function CrudEmpleados() {
                                         } else {
 
                                             // Agregar datos
-                                            await addCrud(personaSeleccionada);
-
+                                            const respuesta = await addCrud(personaSeleccionada);
                                             // Actualizar la lista
                                             await Getcrud(setPersonas);
-                                            alert("Usuario agregado");
-
+                                            
+                                            alert(respuesta.message);
                                             // Cerrar el modal
                                             setModalVisible(false);
 
