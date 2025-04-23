@@ -1,10 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import { url } from '../../../Global/url';
 
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
-const url = 'http://192.168.137.209:3001';
 
            
 
@@ -13,7 +13,7 @@ export const loginUser = async (correo_i: string, password_i: string) => {
         Alert.alert("Por favor llener todos los campos")
     } else {
         try {
-            const response = await axios.post<{ token: string; rol: string; id: string; message?: string }>(`${url}/autenticacion/login`, { correo_i, password_i });
+            const response = await axios.post<{ token: string; rol: string; id: string; message?: string }>(`${url()}/autenticacion/login`, { correo_i, password_i });
             if (response.status === 200) {
                 await AsyncStorage.setItem('authToken', response.data.token);
                 await AsyncStorage.setItem('userRole', response.data.rol.toString());

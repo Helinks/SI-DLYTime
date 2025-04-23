@@ -1,5 +1,5 @@
 import Personas from '../../../../types/persona';
-import validarEmail  from "../../../../utils/Emailvalidation";
+import validarEmail from "../../../../utils/Emailvalidation";
 
 export const validarCampos = async (personaSeleccionada: Personas | null) => {
 
@@ -7,7 +7,7 @@ export const validarCampos = async (personaSeleccionada: Personas | null) => {
         return true;
     }
 
-    if (personaSeleccionada.numeroDocumento == 0 || !personaSeleccionada.Nombres || !personaSeleccionada.Apellidos || !personaSeleccionada.numeroDocumento ||
+    if (personaSeleccionada.numeroDocumento == 0 || personaSeleccionada.idTipoIdentificacion == "" || !personaSeleccionada.Nombres || !personaSeleccionada.Apellidos || !personaSeleccionada.numeroDocumento ||
         personaSeleccionada.idGenero == 0 || !personaSeleccionada.correo || !personaSeleccionada.clave || personaSeleccionada.idEstadoPersona == 0) {
         alert('Por favor, complete todos los campos requeridos.');
         return true;
@@ -15,6 +15,12 @@ export const validarCampos = async (personaSeleccionada: Personas | null) => {
 
     if (personaSeleccionada.numeroDocumento.toString().length > 10) {
         alert('Limite de digitos superado. Digitar un maximo de 10 digitos en Número de documento');
+        return true;
+    }
+
+    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (require.test(personaSeleccionada?.clave) === false) {
+        alert("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
         return true;
     }
 
@@ -26,21 +32,17 @@ export const validarCampos = async (personaSeleccionada: Personas | null) => {
             console.log(val)
             return true;
         }
-        
+
         const result = await validarEmail(personaSeleccionada.correo)
-        
-        if (!result){
+
+        if (!result) {
             alert("Correo inválido")
             return true;
         }
     }
 
-    const require = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    if (require.test(personaSeleccionada?.clave) === false) {
-        alert("Contraseña inválida. Debe contener al menos una mayúscula, un número y tener mínimo 8 caracteres.");
-        return true;
-    }
 
 
+    return false;
 }
 

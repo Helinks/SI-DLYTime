@@ -32,7 +32,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ onLogin}) => {
       <Text style={styles.title}>Iniciar Sesión</Text>
       <TextInput
       style={styles.input}
-      placeholder="Corrreo Electrónico"
+      placeholder="Correo Electrónico"
       value={email}
       onChangeText={setEmail}
       keyboardType='email-address'

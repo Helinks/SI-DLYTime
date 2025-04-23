@@ -73,8 +73,6 @@ export default function App() {
     <SafeAreaView style={{ flex: 1 }}>
       <NavigationContainer>
 
-        <DrawerNavigation />
-
           {isLoggedIn ? (<DrawerNavigation onLogout={handleLogout}/>) : <AuthNavigator onLogin={handleLoginSucces}/>}
 
       </NavigationContainer>
