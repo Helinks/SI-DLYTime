@@ -6,24 +6,26 @@ const db = require("../Config/db");
 
 /* Consulta los Usuarios que son empleados  */
 router.get("/consultaEmpleado", (req, res) => {
- 
-   const buscarfiltro = req.query.q;
+
+    const buscarfiltro = req.query.q;
 
 
-    let consulta = `select p.*, td.nombre AS idTipoIdentificacion, ep.nombre AS estadoPersona, g.nombre As idGenero from persona p  
-        inner join tipoidentificacion td on p.idTipoIdentificacion = td.idTipoIdentificacion
-        inner join estadopersona ep on  ep.idEstado = p.idEstadoPersona 
-        inner join genero g on g.idGenero = p.idGenero
-        where idrol = 2 `
-     
-const params = [];
+    let consulta = `SELECT 
+    persona.*,
+    genero.nombre AS nombreGenero,
+    estadoPersona.nombre AS nombreEstado
+    FROM persona
+    JOIN genero ON persona.idGenero = genero.idGenero
+    JOIN estadopersona ON persona.idEstadoPersona = estadoPersona.idEstado where idRol = 2 `
 
-        if (buscarfiltro){
-            consulta+=` and p.numeroDocumento like ? `
-            params.push(`%${buscarfiltro}%`)
-        }
+    const params = [];
 
-    db.query(consulta,params, (err, result) => {
+    if (buscarfiltro) {
+        consulta += ` and p.numeroDocumento like ? `
+        params.push(`%${buscarfiltro}%`)
+    }
+
+    db.query(consulta, params, (err, result) => {
         if (err) {
             console.log(err);
         } else {
@@ -35,17 +37,18 @@ const params = [];
 /* Agregar Nuevos empleados */
 router.post("/agregarEmpleado", async (req, res) => {
     const numeroDocumento = req.body.numeroDocumento;
-    const idRol = req.body.idRol;
+    const idRol = 2;
     const idTipoIdentificacion = req.body.idTipoIdentificacion;
-    const Nombres = req.body.nombre;
-    const Apellidos = req.body.apellido;
+    const Nombres = req.body.Nombres;
+    const Apellidos = req.body.Apellidos;
     const idGenero = req.body.idGenero;
     const correo = req.body.correo;
     const clave = req.body.clave;
     const telefono = req.body.telefono;
-    const estado = req.body.estadoPersona;
+    const estado = req.body.idEstadoPersona;
 
-    console.log(numeroDocumento,
+    console.log(
+        numeroDocumento,
         idRol,
         idTipoIdentificacion,
         Nombres,
@@ -108,12 +111,12 @@ router.post("/agregarEmpleado", async (req, res) => {
 router.patch("/actualizarEmpleado", async (req, res) => {
     const numeroDocumento = req.body.numeroDocumento;
     const idTipoIdentificacion = req.body.idTipoIdentificacion;
-    const nombres = req.body.nombre;
-    const apellidos = req.body.apellido;
+    const nombres = req.body.Nombres;
+    const apellidos = req.body.Apellidos;
     const idGenero = req.body.idGenero;
     const correo = req.body.correo;
     const telefono = req.body.telefono;
-    const estado = req.body.estadoPersona;
+    const estado = req.body.idEstadoPersona;
     db.query(
         "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idEstadoPersona = ? WHERE numeroDocumento = ? ",
         [

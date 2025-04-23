@@ -122,15 +122,14 @@ function CrudEmpleados() {
           setError(false);
           Axios.post("http://localhost:3001/crudEmpleados/agregarEmpleado", {
             numeroDocumento: ndocumento,
-            idRol: 2,
             idTipoIdentificacion: tipodocumento,
-            nombre: nombre,
-            apellido: apellido,
+            Nombres: nombre,
+            Apellidos: apellido,
             idGenero: genero,
             correo: correo,
             clave: password,
             telefono: telefono,
-            estadoPersona: estadoPersona,
+            idEstadoPersona: estadoPersona,
           }).then((response) => {
             /* Validación de correo y número de documento */
             if (response.data.exists) {
@@ -191,28 +190,16 @@ function CrudEmpleados() {
       }
     }
 
-    if(estadoPersona === 'Activo'){
-      estadoPersona = 1
-    }else{
-      if(estadoPersona === 'Inactivo')
-      {
-        estadoPersona = 2
-      }else{
-        if(estadoPersona === 'Bloqueado'){
-          estadoPersona = 3
-        }
-      }
-    }
     Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idRol: 2,
       idTipoIdentificacion: tipodocumento,
-      nombre: nombre,
-      apellido: apellido,
+      Nombres: nombre,
+      Apellidos: apellido,
       idGenero: genero,
       correo: correo,
       telefono: telefono,
-      estadoPersona: estadoPersona,
+      idEstadoPersona: estadoPersona,
     }).then(() => {
       getEmpleados();
 
@@ -297,10 +284,10 @@ function CrudEmpleados() {
               <td>{val.idGenero}</td>
               <td>{val.correo}</td>
               <td>{val.telefono}</td>
-              <td>{val.estadoPersona}</td>
+              <td>{val.idEstadoPersona}</td>
+
+              
               <td>
-
-
                 <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#F" onClick={() => { MostrarEmpleado(val) }}>
                   Modificar
                 </button>
