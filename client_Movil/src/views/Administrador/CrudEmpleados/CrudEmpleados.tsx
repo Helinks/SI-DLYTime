@@ -229,11 +229,11 @@ export default function CrudEmpleados() {
                                         if (modoEdicion) {
 
                                             // Modificar datos
-                                            await patchCrud(personaSeleccionada);
+                                            const respuesta = await patchCrud(personaSeleccionada);
 
                                             // Actualizar la lista
                                             await Getcrud(setPersonas);
-                                            alert("actualizado");
+                                            alert(respuesta.message);
 
                                             // Cerrar el modal
                                             setModalVisible(false);
@@ -248,7 +248,7 @@ export default function CrudEmpleados() {
                                             const respuesta = await addCrud(personaSeleccionada);
                                             // Actualizar la lista
                                             await Getcrud(setPersonas);
-                                            
+
                                             alert(respuesta.message);
                                             // Cerrar el modal
                                             setModalVisible(false);

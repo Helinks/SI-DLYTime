@@ -117,27 +117,43 @@ router.patch("/actualizarEmpleado", async (req, res) => {
     const correo = req.body.correo;
     const telefono = req.body.telefono;
     const estado = req.body.idEstadoPersona;
+
     db.query(
-        "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idEstadoPersona = ? WHERE numeroDocumento = ? ",
-        [
-            idTipoIdentificacion,
-            nombres,
-            apellidos,
-            idGenero,
-            correo,
-            telefono,
-            estado,
-            numeroDocumento,
-        ],
+        "SELECT correo FROM persona WHERE correo = ? AND numeroDocumento != ?",
+        [correo, numeroDocumento],
         (err, result) => {
             if (err) {
-                console.error(err);
-                res.status(500).send({ error: "Error al actualizar el empleado" });
-            } else {
-                res.send(result);
+                console.error("Error en la consulta de verificación:", err);
+                return res.status(500).json({ message: "Error interno del servidor." });
             }
+
+            if (result.length > 0) {
+                return res.json({ exists: true, message: "El correo ya está registrado por otra persona." });
+            }
+
+            db.query(
+                "UPDATE persona SET idTipoIdentificacion = ?, Nombres = ?, Apellidos = ?, idGenero = ?, correo = ?, telefono = ?, idEstadoPersona = ? WHERE numeroDocumento = ?",
+                [
+                    idTipoIdentificacion,
+                    nombres,
+                    apellidos,
+                    idGenero,
+                    correo,
+                    telefono,
+                    estado,
+                    numeroDocumento,
+                ],
+                (err, result) => {
+                    if (err) {
+                        console.error("Error al actualizar:", err);
+                        return res.status(500).json({ error: "Error al actualizar el empleado" });
+                    }
+
+                    return res.json({ success: true, message: "Se procesó correctamente." });
+                }
+            );
         }
-    );
+    )
 });
 
 
