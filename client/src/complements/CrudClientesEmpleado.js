@@ -85,18 +85,18 @@ function CrudClientes() {
 
   const guardarPDF = () => {
     // Verificar los datos capturados en el formulario
-    console.log(formData); // Verifica que los datos estén correctos
+    console.log(formData); 
     
     const doc = new jsPDF();
     doc.setFontSize(16);
     doc.text("Historia Clínica de Optometría", 20, 20);
   
-    let yPosition = 30; // Posición inicial para el texto
+    let yPosition = 30; 
   
     // Función para añadir texto al PDF
     const addTextToPDF = (text, title = false) => {
       if (yPosition + 10 > doc.internal.pageSize.height) {
-        doc.addPage(); // Añadir nueva página si se excede la actual
+        doc.addPage();
         yPosition = 20;
       }
   
@@ -108,7 +108,7 @@ function CrudClientes() {
         doc.text(text, 20, yPosition);
       }
   
-      yPosition += 10; // Espacio para el siguiente bloque de texto
+      yPosition += 10; 
     };
   
     // Datos Personales
@@ -233,6 +233,7 @@ function CrudClientes() {
           </div>
         </nav>
       </div>
+      
 
       <table className="table table-striped" id="TablaClientes">
         <thead>
@@ -263,7 +264,7 @@ function CrudClientes() {
                 <button
                   type="button"
                   className="btn1"
-                  onClick={() => abrirHistorialModal(cliente.numeroDocumento)} // Abrir modal con datos del cliente
+                  onClick={() => abrirHistorialModal(cliente.numeroDocumento)} 
                 >
                   Ver Historial
                 </button>
@@ -328,7 +329,7 @@ function CrudClientes() {
                         href={`http://localhost:3001/uploads/${item.archivoPDF}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="btn1 text-decoration-none" // Eliminar subrayado
+                        className="btn1 text-decoration-none" 
                       >
                         Ver PDF
                       </a>

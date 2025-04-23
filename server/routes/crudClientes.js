@@ -181,7 +181,7 @@ router.patch("/actualizarCliente", (req, res) => {
   if (req.body.telefono) {
     updates.telefono = req.body.telefono;
   }
-  if (req.body.estadoPersona !== undefined) { // Aseguramos que `estadoPersona` sea explícito
+  if (req.body.estadoPersona !== undefined) { 
     updates.idEstadoPersona = req.body.estadoPersona;
   }
 
