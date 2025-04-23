@@ -397,7 +397,7 @@ router.patch("/updateCita", async (req, res) => {
                     });
                 });
 
-                res.status(201).send("Cita agregada exitosamente");
+                res.status(201).send("Cita actualizada exitosamente");
             } catch (error) {
                 // Revertir la transacción en caso de error
                 connection.rollback(() => {

@@ -140,6 +140,11 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - idCita
+                - idHorario
+                - idTipoConsulta
+                - idHorario1
               properties:
                 idCita:
                   type: integer
@@ -147,9 +152,13 @@ paths:
                   type: integer
                 idTipoConsulta:
                   type: integer
+                idHorario1:
+                  type: integer
       responses:
         '201':
           description: Cita actualizada exitosamente
+        '500':
+          description: Error durante la transacción
 
   /crudCitas/cancelCita:
     patch:
@@ -162,62 +171,27 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - idCita
+                - idEstadoCita
+                - idHorario
+                - idEstadoHorario
               properties:
                 idCita:
                   type: integer
-                estadoCita:
+                idEstadoCita:
+                  type: integer
+                idHorario:
+                  type: integer
+                idEstadoHorario:
                   type: integer
       responses:
-        '200':
+        '201':
           description: Cita cancelada
-
-  /recuperarPassword/validarCodigo:
-    post:
-      tags:
-        - RecuperarPassword
-      summary: Valida el código de recuperación de contraseña
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                correo:
-                  type: string
-                code:
-                  type: string
-      responses:
-        '200':
-          description: Código válido
         '400':
-          description: Código inválido o expirado
+          description: No se puede activar una cita ya atendida
         '500':
-          description: Error al validar el código
-
-  /recuperarPassword/cambiarPassword:
-    patch:
-      tags:
-        - RecuperarPassword
-      summary: Cambia la contraseña del usuario
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                correo:
-                  type: string
-                password:
-                  type: string
-                codigo:
-                  type: string
-      responses:
-        '200':
-          description: Contraseña cambiada con éxito
-        '500':
-          description: Error interno del servidor
+          description: Error durante la transacción
 
   /crudClientes/consultaCliente:
     get:
@@ -256,7 +230,7 @@ paths:
                   type: string
                 idGenero:
                   type: integer
-                idEstadoPersona:
+                estadoPersona:
                   type: integer
       responses:
         '200':
@@ -266,36 +240,8 @@ paths:
         '500':
           description: Error al agregar el cliente
 
-  /crudClientes/actualizarEstadoCliente:
-    put:
-      tags:
-        - CrudCliente
-      summary: Actualizar el estado (activo/inactivo) de un cliente
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                numeroDocumento:
-                  type: string
-                idTipoIdentificacion:
-                  type: integer
-                idEstadoPersona:
-                  type: integer
-      responses:
-        '200':
-          description: Estado del cliente actualizado con éxito
-        '400':
-          description: Faltan campos obligatorios
-        '404':
-          description: Cliente no encontrado
-        '500':
-          description: Error al actualizar el estado
-
   /crudClientes/actualizarCliente:
-    put:
+    patch:
       tags:
         - CrudCliente
       summary: Actualizar toda la información de un cliente
@@ -320,7 +266,7 @@ paths:
                   type: string
                 idGenero:
                   type: integer
-                idEstadoPersona:
+                estadoPersona:
                   type: integer
       responses:
         '200':
@@ -363,14 +309,14 @@ paths:
                   example: "9999"
                 idRol:
                   type: integer
-                  example: 1
+                  example: 2
                 idTipoIdentificacion:
                   type: integer
                   example: 2
-                nombre:
+                Nombres:
                   type: string
                   example: "Test"
-                apellido:
+                Apellidos:
                   type: string
                   example: "TestA"
                 idGenero:
@@ -412,9 +358,9 @@ paths:
                   type: string
                 idTipoIdentificacion:
                   type: integer
-                nombre:
+                Nombres:
                   type: string
-                apellido:
+                Apellidos:
                   type: string
                 idGenero:
                   type: integer
@@ -489,3 +435,51 @@ paths:
           description: Datos actualizados
         '400':
           description: Error al actualizar los datos
+
+  /recuperarPassword/validarCodigo:
+    post:
+      tags:
+        - RecuperarPassword
+      summary: Valida el código de recuperación de contraseña
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correo:
+                  type: string
+                code:
+                  type: string
+      responses:
+        '200':
+          description: Código válido
+        '400':
+          description: Código inválido o expirado
+        '500':
+          description: Error al validar el código
+
+  /recuperarPassword/cambiarPassword:
+    patch:
+      tags:
+        - RecuperarPassword
+      summary: Cambia la contraseña del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                correo:
+                  type: string
+                password:
+                  type: string
+                codigo:
+                  type: string
+      responses:
+        '200':
+          description: Contraseña cambiada con éxito
+        '500':
+          description: Error interno del servidor
