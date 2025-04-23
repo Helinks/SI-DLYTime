@@ -5,7 +5,6 @@ import { url } from '../../../Global/url';
 
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
-
            
 
 export const loginUser = async (correo_i: string, password_i: string) => {

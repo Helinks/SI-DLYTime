@@ -5,7 +5,6 @@ import { url } from '../../../Global/url';
 // import Emailvalidation from '@everapi/emailvalidation-js'
 
 
-
 export const registerUser = async (formData: {
     numeroDocumento: string;
     idRol: number;

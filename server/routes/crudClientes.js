@@ -2,71 +2,78 @@ const express = require("express");
 const bcryptjs = require("bcryptjs");
 const router = express.Router();
 const db = require("../Config/db");
-const multer = require("multer"); // Añadido para insertar archivos localmente y en base de datos
+const multer = require("multer");
 const path = require("path");
-const fs = require("fs");  // Añadido para leer archivos en el servidor
+const fs = require("fs"); 
 
-// Configuración de multer para el manejo de archivos PDF
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Define la carpeta donde se guardarán los archivos
+      cb(null, "./uploads/");
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // Nombre único para evitar sobrescribir archivos
+      // El nombre ya lo genera el frontend, solo lo usamos aquí directamente
+      cb(null, file.originalname);
+    },
+  });
+  
+  const fileFilter = (req, file, cb) => {
+    const extname = path.extname(file.originalname);
+    if (extname !== ".pdf") {
+      return cb(new Error("Solo se permiten archivos PDF"), false);
     }
-});
-
-const upload = multer({
+    cb(null, true);
+  };
+  
+  const upload = multer({
     storage: storage,
-    limits: { fileSize: 10 * 1024 * 1024 },  // Limitar el tamaño de los archivos a 10 MB
-}).single('archivoPDF');  // El nombre del campo del formulario será 'archivoPDF'
+    fileFilter: fileFilter,
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  });
+  
+  router.post("/agregarHistorialClinico", upload.single("archivoPDF"), (req, res) => {
+  const { numeroDocumento } = req.body;
 
-// Ruta para agregar historial clínico (con archivo PDF)
-router.post("/agregarHistorialClinico", upload, (req, res) => {
-    console.log(req.body); // Verifica los datos que estás recibiendo
-    console.log(req.file);  // Verifica el archivo que se ha subido
+  if (!req.file) {
+    return res.status(400).send("No se ha enviado un archivo PDF.");
+  }
 
-    const { numeroDocumento, descripcion } = req.body;
-    
-    if (!req.file) {
-        return res.status(400).send("No se ha enviado un archivo PDF.");
+  const archivoNombre = req.file.filename;
+
+  // 1. Obtener el último número consecutivo
+  const countQuery = "SELECT COUNT(*) AS total FROM clientes_historial";
+
+  db.query(countQuery, (err, result) => {
+    if (err) {
+      return res.status(500).send("Error al obtener el conteo de historiales.");
     }
 
-    if (!numeroDocumento || !descripcion) {
-        return res.status(400).send("Todos los campos son obligatorios.");
-    }
+    const nuevoNumero = result[0].total + 1;
+    const descripcion = `Historial Clínico #${nuevoNumero} - ${numeroDocumento} - ${new Date().toLocaleDateString('es-ES')} - ${new Date().toLocaleTimeString('es-ES')}`;
 
-    // Realizamos la consulta para guardar el historial clínico
-    const archivoPDF = req.file.filename;  // Usamos el nombre del archivo en lugar del contenido binario
-
-    const query = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
-    db.query(query, [numeroDocumento, descripcion, archivoPDF], (err, result) => {
-        if (err) {
-            console.error("Error al guardar historial clínico:", err);
-            return res.status(500).send("Error al guardar historial clínico.");
-        }
-        res.send("Historial clínico agregado con éxito.");
+    // 2. Insertar el nuevo historial
+    const insertQuery = "INSERT INTO clientes_historial (numeroDocumento, descripcion, archivoPDF) VALUES (?, ?, ?)";
+    db.query(insertQuery, [numeroDocumento, descripcion, archivoNombre], (err, result) => {
+      if (err) {
+        return res.status(500).send("Error al guardar historial clínico.");
+      }
+      res.send("Historial clínico agregado con éxito.");
     });
+  });
 });
 
-// Ruta para consultar historiales clínicos de un cliente
-router.get("/consultaHistorialClinico/:numeroDocumento", (req, res) => {
+  
+  // Ruta para obtener historial clínico
+  router.get("/consultaHistorialClinico/:numeroDocumento", (req, res) => {
     const { numeroDocumento } = req.params;
-
-    // Consultar los historiales clínicos asociados al cliente
-    db.query(
-        "SELECT * FROM clientes_historial WHERE numeroDocumento = ?",
-        [numeroDocumento],
-        (err, result) => {
-            if (err) {
-                console.error("Error al obtener el historial clínico:", err);
-                res.status(500).send("Error al obtener el historial clínico");
-            } else {
-                res.send(result);
-            }
-        }
-    );
-});
+    const query = "SELECT * FROM clientes_historial WHERE numeroDocumento = ?";
+    db.query(query, [numeroDocumento], (err, result) => {
+      if (err) {
+        return res.status(500).send("Error al obtener historial clínico.");
+      }
+      res.json(result);
+    });
+  });
+  
 
 // Las rutas para manejar clientes permanecen igual
 /* Consultar clientes (usuarios con rol de cliente) */
