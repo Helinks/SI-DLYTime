@@ -137,9 +137,6 @@ function Perfil() {
               </form>
             </div>
             <div className="botones">
-              <div>
-                <button>Historial Clinico</button>
-              </div>
               <p>{mensaje}</p>
               <div>
                 <Link to={rol === "2" ? "/IndexEmpleado": "/IndexCliente"}><button>Cancelar</button></Link>

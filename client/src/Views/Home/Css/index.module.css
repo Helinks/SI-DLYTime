@@ -16,13 +16,13 @@
 }
 
 .navLink {
-  color: #000000 !important;
+  color: #ffffff !important;
   margin-right: 1rem;
   transition: color 0.2s ease;
 }
 
 .navLink:hover {
-  color: #0dcaf0 !important;
+  color: #000000 !important;
 }
 
 .homeBanner {

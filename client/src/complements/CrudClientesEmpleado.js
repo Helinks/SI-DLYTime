@@ -259,7 +259,7 @@ function CrudClientes() {
               <td>{cliente.idGenero}</td>
               <td>{cliente.correo}</td>
               <td>{cliente.telefono}</td>
-              <td>{cliente.estadoPersona ? 'Activo' : 'Inactivo'}</td>
+              <td>{cliente.nombreEstado}</td>
               <td>
                 <button
                   type="button"

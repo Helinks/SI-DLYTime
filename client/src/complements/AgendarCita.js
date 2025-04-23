@@ -385,7 +385,7 @@ function AgendarCita() {
                             </div>
 
                             <div className='tipoConsultaCalendario'>
-                                <h4>Tipo de consulta</h4>
+                                <h4>Seleccione oftalmólogo</h4>
                                 <div>
                                     {listaEmpleados(empleados)}
                                 </div>

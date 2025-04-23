@@ -275,7 +275,7 @@ export default function CrudEmpleados() {
                 </View>
             </Modal >
 
-        </View >
+        </View>
 
 
     );

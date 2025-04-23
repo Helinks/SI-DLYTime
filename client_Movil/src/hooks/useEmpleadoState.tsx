@@ -7,7 +7,7 @@ import Estado from "../types/Estado"
 const useEmpleadoState = () => {
 
     const [modalVisible, setModalVisible] = useState(false);
-    const [modoEdicion, setModoEdicion] = useState(false)
+    const [modoEdicion, setModoEdicion] = useState(false);
 
     const [personas, setPersonas] = useState<Persona[]>([]);
     const [personaSeleccionada, setPersonaSeleccionada] = useState<Persona | null>(null);

@@ -48,7 +48,7 @@ function AdminClientes() {
   return (
     <div className={style.homeContainer}>
 
-<nav className={`navbar navbar-expand-lg navbar-light bg-light ${style.navbar}`}>
+<nav className={`navbar navbar-expand-lg navbar-dark bg-danger ${style.navbar}`}>
   <div className={`container-fluid`}>
     <a className={`navbar-brand`} href="/">Home</a>
     <button className={`navbar-toggler`} type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
