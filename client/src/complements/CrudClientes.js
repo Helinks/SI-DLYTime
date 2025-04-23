@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Axios from 'axios';
 import './Css/StyleAdminClientes.css';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
-import Emailvalidation from '@everapi/emailvalidation-js'
-
+import Emailvalidation from '@everapi/emailvalidation-js';
 
 function Crud_clientes() {
   const [CrudClient, SetcrudClient] = useState([]);
+  const [buscar, setBuscar] = useState("");
+
   const [nuevoCliente, setNuevoCliente] = useState({
     numeroDocumento: '',
     idTipoIdentificacion: '',
@@ -37,23 +38,23 @@ function Crud_clientes() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
-  useEffect(() => {
-    getClientes();
-  }, []);
-
-  const getClientes = () => {
-    Axios.get("http://localhost:3001/crudClientes/consultaCliente")
+  const obtenerClientes = useCallback(() => {
+    Axios.get("http://localhost:3001/crudClientes/consultaCliente", {
+      params: { q: buscar }
+    })
       .then((response) => {
-        console.log("Datos obtenidos:", response.data);
         SetcrudClient(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching clients:", error);
+        console.error("Error al consultar clientes:", error);
       });
-  };
+  }, [buscar]);
+
+  useEffect(() => {
+    obtenerClientes();
+  }, [obtenerClientes]);
 
   const añadirCliente = () => {
-    // Validación de Campos Vacíos
     if (!nuevoCliente.numeroDocumento || !nuevoCliente.Nombres || !nuevoCliente.Apellidos || !nuevoCliente.correo || !nuevoCliente.telefono || !nuevoCliente.idGenero) {
       setError(true);
       setValidationMessage("Por favor, complete todos los campos obligatorios.");
@@ -61,43 +62,41 @@ function Crud_clientes() {
     }
     setError(false);
     setValidationMessage("");
-  
-    // Define el cliente de Emailvalidation aquí
+
     const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
-  
-    // Realizar la verificación de correo
+
     client.info(nuevoCliente.correo, { catch_all: 0 })
       .then(response => {
-        console.log(response);
-        console.log(response.smtp_check);
-  
         if (response.smtp_check) {
-          // Si el correo es válido, se procede con el registro
           setValidationMessage("El correo es válido.");
           setError(false);
-          
+
           Axios.post("http://localhost:3001/crudClientes/agregarCliente", nuevoCliente)
-            .then(() => {
-              alert("Cliente añadido con éxito");
-              getClientes();
-              setNuevoCliente({
-                numeroDocumento: '',
-                idTipoIdentificacion: '',
-                Nombres: '',
-                Apellidos: '',
-                correo: '',
-                telefono: '',
-                idGenero: '',
-                estadoPersona: true
-              });
-              setShowAddModal(false);
+            .then((res) => {
+              if (res.data.exists) {
+                setValidationMessage(res.data.message);
+                setError(true);
+              } else {
+                alert("Cliente añadido con éxito");
+                obtenerClientes();
+                setNuevoCliente({
+                  numeroDocumento: '',
+                  idTipoIdentificacion: '',
+                  Nombres: '',
+                  Apellidos: '',
+                  correo: '',
+                  telefono: '',
+                  idGenero: '',
+                  estadoPersona: true
+                });
+                setShowAddModal(false);
+              }
             })
             .catch((error) => {
-              console.error("Error adding client:", error);
+              console.error("Error al añadir cliente:", error);
               alert("Error al añadir cliente. Verifique los datos.");
             });
         } else {
-          // Si el correo no es válido, se muestra el mensaje correspondiente
           setValidationMessage("El correo electrónico no es válido.");
           setError(true);
         }
@@ -108,28 +107,30 @@ function Crud_clientes() {
         setError(true);
       });
   };
-  
-  
 
   const guardarEdicion = () => {
-    Axios.put("http://localhost:3001/crudClientes/actualizarCliente", clienteEditado)
-      .then(() => {
-        alert("Cliente editado con éxito");
-        getClientes();
-        setClienteEditado({
-          numeroDocumento: '',
-          idTipoIdentificacion: '',
-          Nombres: '',
-          Apellidos: '',
-          correo: '',
-          telefono: '',
-          idGenero: '',
-          estadoPersona: true
-        });
-        setShowEditModal(false);
+    Axios.patch("http://localhost:3001/crudClientes/actualizarCliente", clienteEditado)
+      .then((res) => {
+        if (res.data.exists) {
+          alert(res.data.message);
+        } else {
+          alert("Cliente editado con éxito");
+          obtenerClientes();
+          setClienteEditado({
+            numeroDocumento: '',
+            idTipoIdentificacion: '',
+            Nombres: '',
+            Apellidos: '',
+            correo: '',
+            telefono: '',
+            idGenero: '',
+            estadoPersona: true
+          });
+          setShowEditModal(false);
+        }
       })
       .catch((error) => {
-        console.error("Error editing client:", error);
+        console.error("Error al editar cliente:", error);
         alert("Error al editar cliente. Verifique los datos.");
       });
   };
@@ -141,29 +142,77 @@ function Crud_clientes() {
 
   return (
     <div>
-
-    <div className='barra-head'>
-      <nav className="navbar navbar-dark bg-danger">
-        <div className="container-fluid d-flex justify-content-between align-items-center">
-          <div className="navbar-brand">
-            <Link to="/IndexAdmin">
-              <div className='BackButton'>
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                  <path fillRule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
-                  <path fillRule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
-                </svg>
-              </div>
-            </Link>
+      <div className='barra-head'>
+        <nav className="navbar navbar-dark bg-danger">
+          <div className="container-fluid d-flex justify-content-between align-items-center">
+            <div className="navbar-brand">
+              <Link to="/IndexAdmin">
+                <div className='BackButton'>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" className="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                    <path fillRule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                  </svg>
+                </div>
+              </Link>
+            </div>
           </div>
+        </nav>
+      </div>
+
+      <div className="contenedor-acciones">
+        <div className="botones-acciones">
+          <button type="button" className="btn1" onClick={() => setShowAddModal(true)}>
+            Añadir Cliente
+          </button>
         </div>
-      </nav>
-    </div>
 
-      <button className='btn1-move' onClick={() => setShowAddModal(true)}>
-        Añadir Cliente
-      </button>
+        <input
+          type="text"
+          className="form-control mb-2 input-busqueda"
+          placeholder="Buscar cliente por documento"
+          value={buscar}
+          onChange={(e) => setBuscar(e.target.value)}
+        />
+      </div>
 
-    {/* Modal para Añadir Cliente */}
+
+
+      <table className="table table-striped" id="TablaClientes">
+        <thead>
+          <tr>
+            <th scope="row">Documento</th>
+            <th>Tipo Identificación</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Género</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {CrudClient.map((cliente, key) => (
+            <tr key={key}>
+              <th scope="row">{cliente.numeroDocumento}</th>
+              <td>{cliente.idTipoIdentificacion}</td>
+              <td>{cliente.Nombres}</td>
+              <td>{cliente.Apellidos}</td>
+              <td>{cliente.nombreGenero}</td>
+              <td>{cliente.correo}</td>
+              <td>{cliente.telefono}</td>
+              <td>{cliente.nombreEstado}</td>
+              <td>
+                <button type="button" className="btn1" onClick={() => editarCliente(cliente)}>
+                  Modificar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Modal para Añadir Cliente */}
 <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
   <Modal.Header closeButton>
     <Modal.Title>Añadir Cliente</Modal.Title>
@@ -272,14 +321,17 @@ function Crud_clientes() {
       <Form.Group className="mb-3" controlId="formBasicEstado">
         <Form.Label>Estado</Form.Label>
         <Form.Select
-          value={nuevoCliente.estadoPersona}
-          onChange={(e) => setNuevoCliente({ ...nuevoCliente, estadoPersona: e.target.value })}
-          isInvalid={error && !nuevoCliente.estadoPersona}
+          value={nuevoCliente.idEstadoPersona}
+          onChange={(e) => setNuevoCliente({ ...nuevoCliente, idEstadoPersona: parseInt(e.target.value) })}
+          isInvalid={error && !nuevoCliente.idEstadoPersona}
         >
-          <option value="0">Activo</option>
-          <option value="1">Inactivo</option>
+          <option value="">Seleccione estado</option>
+          <option value="1">Activo</option>
+          <option value="2">Inactivo</option>
+          <option value="3">Bloqueado</option>
         </Form.Select>
       </Form.Group>
+
     </Form>
   </Modal.Body>
 
@@ -388,11 +440,13 @@ function Crud_clientes() {
       <Form.Group className="mb-3" controlId="formBasicEstado">
         <Form.Label>Estado</Form.Label>
         <Form.Select
-          value={clienteEditado.estadoPersona}
-          onChange={(e) => setClienteEditado({ ...clienteEditado, estadoPersona: e.target.value })}
+          value={clienteEditado.idEstadoPersona}
+          onChange={(e) => setClienteEditado({ ...clienteEditado, idEstadoPersona: parseInt(e.target.value) })}
         >
-          <option value="0">Activo</option>
-          <option value="1">Inactivo</option>
+          <option value="">Seleccione estado</option>
+          <option value="1">Activo</option>
+          <option value="2">Inactivo</option>
+          <option value="3">Bloqueado</option>
         </Form.Select>
       </Form.Group>
     </Form>
@@ -407,46 +461,6 @@ function Crud_clientes() {
     </button>
   </Modal.Footer>
 </Modal>
-
-
-          <table className="table table-striped" id="TablaClientes">
-            <thead>
-              <tr>
-                <th scope="row">Documento</th>
-                <th>Tipo Identificación</th>
-                <th>Nombres</th>
-                <th>Apellidos</th>
-                <th>Género</th>
-                <th>Correo</th>
-                <th>Teléfono</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {CrudClient.map((cliente, key) => (
-                <tr key={key}>
-                  <th scope="row">{cliente.numeroDocumento}</th>
-                  <td>{cliente.idTipoIdentificacion}</td>
-                  <td>{cliente.Nombres}</td>
-                  <td>{cliente.Apellidos}</td>
-                  <td>{cliente.idGenero}</td>
-                  <td>{cliente.correo}</td>
-                  <td>{cliente.telefono}</td>
-                  <td>{cliente.estadoPersona}</td> {/* Nuevo campo "Estado" */}
-                  <td>
-                    <button
-                      type="button"
-                      className="btn1"
-                      onClick={() => editarCliente(cliente)}
-                    >
-                      Modificar
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
 
     </div>
   );

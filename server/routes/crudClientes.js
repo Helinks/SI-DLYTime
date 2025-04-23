@@ -76,95 +76,159 @@ const storage = multer.diskStorage({
   
 
 // Las rutas para manejar clientes permanecen igual
-/* Consultar clientes (usuarios con rol de cliente) */
 router.get("/consultaCliente", (req, res) => {
-    db.query("SELECT * FROM persona WHERE idRol = 1", (err, result) => {
+  const buscarfiltro = req.query.q;
+
+  let consulta = `
+    SELECT 
+      persona.*,
+      genero.nombre AS nombreGenero,
+      estadoPersona.nombre AS nombreEstado
+    FROM persona
+    JOIN genero ON persona.idGenero = genero.idGenero
+    JOIN estadoPersona ON persona.idEstadoPersona = estadoPersona.idEstado
+    WHERE idRol = 1
+
+  `;
+
+  const params = [];
+
+  if (buscarfiltro) {
+    consulta += ` AND persona.numeroDocumento LIKE ?`;
+    params.push(`%${buscarfiltro}%`);
+  }
+
+  db.query(consulta, params, (err, result) => {
+    if (err) {
+      console.error("Error al consultar los clientes:", err);
+      res.status(500).send("Error al consultar los clientes");
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+/* Agregar cliente */
+router.post("/agregarCliente", async (req, res) => {
+  const numeroDocumento = req.body.numeroDocumento;
+  const idRol = 1;
+  const idTipoIdentificacion = req.body.idTipoIdentificacion;
+  const Nombres = req.body.Nombres;
+  const Apellidos = req.body.Apellidos;
+  const idGenero = req.body.idGenero;
+  const correo = req.body.correo;
+  const clave = req.body.numeroDocumento;
+  const telefono = req.body.telefono;
+  const estado = req.body.estadoPersona;
+
+  try {
+    const hashedPassword = await bcryptjs.hash(clave, 10);
+
+    db.query(
+      "SELECT numeroDocumento, correo FROM persona WHERE numeroDocumento = ? OR correo = ?",
+      [numeroDocumento, correo],
+      (err, result) => {
         if (err) {
-            console.error("Error al obtener los datos:", err);
-            res.status(500).send("Error al obtener los datos");
-        } else {
-            res.send(result);
+          console.error("Error en la verificación:", err);
+          return res.status(500).json({ message: "Error interno del servidor." });
         }
+
+        if (result.length > 0) {
+          return res.json({ exists: true, message: "El número de documento o correo ya existe." });
+        }
+
+        db.query(
+          "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, clave, idEstadoPersona) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+          [numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, hashedPassword, estado],
+          (err, result) => {
+            if (err) {
+              return res.status(500).send("Error al registrar el cliente");
+            } else {
+              res.send(result);
+            }
+          }
+        );
+      }
+    );
+  } catch (error) {
+    res.status(500).send("Error al encriptar la contraseña");
+  }
+});
+
+/* Actualizar cliente */
+router.patch("/actualizarCliente", (req, res) => {
+  const numeroDocumento = req.body.numeroDocumento;
+
+  // Crear un objeto para almacenar los campos que se van a actualizar
+  const updates = {};
+
+  // Si el campo está presente en el cuerpo de la solicitud, lo agregamos al objeto `updates`
+  if (req.body.idTipoIdentificacion) {
+    updates.idTipoIdentificacion = req.body.idTipoIdentificacion;
+  }
+  if (req.body.Nombres) {
+    updates.Nombres = req.body.Nombres;
+  }
+  if (req.body.Apellidos) {
+    updates.Apellidos = req.body.Apellidos;
+  }
+  if (req.body.idGenero) {
+    updates.idGenero = req.body.idGenero;
+  }
+  if (req.body.correo) {
+    updates.correo = req.body.correo;
+  }
+  if (req.body.telefono) {
+    updates.telefono = req.body.telefono;
+  }
+  if (req.body.estadoPersona !== undefined) { // Aseguramos que `estadoPersona` sea explícito
+    updates.idEstadoPersona = req.body.estadoPersona;
+  }
+
+  // Si no se enviaron datos a actualizar
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ message: "No se proporcionaron datos para actualizar." });
+  }
+
+  // Verificar si el correo ya existe para otro usuario
+  if (req.body.correo) {
+    db.query(
+      "SELECT correo FROM persona WHERE correo = ? AND numeroDocumento != ?",
+      [req.body.correo, numeroDocumento],
+      (err, result) => {
+        if (err) {
+          console.error("Error en la verificación:", err);
+          return res.status(500).json({ message: "Error interno del servidor." });
+        }
+
+        if (result.length > 0) {
+          return res.json({ exists: true, message: "El correo ya está registrado por otra persona." });
+        }
+
+        // Si el correo no existe, actualizar la persona con los campos enviados
+        updateCliente();
+      }
+    );
+  } else {
+    // Si no hay correo para verificar, solo actualizar
+    updateCliente();
+  }
+
+  // Función para realizar la actualización con los campos definidos
+  function updateCliente() {
+    const query = "UPDATE persona SET ? WHERE numeroDocumento = ?";
+    const params = [updates, numeroDocumento];
+
+    db.query(query, params, (err, result) => {
+      if (err) {
+        console.error("Error al actualizar:", err);
+        return res.status(500).json({ error: "Error al actualizar el cliente" });
+      }
+
+      return res.json({ success: true, message: "Se procesó correctamente." });
     });
+  }
 });
 
-/* Agregar nuevos clientes */
-router.post("/agregarCliente", (req, res) => {
-    const { numeroDocumento, idTipoIdentificacion, Nombres, Apellidos, correo, telefono, idGenero, estadoPersona } = req.body;
-    const idRol = 1;
-
-    // Validación de que los campos no estén vacíos
-    if (!numeroDocumento || !Nombres || !Apellidos || !correo || !telefono || !idGenero || estadoPersona === undefined) {
-        return res.status(400).send("Todos los campos son obligatorios.");
-    }
-    
-    db.query(
-        "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, estadoPersona) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, telefono, estadoPersona],
-        (err, result) => {
-            if (err) {
-                console.error("Error al añadir el cliente:", err);
-                res.status(500).send("Error al añadir el cliente");
-            } else {
-                res.send("Cliente añadido con éxito");
-            }
-        }
-    );
-});
-
-/* Función nueva: Actualizar solo el estado del cliente */
-router.put("/actualizarEstadoCliente", (req, res) => {
-    const { numeroDocumento, idTipoIdentificacion, estadoPersona } = req.body;
-
-    // Validación de que los campos no estén vacíos
-    if (!numeroDocumento || !idTipoIdentificacion || estadoPersona === undefined) {
-        return res.status(400).send("Todos los campos son obligatorios.");
-    }
-
-    // Asegurarse de que 'estadoPersona' es 1 (activo) o 0 (inactivo)
-    const estado = estadoPersona === true ? 1 : 0;
-
-    db.query(
-        "UPDATE persona SET estadoPersona = ? WHERE numeroDocumento = ? AND idTipoIdentificacion = ?",
-        [estado, numeroDocumento, idTipoIdentificacion],
-        (err, result) => {
-            if (err) {
-                console.error("Error al actualizar el estado del cliente:", err);
-                res.status(500).send("Error al actualizar el estado del cliente");
-            } else {
-                if (result.affectedRows === 0) {
-                    return res.status(404).send("Cliente no encontrado para actualizar el estado");
-                }
-                res.send("Estado del cliente actualizado con éxito");
-            }
-        }
-    );
-});
-
-/* Función original: Editar toda la información del cliente */
-router.put("/actualizarCliente", (req, res) => {
-    const { numeroDocumento, idTipoIdentificacion, Nombres, Apellidos, correo, telefono, idGenero, estadoPersona } = req.body;
-
-    // Validación de que los campos no estén vacíos
-    if (!numeroDocumento || !Nombres || !Apellidos || !correo || !telefono || !idGenero || estadoPersona === undefined) {
-        return res.status(400).send("Todos los campos son obligatorios.");
-    }
-
-    db.query(
-        "UPDATE persona SET Nombres = ?, Apellidos = ?, correo = ?, telefono = ?, idGenero = ?, estadoPersona = ? WHERE numeroDocumento = ? AND idTipoIdentificacion = ?",
-        [Nombres, Apellidos, correo, telefono, idGenero, estadoPersona, numeroDocumento, idTipoIdentificacion],
-        (err, result) => {
-            if (err) {
-                console.error("Error al actualizar el cliente:", err);
-                res.status(500).send("Error al editar el cliente");
-            } else {
-                if (result.affectedRows === 0) {
-                    return res.status(404).send("Cliente no encontrado para editar");
-                }
-                res.send("Cliente editado con éxito");
-            }
-        }
-    );
-});
 
 module.exports = router;
