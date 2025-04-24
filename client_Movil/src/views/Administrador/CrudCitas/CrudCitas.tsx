@@ -1,14 +1,14 @@
 import { Text, TextInput, View, Button, ScrollView, TouchableOpacity, Modal, KeyboardAvoidingView, Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import Styles from './Styles';
-import useEmpleadoState from '../../../hooks/useCitaState';
+import useCitaState from '../../../hooks/useCitaState';
 import filtro from '../../Administrador/CrudCitas/componentes/filtro';
-import { Getcrud } from './controller/Services';
+import { Getcrud, getHorarios, Getconsulta } from './controller/Services';
 /*import { validarCampos } from ''; */
 import { Picker } from '@react-native-picker/picker';
 import { formatearFecha } from '../CrudCitas/componentes/dateFormart';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
 
 export default function CrudEmpleados() {
 
@@ -16,15 +16,24 @@ export default function CrudEmpleados() {
         modoEdicion, setModoEdicion,
         modalVisible, setModalVisible,
         citas, setCitas,
+        consulta, setConsulta,
+        horarios, setHorarios,
         citaSeleccionada, setCitaSeleccionada,
         busqueda, setBusqueda
-    } = useEmpleadoState();
+    } = useCitaState();
+
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const Consultas = async () => {
         await Getcrud(setCitas);
-
+        await Getconsulta(setConsulta);
     };
+
+    const Horarios = async (localDate : any) => {
+        await getHorarios(localDate, setHorarios);
+    };
+
+
 
     const citasFiltradas = filtro(citas, busqueda);
 
@@ -32,11 +41,6 @@ export default function CrudEmpleados() {
         Consultas();
 
     }, []);
-
-
-    
-
-
 
 
     return (
@@ -62,7 +66,8 @@ export default function CrudEmpleados() {
                         direccion: '',
                         idEstadoCita: 0,
                         estadoCita: '',
-                        idHorarios: 0
+                        idHorarios: 0,
+                        idHorarios1: 0
                     });
                     setModoEdicion(false)
                     setModalVisible(true);
@@ -125,66 +130,63 @@ export default function CrudEmpleados() {
 
                             {citaSeleccionada && (
                                 <>
-                                    <TextInput
-                                        style={Styles.inputText}
-                                        value={formatearFecha(citaSeleccionada.fecha) || ""}
-                                        placeholder="Fecha (YYYY-MM-DD)"
-                                        onChangeText={(texto) => formatearFecha(setCitaSeleccionada({ ...citaSeleccionada, fecha: texto }))}
-                                        
-                                />
-                                {showDatePicker && (
-                                    <DateTimePicker
-                                        value={citaSeleccionada.fecha ? new Date(citaSeleccionada.fecha) : new Date()} // Fecha inicial
-                                        mode="date" // Modo de selector (fecha)
-                                        display={"calendar"} // Estilo del selector
-                                        onChange={(event, selectedDate) => {
-                                            setShowDatePicker(false); // Cierra el selector
-                                            if (selectedDate) {
-                                                const formattedDate = selectedDate.toISOString().split('T')[0]; // Formatea la fecha como YYYY-MM-DD
-                                                setCitaSeleccionada({ ...citaSeleccionada, fecha: formattedDate });
-                                            }
-                                        }}
-                                    />
-                                )}
+                                    <Button title="Seleccione fecha" onPress={() => setShowDatePicker(true)} />
 
-                                    <TextInput
-                                        style={Styles.inputText}
-                                        value={citaSeleccionada.hora}
-                                        placeholder="Hora (HH:mm)"
-                                        onChangeText={(texto) => setCitaSeleccionada({ ...citaSeleccionada, hora: texto })}
-                                    />
+                                    {showDatePicker && (
+                                        <DateTimePicker
+                                            value={citaSeleccionada.fecha ? new Date(citaSeleccionada.fecha) : new Date()}
+                                            mode="date"
+                                            display="calendar"
+                                            onChange={(event, selectedDate) => {
+                                                setShowDatePicker(false);
+                                                if (selectedDate) {
+                                                    // Usa moment o una función propia para obtener la fecha local en formato YYYY-MM-DD
+                                                    const localDate = moment(selectedDate).format('YYYY-MM-DD');
+                                                    setCitaSeleccionada((prev) => ({
+                                                        ...prev!,
+                                                        fecha: localDate,
+                                                    }));
+                                                    console.log("Fecha seleccionada (local):", localDate);
+                                                    Horarios(localDate);
+                                                }
+                                            }}
+                                        />
+                                    )}
 
-                                   
-                                    <TextInput
-                                        style={Styles.inputText}
-                                        value={citaSeleccionada.tipoConsulta}
-                                        placeholder="Tipo de Consulta"
-                                        onChangeText={(texto) => setCitaSeleccionada({ ...citaSeleccionada, tipoConsulta: texto })}
-                                    />
-
-                                    <TextInput
-                                        style={Styles.inputText}
-                                        value={citaSeleccionada.tipoConsulta}
-                                        placeholder="Tipo de Consulta"
-                                        onChangeText={(texto) => setCitaSeleccionada({ ...citaSeleccionada, tipoConsulta: texto })}
-                                    />
-
-                                    {/* <View style={Styles.textPicker}>
+                                    <View style={Styles.textPicker}>
 
 
                                         {<Picker
                                             style={Styles.Picker}
-                                            selectedValue={citaSeleccionada.idEstadoCita}
+                                            selectedValue={citaSeleccionada.idHorarios}
                                             onValueChange={(itemValue) =>
-                                                setCitaSeleccionada({ ...citaSeleccionada, idEstadoCita: itemValue })
+                                                setCitaSeleccionada({ ...citaSeleccionada, idHorarios: itemValue })
                                             }
                                         >
-                                            <Picker.Item label="Estado de la Cita" value={0} />
-                                            {estadosCita.map((estado) => (
-                                                <Picker.Item key={estado.idEstadoCita} label={estado.nombre} value={estado.idEstadoCita} />
+                                            <Picker.Item label="Hora de la cita" value={0} />
+                                            {horarios.map((horario, index) => (
+                                                <Picker.Item key={index} label={horario.hora} value={horario.idHorarios} />
                                             ))}
                                         </Picker>}
-                                    </View> */}
+                                    </View>
+
+
+                                    <View style={Styles.textPicker}>
+
+
+                                        {<Picker
+                                            style={Styles.Picker}
+                                            selectedValue={citaSeleccionada.tipoConsulta}
+                                            onValueChange={(itemValue) =>
+                                                setCitaSeleccionada({ ...citaSeleccionada, tipoConsulta: itemValue })
+                                            }
+                                        >
+                                            <Picker.Item label="Tipo de consulta" value={0} />
+                                            {consulta.map((consulta, index) => (
+                                                <Picker.Item key={index} label={consulta.nombre} value={consulta.idtipoConsulta} />
+                                            ))}
+                                        </Picker>}
+                                    </View>
                                 </>
                             )}
 
@@ -193,6 +195,8 @@ export default function CrudEmpleados() {
                                     title="Guardar"
                                     color="#FF5757"
                                     onPress={async () => {
+
+                                        console.log(citaSeleccionada?.idHorarios1 ,   citaSeleccionada?.idHorarios);
 
                                         /* const valid = await validarCampos(personaSeleccionada)
                                         if (valid) {

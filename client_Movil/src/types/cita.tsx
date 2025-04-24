@@ -11,6 +11,7 @@ type CitaDetalle = {
     idEstadoCita: number;
     estadoCita: string;
     idHorarios: number;
+    idHorarios1: number;
   }
 
   export default CitaDetalle;

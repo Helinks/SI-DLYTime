@@ -10,3 +10,27 @@ export const Getcrud = async (setCitas) => {
         return console.log(error);
     }
 }
+
+export const getHorarios = async (fecha, setHorarios) => {
+    try{
+        const response = await axios.get(url() + "/crudCitas/getHorarios",{
+            params: { fecha: fecha },
+          })
+
+        return setHorarios(response.data);
+    } catch (err) {
+        return console.log(err)
+    }
+}
+
+export const Getconsulta = async (setConsulta) => {
+    try{
+        const response = await axios.get(url() + "/crudCitas/getTipoConsulta")
+          
+        return setConsulta(response.data);
+    } catch (err) {
+        return console.log(err)
+    }
+}
+
+

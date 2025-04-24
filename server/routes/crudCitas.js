@@ -354,7 +354,7 @@ router.patch("/updateCita", async (req, res) => {
                 return res.status(500).send("Error al iniciar la transacción");
             }
             try {
-                // Paso 1: Insertar un nuevo detalleCita
+                
                 const updateResult = await new Promise((resolve, reject) => {
                     connection.query(
                         `UPDATE detallecita SET idHorarios = ?, idTipoConsulta = ? WHERE idCita = ?`,
@@ -366,7 +366,7 @@ router.patch("/updateCita", async (req, res) => {
                     );
                 });
 
-                // Paso 2: Actualizar el estado del horario
+
                 const horarioQuery = 'UPDATE horario SET estadoHorario = 2 WHERE idHorarios = ?';
                 const horarioResult = await new Promise((resolve, reject) => {
                     connection.query(horarioQuery, [idHorario], (error, results) => {
@@ -375,7 +375,7 @@ router.patch("/updateCita", async (req, res) => {
                     });
                 });
 
-                 // Paso 3: Actualizar el estado del horario
+  
                  const horarioPasdadoQuery = 'UPDATE horario SET estadoHorario = 1 WHERE idHorarios = ?';
                  const horarioPasadoResult = await new Promise((resolve, reject) => {
                      connection.query(horarioPasdadoQuery, [idHorario1], (error, results) => {
