@@ -8,7 +8,7 @@ type Persona = {
     telefono: string;
     clave: string;
     idEstadoPersona: number | "";
-
+    nombre: string;
 };
 
 export default Persona;

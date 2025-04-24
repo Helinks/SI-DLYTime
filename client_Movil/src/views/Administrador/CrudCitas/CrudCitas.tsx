@@ -4,32 +4,42 @@ import moment from 'moment';
 import Styles from './Styles';
 import useCitaState from '../../../hooks/useCitaState';
 import filtro from '../../Administrador/CrudCitas/componentes/filtro';
-import { Getcrud, getHorarios, Getconsulta } from './controller/Services';
+import { Getcrud, getHorarios, Getconsulta, actualizarCita, getEmpleado, getCliente } from './controller/Services';
 /*import { validarCampos } from ''; */
 import { Picker } from '@react-native-picker/picker';
 import { formatearFecha } from '../CrudCitas/componentes/dateFormart';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function CrudEmpleados() {
+export default function CrudCita() {
 
     const {
         modoEdicion, setModoEdicion,
         modalVisible, setModalVisible,
         citas, setCitas,
+        cliente, setCliente,
+        empleado, setEmpleado,
         consulta, setConsulta,
         horarios, setHorarios,
         citaSeleccionada, setCitaSeleccionada,
-        busqueda, setBusqueda
+        busqueda, setBusqueda,
+        numeroDocumento, setNumeroDocumento
     } = useCitaState();
 
     const [showDatePicker, setShowDatePicker] = useState(false);
 
     const Consultas = async () => {
         await Getcrud(setCitas);
+        await getEmpleado(setEmpleado);
         await Getconsulta(setConsulta);
     };
 
-    const Horarios = async (localDate : any) => {
+
+    const buscarCliente = async (numeroDocumento: string) => {
+        console.log(numeroDocumento)
+        await getCliente(numeroDocumento, setCliente);
+    };
+
+    const Horarios = async (localDate: any) => {
         await getHorarios(localDate, setHorarios);
     };
 
@@ -71,7 +81,8 @@ export default function CrudEmpleados() {
                     });
                     setModoEdicion(false)
                     setModalVisible(true);
-                }}><Text style={Styles.encabezado}>ADD</Text></TouchableOpacity>
+                }}><Text style={Styles.encabezado}>ADD</Text>
+                </TouchableOpacity>
             </View>
             <View >
                 <ScrollView style={Styles.tabla}>
@@ -83,15 +94,24 @@ export default function CrudEmpleados() {
                     {citasFiltradas.map((item, index) => (
                         <View key={index} style={Styles.fila}>
                             <TouchableOpacity style={Styles.celda} onPress={() => {
-                                setCitaSeleccionada(item);
+                                setCitaSeleccionada({
+                                    ...item,
+                                    idHorarios1: item.idHorarios
+                                });
                                 setModoEdicion(true);
                                 setModalVisible(true);
                             }}>
                                 <Text style={Styles.textoCelda}>{formatearFecha(item.fecha)}</Text>
+                                <Text style={Styles.textoCelda}>{item.hora}</Text>
+                                <Text style={Styles.textoCelda}>{item.idHorarios}</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={Styles.celda} onPress={() => {
-                                setCitaSeleccionada(item);
+                                console.log(item)
+                                setCitaSeleccionada({
+                                    ...item,
+                                    idHorarios1: item.idHorarios // aquí guardamos el valor original
+                                });
                                 setModoEdicion(true);
                                 setModalVisible(true);
                             }}>
@@ -99,7 +119,11 @@ export default function CrudEmpleados() {
                             </TouchableOpacity>
 
                             <TouchableOpacity style={Styles.celda} onPress={() => {
-                                setCitaSeleccionada(item);
+                                console.log(item)
+                                setCitaSeleccionada({
+                                    ...item,
+                                    idHorarios1: item.idHorarios // aquí guardamos el valor original
+                                });
                                 setModoEdicion(true);
                                 setModalVisible(true);
                             }}>
@@ -129,7 +153,21 @@ export default function CrudEmpleados() {
                             </Text>
 
                             {citaSeleccionada && (
+
+                                /* {modoEdicion ?
+                                        "" :
+                                        <TextInput
+                                            style={Styles.inputText}
+                                            value={modoEdicion ? personaSeleccionada.clave?.toString() : undefined}
+                                            placeholder="Clave"
+                                            secureTextEntry={true}
+                                            onChangeText={(texto) => setPersonaSeleccionada({ ...personaSeleccionada, clave: texto })}
+                                        />
+
+                                    } */
+
                                 <>
+
                                     <Button title="Seleccione fecha" onPress={() => setShowDatePicker(true)} />
 
                                     {showDatePicker && (
@@ -154,39 +192,75 @@ export default function CrudEmpleados() {
                                     )}
 
                                     <View style={Styles.textPicker}>
-
-
-                                        {<Picker
+                                        <Picker
                                             style={Styles.Picker}
                                             selectedValue={citaSeleccionada.idHorarios}
-                                            onValueChange={(itemValue) =>
+                                            onValueChange={(itemValue) => {
+
                                                 setCitaSeleccionada({ ...citaSeleccionada, idHorarios: itemValue })
                                             }
+                                            }
                                         >
-                                            <Picker.Item label="Hora de la cita" value={0} />
+                                            <Picker.Item label="Otra hora relacionada" value={0} />
                                             {horarios.map((horario, index) => (
-                                                <Picker.Item key={index} label={horario.hora} value={horario.idHorarios} />
+                                                <Picker.Item key={index} label={horario.hora} value={horario.id} />
                                             ))}
-                                        </Picker>}
+                                        </Picker>
                                     </View>
 
-
                                     <View style={Styles.textPicker}>
-
-
-                                        {<Picker
+                                        <Picker
                                             style={Styles.Picker}
                                             selectedValue={citaSeleccionada.tipoConsulta}
-                                            onValueChange={(itemValue) =>
+                                            onValueChange={(itemValue) => {
+
                                                 setCitaSeleccionada({ ...citaSeleccionada, tipoConsulta: itemValue })
+                                            }
                                             }
                                         >
                                             <Picker.Item label="Tipo de consulta" value={0} />
-                                            {consulta.map((consulta, index) => (
-                                                <Picker.Item key={index} label={consulta.nombre} value={consulta.idtipoConsulta} />
+                                            {consulta.map((item, index) => (
+                                                <Picker.Item key={index} label={item.nombre} value={item.idtipoConsulta} />
                                             ))}
-                                        </Picker>}
+                                        </Picker>
                                     </View>
+                                    {!modoEdicion ?
+                                        <>
+                                            <View style={Styles.textPicker}>
+                                                <Picker
+                                                    style={Styles.Picker}
+                                                    selectedValue={citaSeleccionada.nombreEmpleado}
+                                                    onValueChange={(itemValue) => {
+
+                                                        setCitaSeleccionada({ ...citaSeleccionada, nombreEmpleado: itemValue })
+                                                    }
+                                                    }
+                                                >
+                                                    <Picker.Item label="Seleccionar oftalmologo" value={0} />
+                                                    {empleado.map((item, index) => (
+                                                        <Picker.Item key={index} label={item.Nombres} value={item.numeroDocumento} />
+                                                    ))}
+                                                </Picker>
+                                            </View>
+                                            <View style={Styles.textPicker}>
+                                                <TextInput
+                                                    style={Styles.input}
+                                                    placeholder="Digite número de cliente"
+                                                    value={numeroDocumento}
+                                                    onChangeText={setNumeroDocumento}
+                                                />
+                                                <Button title='Verificar usuario' onPress={() => buscarCliente(numeroDocumento)} />
+
+                                                {cliente.map((item, index) => (
+                                                    <View key={index}>
+                                                        <Text >Cliente</Text>
+                                                        <Text >Nombres: {item.nombre}</Text>
+                                                        <Text >Correo: {item.correo}</Text>
+                                                </View>
+                                                ))}
+                                            </View>
+                                        </>
+                                        : ""}
                                 </>
                             )}
 
@@ -196,44 +270,41 @@ export default function CrudEmpleados() {
                                     color="#FF5757"
                                     onPress={async () => {
 
-                                        console.log(citaSeleccionada?.idHorarios1 ,   citaSeleccionada?.idHorarios);
 
                                         /* const valid = await validarCampos(personaSeleccionada)
                                         if (valid) {
                                             return;
-                                        }
-    
-                                        if (modoEdicion) {
-    
-                                            // Modificar datos
-                                            const respuesta = await patchCrud(personaSeleccionada);
-    
-                                            // Actualizar la lista
-                                            await Getcrud(setPersonas);
-                                            alert(respuesta.message);
-    
-                                            // Cerrar el modal
-                                            setModalVisible(false);
-    
-                                            // Limpiar el formulario
-                                            setPersonaSeleccionada(null);
-    
-    
-                                        } else {
-    
-                                            // Agregar datos
-                                            const respuesta = await addCrud(personaSeleccionada);
-                                            // Actualizar la lista
-                                            await Getcrud(setPersonas);
-    
-                                            alert(respuesta.message);
-                                            // Cerrar el modal
-                                            setModalVisible(false);
-    
-                                            // Limpiar el formulario
-                                            setPersonaSeleccionada(null);
                                         } */
-                                        alert("Funciona")
+                                        if (modoEdicion) {
+                                            // Modificar datos
+                                            const respuesta = await actualizarCita(citaSeleccionada?.idCita, citaSeleccionada?.idHorarios1, citaSeleccionada?.idHorarios, citaSeleccionada?.tipoConsulta);
+
+                                            // Actualizar la lista
+                                            await Getcrud(setCitas);
+                                            alert(respuesta.message);
+
+                                            // Cerrar el modal
+                                            setModalVisible(false);
+
+                                            // Limpiar el formulario
+                                            setCitaSeleccionada(null);
+                                            Horarios(null);
+
+
+                                        } else {
+                                            alert("modo agregar usuario")
+                                            /* // Agregar datos
+                                            const respuesta = await addCrud(personaSeleccionada); 
+                                            // Actualizar la lista
+                                            await Getcrud(setPersonas); */
+
+                                            /* alert(respuesta.message); */
+                                            // Cerrar el modal
+                                            /* setModalVisible(false);
+    
+                                            // Limpiar el formulario
+                                            setPersonaSeleccionada(null); */
+                                        }
 
                                     }}
                                 />

@@ -1,5 +1,5 @@
 type Horario = {
-    idHorarios: number;
+    id: number;
     fecha: string;
     hora: string;
     estadoHorario: number;

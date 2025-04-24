@@ -2,6 +2,7 @@ import{ useState } from 'react'
 import Cita from '../types/cita'
 import Horarios from '../types/horario';
 import Consulta from '../types/consulta';
+import Persona from '../types/persona';
 
 const useEmpleadoState = () => {
 
@@ -13,19 +14,25 @@ const useEmpleadoState = () => {
 
     const [horarios,setHorarios] = useState<Horarios[]>([])
     const [consulta,setConsulta] = useState<Consulta[]>([]);
+    const [empleado,setEmpleado] = useState<Persona[]>([]);
+    const [cliente,setCliente] = useState<Persona[]>([]);
     
     const [busqueda, setBusqueda] = useState('');
+    const [numeroDocumento, setNumeroDocumento] = useState('');
 
 
 
     return {
         modoEdicion, setModoEdicion,
         modalVisible, setModalVisible,
+        empleado, setEmpleado,
+        cliente, setCliente,
         citas, setCitas,
         consulta, setConsulta,
         horarios,setHorarios,
         citaSeleccionada, setCitaSeleccionada,
-        busqueda, setBusqueda
+        busqueda, setBusqueda,
+        numeroDocumento, setNumeroDocumento
     }
 }
 

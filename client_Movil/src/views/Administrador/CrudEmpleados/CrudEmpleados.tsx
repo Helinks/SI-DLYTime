@@ -56,6 +56,8 @@ export default function CrudEmpleados() {
                         telefono: "",
                         clave: '',
                         idEstadoPersona: 0,
+                        nombre:''
+                        
                     });
                     setModoEdicion(false)
                     setModalVisible(true);
