@@ -1,5 +1,5 @@
 export const url = () => {
-    return 'http://192.168.204.120:3001';
+    return 'http://192.168.20.26:3001';
 
 }
 
