@@ -4,7 +4,7 @@ import moment from 'moment';
 import Styles from './Styles';
 import useCitaState from '../../../hooks/useCitaState';
 import filtro from '../../Administrador/CrudCitas/componentes/filtro';
-import { Getcrud, getHorarios, Getconsulta, actualizarCita, getEmpleado, getCliente } from './controller/Services';
+import { Getcrud, getHorarios, Getconsulta, actualizarCita, getEmpleado, getCliente, addCliente } from './controller/Services';
 /*import { validarCampos } from ''; */
 import { Picker } from '@react-native-picker/picker';
 import { formatearFecha } from '../CrudCitas/componentes/dateFormart';
@@ -22,7 +22,8 @@ export default function CrudCita() {
         horarios, setHorarios,
         citaSeleccionada, setCitaSeleccionada,
         busqueda, setBusqueda,
-        numeroDocumento, setNumeroDocumento
+        numeroDocumento, setNumeroDocumento,
+        numeroCliente, setNumeroCliente
     } = useCitaState();
 
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -31,11 +32,11 @@ export default function CrudCita() {
         await Getcrud(setCitas);
         await getEmpleado(setEmpleado);
         await Getconsulta(setConsulta);
+        
     };
 
 
     const buscarCliente = async (numeroDocumento: string) => {
-        console.log(numeroDocumento)
         await getCliente(numeroDocumento, setCliente);
     };
 
@@ -55,7 +56,7 @@ export default function CrudCita() {
 
     return (
 
-        <View style={Styles.container}>
+        <ScrollView style={Styles.container}>
             <View style={Styles.topBar}>
                 <TextInput
                     style={Styles.input}
@@ -231,18 +232,18 @@ export default function CrudCita() {
                                                     style={Styles.Picker}
                                                     selectedValue={citaSeleccionada.nombreEmpleado}
                                                     onValueChange={(itemValue) => {
-
+                                                        setNumeroCliente(itemValue)
                                                         setCitaSeleccionada({ ...citaSeleccionada, nombreEmpleado: itemValue })
                                                     }
                                                     }
                                                 >
                                                     <Picker.Item label="Seleccionar oftalmologo" value={0} />
                                                     {empleado.map((item, index) => (
-                                                        <Picker.Item key={index} label={item.Nombres} value={item.numeroDocumento} />
+                                                        <Picker.Item key={index} label={item.Nombres} value={item.numeroDocumento}/>
                                                     ))}
                                                 </Picker>
                                             </View>
-                                            <View style={Styles.textPicker}>
+                                            <View style={Styles.inputText}>
                                                 <TextInput
                                                     style={Styles.input}
                                                     placeholder="Digite número de cliente"
@@ -276,6 +277,11 @@ export default function CrudCita() {
                                             return;
                                         } */
                                         if (modoEdicion) {
+                                            if(!citaSeleccionada?.idCita || !citaSeleccionada?.idHorarios1 || !citaSeleccionada?.idHorarios || !citaSeleccionada?.tipoConsulta){
+                                                alert("Por favor, complete todos los campos requeridos.");
+                                                return;
+                                            }
+                                            else{
                                             // Modificar datos
                                             const respuesta = await actualizarCita(citaSeleccionada?.idCita, citaSeleccionada?.idHorarios1, citaSeleccionada?.idHorarios, citaSeleccionada?.tipoConsulta);
 
@@ -289,21 +295,29 @@ export default function CrudCita() {
                                             // Limpiar el formulario
                                             setCitaSeleccionada(null);
                                             Horarios(null);
-
+                                            }
 
                                         } else {
-                                            alert("modo agregar usuario")
-                                            /* // Agregar datos
-                                            const respuesta = await addCrud(personaSeleccionada); 
-                                            // Actualizar la lista
-                                            await Getcrud(setPersonas); */
+                                            if(!numeroDocumento || !numeroCliente || !citaSeleccionada?.idHorarios || !citaSeleccionada?.tipoConsulta){
+                                                alert("Por favor, complete todos los campos requeridos.");
+                                                return;
 
-                                            /* alert(respuesta.message); */
+
+                                            }else{
+                                            alert(`Número Documento: ${numeroDocumento}, Número Cliente: ${numeroCliente}, ID Horarios: ${citaSeleccionada?.idHorarios}, Tipo Consulta: ${citaSeleccionada?.tipoConsulta}`)
+                                             // Agregar datos
+                                            const respuesta = addCliente(numeroDocumento,numeroCliente,citaSeleccionada?.idHorarios,citaSeleccionada?.tipoConsulta); 
+                                            // Actualizar la lista
+                                            await Getcrud(setCitas);
+
+                                             alert("Cita creada con éxito"); 
                                             // Cerrar el modal
-                                            /* setModalVisible(false);
+                                             setModalVisible(false);
     
                                             // Limpiar el formulario
-                                            setPersonaSeleccionada(null); */
+                                            setCitaSeleccionada(null);
+                                            Horarios(null); 
+                                            }
                                         }
 
                                     }}
@@ -324,7 +338,7 @@ export default function CrudCita() {
                 </View>
             </Modal >
 
-        </View >
+        </ScrollView >
 
 
     );

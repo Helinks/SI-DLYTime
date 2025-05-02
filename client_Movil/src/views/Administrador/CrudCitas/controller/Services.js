@@ -74,3 +74,17 @@ export const getCliente = async (cliente,setCliente) => {
     }
 }
 
+export const addCliente = async (NumeroDocumentoCliente,NumeroDocumentoOftalmologo,idHorario,idTipoConsulta) => {
+    try {
+        console.log( "datos del agregar cita: ", NumeroDocumentoCliente,NumeroDocumentoOftalmologo,idHorario,idTipoConsulta)
+        const response = await axios.post(url() + "/crudCitas/addCita", {
+            NumeroDocumentoCliente,NumeroDocumentoOftalmologo,idHorario,idTipoConsulta
+          })
+
+
+        return setCitas(response.data);
+    } catch (err) {
+        return err.data;
+    }
+}
+

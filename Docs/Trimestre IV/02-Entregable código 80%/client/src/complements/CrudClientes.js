@@ -63,7 +63,7 @@ function Crud_clientes() {
     setValidationMessage("");
   
     // Define el cliente de Emailvalidation aquí
-    const client = new Emailvalidation('ema_live_6WmdRIZwQrF3ji7fd4X89YctsfGTBvGUa9L9JqsX');
+    const client = new Emailvalidation('ema_live_7rehNckD3mKmrQKF5f0vJSoj3fbJFUHYbqTlWWRL');
   
     // Realizar la verificación de correo
     client.info(nuevoCliente.correo, { catch_all: 0 })

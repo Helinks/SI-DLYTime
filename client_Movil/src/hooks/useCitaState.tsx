@@ -16,6 +16,7 @@ const useEmpleadoState = () => {
     const [consulta,setConsulta] = useState<Consulta[]>([]);
     const [empleado,setEmpleado] = useState<Persona[]>([]);
     const [cliente,setCliente] = useState<Persona[]>([]);
+    const [ numeroCliente, setNumeroCliente] = useState('');
     
     const [busqueda, setBusqueda] = useState('');
     const [numeroDocumento, setNumeroDocumento] = useState('');
@@ -32,7 +33,8 @@ const useEmpleadoState = () => {
         horarios,setHorarios,
         citaSeleccionada, setCitaSeleccionada,
         busqueda, setBusqueda,
-        numeroDocumento, setNumeroDocumento
+        numeroDocumento, setNumeroDocumento,
+        numeroCliente, setNumeroCliente
     }
 }
 
