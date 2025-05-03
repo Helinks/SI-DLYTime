@@ -11,13 +11,18 @@
     "install-todo": "concurrently \"npm run install-server\" \"npm run install-client\""
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.27.1",
+    "@babel/preset-env": "^7.27.1",
+    "@babel/preset-react": "^7.27.1",
     "@types/axios": "^0.9.36",
     "@types/react": "^19.1.2",
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "@react-native-picker/picker": "^2.11.0",
     "axios": "^1.8.4",
+    "canvas": "^3.1.0",
     "jsonwebtoken": "^9.0.2"
   }
 }

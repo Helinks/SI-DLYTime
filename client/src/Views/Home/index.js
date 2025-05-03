@@ -1,10 +1,10 @@
 import style from './Css/index.module.css'
 import { Link } from 'react-router-dom'
 import Axios from 'axios'
-import React, { useState } from 'react'
+import React, { useState, act } from 'react'
 import img1 from '../../img/9.jpg'
 
-function AdminClientes() {
+function Index() {
   const [mNull, setMNull] = useState('')
   const [message, setMessage] = useState('')
   const [email, setEmail] = useState('')
@@ -263,4 +263,4 @@ function AdminClientes() {
   )
 }
 
-export default AdminClientes
+export default Index
