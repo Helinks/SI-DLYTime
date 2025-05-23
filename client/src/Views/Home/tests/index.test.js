@@ -3,6 +3,103 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Index from '../index';
 
 describe("<Index />", () => {
+    // Ejemplo 1
+    test("Se renderiza mensaje de error", () => {
+        render(<MiComponente />);
+
+        const Error = screen.getByRole('alert');
+        expect(Error).toBeVisible();
+    })
+
+    // Ejemplo 2
+    test('renderiza el mensaje correcto', () => {
+        render(<MiComponente />);
+
+        const mensajeElement = screen.getByText('¡Hola, mundo!');
+        expect(mensajeElement).toBeInTheDocument();
+    });
+
+    // Ejemplo 3
+    test('llama a la función onClick cuando se hace clic', () => {
+        const handleClick = jest.fn();
+        render(<MiComponente />);
+        const botonElement = screen.getByRole('button', { name: 'Haz clic aquí' });
+        fireEvent.click(botonElement);
+        expect(handleClick).toHaveBeenCalledTimes(1);
+    });
+
+    // Ejemplo 4
+    test('actualiza el valor cuando se escribe en el input', () => {
+        const handleChange = jest.fn();
+        render(<MiComponente />);
+        const inputElement = screen.getByRole('textbox');
+        fireEvent.change(inputElement, { target: { value: 'Texto de prueba' } });
+        expect(handleChange).toHaveBeenCalledTimes(1);
+        expect(handleChange).toHaveBeenCalledWith(expect.objectContaining({ target: { value: 'Texto de prueba' } }));
+        expect(inputElement).toHaveValue('Texto de prueba');
+    });
+
+    // Ejemplo 5
+    test('encuentra elementos por su rol y texto accesible', () => {
+        render(<MiComponente />);
+        const encabezado = screen.getByRole('heading', { level: 1, name: 'Título Principal' });
+        const imagen = screen.getByRole('img', { alt: 'Imagen descriptiva' });
+        const link = screen.getByRole('link', { name: 'Enlace importante' });
+        expect(encabezado).toBeInTheDocument();
+        expect(imagen).toBeInTheDocument();
+        expect(link).toBeInTheDocument();
+    });
+    
+    // Ejemplo 6
+    test('no renderiza el mensaje oculto', () => {
+        render(<MiComponente />);
+        const mensajeElement = screen.queryByText('Este mensaje debería estar oculto');
+        expect(mensajeElement).toBeNull();
+    });
+
+    // Ejemplo 7
+    test('renderiza tres elementos de la lista', () => {
+        const items = ['Elemento 1', 'Elemento 2', 'Elemento 3'];
+        render(<MiComponente items={items}/>);
+        const listaItems = screen.getAllByRole('listitem');
+        expect(listaItems).toHaveLength(3);
+        expect(listaItems[0]).toHaveTextContent('Elemento 1');
+        expect(listaItems[1]).toHaveTextContent('Elemento 2');
+        expect(listaItems[2]).toHaveTextContent('Elemento 3');
+    });
+
+    // Ejemplo 8
+    test('llama a la función onSubmit cuando se envía el formulario', () => {
+        const handleSubmit = jest.fn();
+        render(<MiComponente />);
+        const botonEnviar = screen.getByRole('button', { name: 'Enviar' });
+        fireEvent.click(botonEnviar); // Simula un clic en el botón de envío
+        expect(handleSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    // Ejemplo 9
+    test('aplica la clase correcta al elemento', () => {
+        render(<MiComponente />);
+        const elemento = screen.getByTestId('mi-elemento');
+        expect(elemento).toHaveClass('estilo-principal');
+    });
+
+    // Ejemplo 10
+    test('llama a las funciones onFocus y onBlur correctamente', () => {
+        const handleFocus = jest.fn();
+        const handleBlur = jest.fn();
+        render(<MiComponente />);
+        const inputElement = screen.getByRole('textbox');
+        fireEvent.focus(inputElement);
+        expect(handleFocus).toHaveBeenCalledTimes(1);
+        fireEvent.blur(inputElement);
+        expect(handleBlur).toHaveBeenCalledTimes(1);
+    });
+
+    
+
+
+
     test("Se renderiza el baner del index", () => {
         render(<Index />);
         const title = screen.getByText(/TusLentesShop/i);

@@ -124,7 +124,7 @@ CREATE TABLE cita (
    
     PRIMARY KEY (idCita),
     FOREIGN KEY (NumeroDocumentoCliente) REFERENCES persona(numeroDocumento),
-    FOREIGN KEY (NumeroDocumentoOftalmologo)REFERENCES persona(numeroDocumento)
+FOREIGN KEY (NumeroDocumentoOftalmologo) REFERENCES persona(numeroDocumento)
 );
 
 CREATE TABLE detalleCita (
