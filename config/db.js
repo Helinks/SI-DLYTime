@@ -2,7 +2,7 @@ const mysql = require('mysql')
 
 
 const db = mysql.createPool({
-  host: 'mysqldatabaseserverdlytime.mysql.database.azure.com',
+  host: 'databasedlytime.mysql.database.azure.com',
   user: 'administrador',
   password: '123123Ge.',
   database: 'dlyTime',
