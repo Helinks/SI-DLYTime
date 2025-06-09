@@ -36,9 +36,9 @@ router.post("/registro", async (req, res) => {
                 }
 
                 if (result.length > 0) {
-                    // Verifica si hay registros
-                    return res.json({ exists: true, message: "El número de documento o correo ya existe." });
-                }
+                    return res.status(409).json({ exists: true, message: "El número de documento o correo ya existe." });
+                  }
+                  
 
                 db.query(
                     "INSERT INTO persona (numeroDocumento, idRol, idTipoIdentificacion, Nombres, Apellidos, idGenero, correo, clave, idEstadoPersona) VALUES (?,?,?,?,?,?,?,?,?)",
