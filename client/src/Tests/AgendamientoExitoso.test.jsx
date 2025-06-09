@@ -63,24 +63,10 @@ describe('CrudCita - Agendamiento de Cita', () => {
     const agendarModalButton = screen.getByRole('button', { name: /agendar/i });
     expect(agendarModalButton).toBeEnabled(); // Asegurarse de que el botón esté habilitado
     fireEvent.click(agendarModalButton);
-
-    // 4. Verificar el mensaje de éxito
-    // El modal debería cerrarse y el mensaje de éxito debería aparecer en el p del componente principal
     await waitFor(() => {
-        // En tu código original, el mensaje de éxito se setea en `setMensajeModal`
-        // y se muestra dentro del modal, lo cual no es ideal si el modal se cierra.
-        // Si el modal se cierra al agendar, el mensaje debería mostrarse fuera.
-        // Asumiendo que el modal se cierra por `data-bs-dismiss="modal"` en el botón "Agendar"
-        // y que el mensaje se muestra en el `<h4>{mensaje}</h4>` principal.
+
         expect(screen.getByText(/Cita agregada correctamente/i)).toBeInTheDocument();
-    }, { timeout: 3000 }); // Aumentar timeout si es necesario
-    
-    // Opcional: Verificar que los campos se hayan limpiado
-    // Esto es un poco complicado si el modal se cierra, ya que los inputs no estarán en el DOM.
-    // Si el modal no se cierra automáticamente, puedes verificar:
-    // expect(fechaInput).toHaveValue('');
-    // expect(documentoClienteInput).toHaveValue(null); // Para number inputs
-    // etc.
+    }, { timeout: 3000 });
   });
 
   test('muestra un mensaje de error si el agendamiento falla', async () => {
