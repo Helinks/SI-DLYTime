@@ -41,7 +41,7 @@ function CrudEmpleados() {
 
 
   const getEmpleados = () => {
-    Axios.get("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/consultaEmpleado").then((empleados) => {
+    Axios.get("http://localhost:3001/crudEmpleados/consultaEmpleado").then((empleados) => {
       SetcrudEmple(empleados.data);
     })
   }
@@ -56,7 +56,7 @@ function CrudEmpleados() {
     setidGenero(val.idGenero);
     setcorreo(val.correo);
     settelefono(val.telefono);
-    setestadoPersona(val.estadoPersona);
+    setestadoPersona(val.idEstadoPersona);
     setError(false)
     
 
@@ -64,95 +64,56 @@ function CrudEmpleados() {
 
 
   /* Registrar Empleados  */
-  const RegistrarEmpleado = () => {
-
-    // Validación de Campos Vacios
-    if ( !nombre || !tipodocumento || !apellido || !ndocumento || !correo || !password || !genero) {
+  const RegistrarEmpleado = async () => {
+    // Validación de campos vacíos
+    if (!nombre || !tipodocumento || !apellido || !ndocumento || !correo || !password || !genero || !estadoPersona) {
       setError(true);
       return;
     }
-    setError(false)
-    
+  
+    setError(false);
+  
     const client = new Emailvalidation('ema_live_7rehNckD3mKmrQKF5f0vJSoj3fbJFUHYbqTlWWRL');
+  
+    try {
+      const response = await client.info(correo, { catch_all: 0 });
+  
+      if (response.smtp_check) {
+        setValidationMessage("El correo es válido.");
+        setError(false);
+  
+        const resultado = await Axios.post("http://localhost:3001/crudEmpleados/agregarEmpleado", {
+          numeroDocumento: ndocumento,
+          idTipoIdentificacion: tipodocumento,
+          Nombres: nombre,
+          Apellidos: apellido,
+          idGenero: genero,
+          correo: correo,
+          clave: password,
+          telefono: telefono,
+          idEstadoPersona: estadoPersona,
+        });
 
-    client.info(correo, { catch_all: 0 })
-      .then(response => {
-
-        if(tipodocumento === 'Cédula'){
-          tipodocumento = 1
-        }else{
-          if(tipodocumento === 'Pasaporte')
-          {
-            tipodocumento = 2
-          }else{
-            if(tipodocumento === 'RUC'){
-              tipodocumento = 3
-            }
-          }
-        }
-    
-        if(genero === 'Masculino'){
-          genero = 1
-        }else{
-          if(genero === 'Femenino')
-          {
-            genero = 2
-          }else{
-            if(genero === 'Otro'){
-              genero = 3
-            }
-          }
-        }
-    
-        if(estadoPersona === 'Activo'){
-          estadoPersona = 1
-        }else{
-          if(estadoPersona === 'Inactivo')
-          {
-            estadoPersona = 2
-          }else{
-            if(estadoPersona === 'Bloqueado'){
-              estadoPersona = 3
-            }
-          }
-        }
-
-        if (response.smtp_check) {
-          setValidationMessage("El correo es válido.");
-          setError(false);
-          Axios.post("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/agregarEmpleado", {
-            numeroDocumento: ndocumento,
-            idTipoIdentificacion: tipodocumento,
-            Nombres: nombre,
-            Apellidos: apellido,
-            idGenero: genero,
-            correo: correo,
-            clave: password,
-            telefono: telefono,
-            idEstadoPersona: estadoPersona,
-          }).then((response) => {
-            /* Validación de correo y número de documento */
-            if (response.data.exists) {
-              alert(response.data.message)
-            }
-            else {
-              alert("Empleado Registrado");
-              getEmpleados();
-              setValidationMessage("");
-            }
-          });
-
+        
+  
+        if (resultado.data.exists) {
+          alert(resultado.data.message);
         } else {
-          setValidationMessage("El correo electrónico no es válido.");
+          alert("Empleado Registrado");
+          getEmpleados();
+          setValidationMessage("");
         }
-      })
-      .catch(err => {
-        console.error("Error en la validación de correo:", err);
-        alert("Hubo un error al verificar el correo. Intenta más tarde.");
-      });
-
-
-  }
+  
+      } else {
+        setValidationMessage("El correo electrónico no es válido.");
+      }
+  
+    } catch (err) {
+      console.error("Error en la validación de correo:", err);
+      alert("Hubo un error al verificar el correo. Intenta más tarde.");
+    }
+  };
+  
 
   /* Modificar Empleados */
   const editarEmpleado = () => {
@@ -164,35 +125,9 @@ function CrudEmpleados() {
     }
 
     setError(false)
-    if(tipodocumento === 'Cédula'){
-      tipodocumento = 1
-    }else{
-      if(tipodocumento === 'Pasaporte')
-      {
-        tipodocumento = 2
-      }else{
-        if(tipodocumento === 'RUC'){
-          tipodocumento = 3
-        }
-      }
-    }
 
-    if(genero === 'Masculino'){
-      genero = 1
-    }else{
-      if(genero === 'Femenino')
-      {
-        genero = 2
-      }else{
-        if(genero === 'Otro'){
-          genero = 3
-        }
-      }
-    }
-
-    Axios.patch("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/actualizarEmpleado", {
+    Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
-      idRol: 2,
       idTipoIdentificacion: tipodocumento,
       Nombres: nombre,
       Apellidos: apellido,
@@ -200,7 +135,17 @@ function CrudEmpleados() {
       correo: correo,
       telefono: telefono,
       idEstadoPersona: estadoPersona,
-    }).then(() => {
+    }).then((resultado) => {
+
+      if (resultado.data.exists) {
+          alert(resultado.data.message);
+        } else {
+          alert("Empleado Modificado");
+          
+          getEmpleados();
+          setValidationMessage("");
+        }
+
       getEmpleados();
 
     });
@@ -215,12 +160,12 @@ function CrudEmpleados() {
   const searchFilter = useCallback(async()=>{
 
     try {
-      const response = await Axios.get(`https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/consultaEmpleado`, {
+      const response = await Axios.get(`http://localhost:3001/crudEmpleados/consultaEmpleado`, {
         params: {
           q: buscar
         }
       });
-      setResults(response.data);  
+      setResults(response.data);
     } catch (error) {
       console.error("Error en búsqueda:", error);
     }
@@ -281,10 +226,10 @@ function CrudEmpleados() {
               <td>{val.idTipoIdentificacion}</td>
               <td>{val.Nombres}</td>
               <td>{val.Apellidos}</td>
-              <td>{val.idGenero}</td>
+              <td>{val.nombreGenero}</td>
               <td>{val.correo}</td>
               <td>{val.telefono}</td>
-              <td>{val.idEstadoPersona}</td>
+              <td>{val.nombreEstado}</td>
 
               
               <td>
@@ -322,9 +267,9 @@ function CrudEmpleados() {
                 value={tipodocumento}
                 onChange={(e) => setidTipoIdentificacion(e.target.value)}>
                 <option value="" >Tipo de Identificación</option>
-                <option value="Cédula">C.C</option>
-                <option value="Pasaporte">T.I</option>
-                <option value="RUC">C.E</option>
+                <option value="1">C.C</option>
+                <option value="2">T.I</option>
+                <option value="3">C.E</option>
               </select>
               <input name="nombre" type="text" className="form-control mb-2" placeholder="Nombre" 
               value={nombre} onChange={(e) => setNombres(e.target.value)} />
@@ -335,9 +280,9 @@ function CrudEmpleados() {
              <select name="genero" className="form-select mb-2" 
              value={genero} onChange={(e) => setidGenero(e.target.value)}>
                 <option>Género</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-                <option value="Otro">Otro...</option>
+                <option value="1">Masculino</option>
+                <option value="2">Femenino</option>
+                <option value="3">Otro...</option>
               </select>
 
             
@@ -354,9 +299,10 @@ function CrudEmpleados() {
 
               <select name="estadoPersona" className="form-select mb-2"
                value={estadoPersona} onChange={(e) => setestadoPersona(e.target.value)}>
-              <option value="Activo">Activo</option>
-                <option value="Inactivo">Inactivo</option>
-                <option value="Bloqueado">Bloqueado</option>
+                <option>Estado</option>
+                <option value="1">Activo</option>
+                <option value="2">Inactivo</option>
+                <option value="3">Bloqueado</option>
               </select>
 
             {validationMessage && (

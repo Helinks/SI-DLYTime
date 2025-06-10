@@ -86,7 +86,7 @@ export function SignIn() {
     }
     else {
       /* Envió de correo eléctronico */
-      Axios.post("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/enviarCorreo/enviarCorreoRegistro", {
+      Axios.post("http://localhost:3001/enviarCorreo/enviarCorreoRegistro", {
         to: correo,
         subject: "Código para Registro",
       }).then((response) => {
@@ -97,41 +97,40 @@ export function SignIn() {
 
   };
 
-  const codeVericar = () => {
+  const codeVericar = async () => {
     let codeRegistro = localStorage.getItem("codeRegister");
+  
     if (codeRegistro === codigoRe) {
-
-      /* Registro */
-      Axios.post("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/autenticacion/registro", {
-        numeroDocumento: ndocumento,
-        idRol: 1,
-        idTipoIdentificacion: tipodocumento,
-        nombre: nombre,
-        apellido: apellido,
-        idGenero: genero,
-        correo: correo,
-        clave: password,
-      }).then((response) => {
-
-        /* Validación de correo y número de documento */
-        if (response.data.exists) {
-          setValidationMessage(response.data.message);
+      try {
+        await Axios.post("http://localhost:3001/autenticacion/registro", {
+          numeroDocumento: ndocumento,
+          idRol: 1,
+          idTipoIdentificacion: tipodocumento,
+          nombre: nombre,
+          apellido: apellido,
+          idGenero: genero,
+          correo: correo,
+          clave: password,
+        });
+  
+        localStorage.removeItem("codeRegister");
+        alert("Usuario Registrado");
+        navigate("/Login");
+      } catch (error) {
+        if (error.response && error.response.status === 409) {
+          setValidationMessage(error.response.data.message);
+          setError(true);
+        } else {
+          setValidationMessage('Ocurrió un error inesperado.');
           setError(true);
         }
-        else {
-          localStorage.removeItem("codeRegister")
-          alert("Usuario Registrado");
-          navigate("/Login"); // Redirige a Login después del registro
-        }
-      });
-
+      }
     } else {
-      setValidationMessage("Código incorrecto, intentelo otra vez")
+      setValidationMessage("Código incorrecto, intentelo otra vez");
       setError(true);
       return;
     }
   };
-
 
 
 
@@ -308,8 +307,6 @@ export function SignIn() {
                   </div>
                 )}
               </div>
-              {/* {forgotMessage} */}
-
             </div>
           </div>
         </div>
