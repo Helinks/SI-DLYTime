@@ -41,7 +41,7 @@ function CrudEmpleados() {
 
 
   const getEmpleados = () => {
-    Axios.get("http://localhost:3001/crudEmpleados/consultaEmpleado").then((empleados) => {
+    Axios.get("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/consultaEmpleado").then((empleados) => {
       SetcrudEmple(empleados.data);
     })
   }
@@ -82,7 +82,7 @@ function CrudEmpleados() {
         setValidationMessage("El correo es válido.");
         setError(false);
   
-        const resultado = await Axios.post("http://localhost:3001/crudEmpleados/agregarEmpleado", {
+        const resultado = await Axios.post("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/agregarEmpleado", {
           numeroDocumento: ndocumento,
           idTipoIdentificacion: tipodocumento,
           Nombres: nombre,
@@ -126,7 +126,7 @@ function CrudEmpleados() {
 
     setError(false)
 
-    Axios.patch("http://localhost:3001/crudEmpleados/actualizarEmpleado", {
+    Axios.patch("https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/actualizarEmpleado", {
       numeroDocumento: ndocumento,
       idTipoIdentificacion: tipodocumento,
       Nombres: nombre,
@@ -160,7 +160,7 @@ function CrudEmpleados() {
   const searchFilter = useCallback(async()=>{
 
     try {
-      const response = await Axios.get(`http://localhost:3001/crudEmpleados/consultaEmpleado`, {
+      const response = await Axios.get(`https://backenddlytime-efgpffakcxe2d9e9.brazilsouth-01.azurewebsites.net/crudEmpleados/consultaEmpleado`, {
         params: {
           q: buscar
         }
